@@ -20,12 +20,19 @@ public class VertexGemini
 
     public async Task<string?> Generate(string prompt)
     {
-        var vertex = new VertexAI(_projectId);
-        var model = vertex.GenerativeModel(_model);
-        model.UseGrounding = true;
-        model.AccessToken = _accessToken;
+        try
+        {
+            var vertex = new VertexAI(_projectId);
+            var model = vertex.GenerativeModel(_model);
+            model.UseGrounding = true;
+            model.AccessToken = _accessToken;
 
-        var response = await model.GenerateContent(prompt);
-        return response.Text;
+            var response = await model.GenerateContent(prompt);
+            return response.Text;
+        }
+        catch(Exception exp)
+        {
+            throw exp;
+        }
     }
 }

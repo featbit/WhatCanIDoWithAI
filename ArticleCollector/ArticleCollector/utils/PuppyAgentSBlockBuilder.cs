@@ -8,16 +8,24 @@ namespace ArticleCollector.utils
 {
     public class PuppyAgentSBlockBuilder
     {
-        public static async Task Build()
+        public static async Task<IEnumerable<string>> Build()
         {
             var articlesFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "articles");
             var mdFiles = Directory.GetFiles(articlesFolderPath, "*.md");
 
+            var contents = new List<string>();
             foreach (var file in mdFiles)
             {
                 string content = await File.ReadAllTextAsync(file);
-                Console.WriteLine(content); // Process the content as needed
+                contents.Add(content);
             }
+            return contents;
+        }
+
+        public static async Task<string> RecomposeBlock(VertexGemini geminiAgent, string blockContent)
+        {
+            var result = await geminiAgent.Generate($"Generate some questions would ask for block content: {blockContent}");
+            return result;
         }
     }
 }
