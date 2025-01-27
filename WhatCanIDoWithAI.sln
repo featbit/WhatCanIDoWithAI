@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArticleCollector", "ArticleCollector", "{B3985FB5-8FE5-4CA9-B98A-CC9C6E5ECF52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArticleCollector", "ArticleCollector\ArticleCollector\ArticleCollector.csproj", "{66C673FA-3106-94E9-6488-E4290CB06441}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66C673FA-3106-94E9-6488-E4290CB06441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C673FA-3106-94E9-6488-E4290CB06441}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C673FA-3106-94E9-6488-E4290CB06441}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C673FA-3106-94E9-6488-E4290CB06441}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{66C673FA-3106-94E9-6488-E4290CB06441} = {B3985FB5-8FE5-4CA9-B98A-CC9C6E5ECF52}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B1A1BFE-3981-450F-B6FE-9498BD54319E}
+	EndGlobalSection
+EndGlobal
