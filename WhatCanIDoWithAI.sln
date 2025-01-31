@@ -6,6 +6,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArticleCollector", "Article
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArticleCollector", "ArticleCollector\ArticleCollector\ArticleCollector.csproj", "{66C673FA-3106-94E9-6488-E4290CB06441}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreSqler", "PostgreSqler\PostgreSqler.csproj", "{E8C43ED5-40DC-4577-B82F-1738C462631D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CCD8400-EC01-4B49-8D56-F93CF08E26AA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,12 +23,17 @@ Global
 		{66C673FA-3106-94E9-6488-E4290CB06441}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66C673FA-3106-94E9-6488-E4290CB06441}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66C673FA-3106-94E9-6488-E4290CB06441}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8C43ED5-40DC-4577-B82F-1738C462631D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8C43ED5-40DC-4577-B82F-1738C462631D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8C43ED5-40DC-4577-B82F-1738C462631D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8C43ED5-40DC-4577-B82F-1738C462631D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{66C673FA-3106-94E9-6488-E4290CB06441} = {B3985FB5-8FE5-4CA9-B98A-CC9C6E5ECF52}
+		{E8C43ED5-40DC-4577-B82F-1738C462631D} = {B3985FB5-8FE5-4CA9-B98A-CC9C6E5ECF52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2B1A1BFE-3981-450F-B6FE-9498BD54319E}
