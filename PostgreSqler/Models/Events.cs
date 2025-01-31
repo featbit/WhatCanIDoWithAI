@@ -6,6 +6,7 @@ namespace PostgreSqler.Models
 {
     public class Event
     {
+        [Column("id")]
         public Guid Id { get; set; }
 
         [Column("env_id")]
@@ -13,10 +14,12 @@ namespace PostgreSqler.Models
 
         [Column("event")]
         public string EventType { get; set; }
+        [Column("flag_key")]
+        public string FlagKey { get; set; }
 
-        [Column(TypeName = "jsonb")]
-        public EventData Data { get; set; }
-
+        [Column("data", TypeName = "jsonb")]
+        public string Data { get; set; }
+        [Column("timestamp")]
         public DateTime Timestamp { get; set; }
     }
 

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PostgreSqler.Models
 {
-    public class Tests
+    public class Test
     {
         [Key]
         [Column("id")]
