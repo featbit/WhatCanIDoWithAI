@@ -53,3 +53,9 @@ dkms.conf
 
 
 .vs
+
+
+# .NET Core
+
+bin/
+obj/

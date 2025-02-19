@@ -22,7 +22,5 @@ foreach (var item in blocksContent)
     Console.WriteLine(questsion);
 }
 
-
-
 //var result = await geminiAgent.Generate("list all images link from https://docs.getunleash.io/topics/feature-flags/feature-flag-best-practices");
 //Console.Write(result);
