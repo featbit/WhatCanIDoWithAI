@@ -1,0 +1,23 @@
+﻿@inject IFbClient fbClient
+
+
+@if (showComponent)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string FlagKey { get; set; }
+
+    private bool showComponent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var fbUser = FeatBit.Sdk.Server.Model.FbUser.Builder("123").Build();
+        showComponent = fbClient.BoolVariation(FlagKey, fbUser, defaultValue: false);
+    }
+}
