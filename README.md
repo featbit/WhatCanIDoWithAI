@@ -31,11 +31,3 @@ Then you can open a redis gui to connect to the Redis instance:
 - no other selected cases
 
 ### Connect to MongoDB
-
-featbit
-OW1aJ8KY4OXcRaSM
-
-mongodb+srv://featbit:OW1aJ8KY4OXcRaSM@cluster0.wiirw.mongodb.net/
-mongodb+srv://featbit:OW1aJ8KY4OXcRaSM@cluster0.wiirw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-
-mongodb://atlas-sql-67a39e6a1bded35b308f60ba-wiirw.a.query.mongodb.net/sample_mflix?ssl=true&authSource=admin
