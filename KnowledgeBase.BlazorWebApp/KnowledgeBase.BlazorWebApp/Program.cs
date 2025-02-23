@@ -1,6 +1,8 @@
 using KnowledgeBase.BlazorWebApp.Client.Pages;
 using KnowledgeBase.BlazorWebApp.Components;
-using FeatBit.Sdk.Server.DependencyInjection; // Add this using directive
+using FeatBit.Sdk.Server.DependencyInjection;
+using FeatBit.Sdk.Server;
+using KnowledgeBase.BlazorWebApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddControllers();
+
+builder.Services.AddDbContext<KnowledgeBaseDbContext>();
 
 // Add FeatBit .NET Server SDK
 builder.Services.AddFeatBit(options =>
@@ -41,5 +47,11 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(KnowledgeBase.BlazorWebApp.Client._Imports).Assembly);
+
+app.MapControllers();
+
+app.MapGet("/fbclienttest", (IFbClient fbClient) => {
+    return "good job";
+});
 
 app.Run();
