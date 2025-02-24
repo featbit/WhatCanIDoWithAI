@@ -1,41 +1,25 @@
-# WhatCanIDoWithAI
-A platform to discover emerging AI technologies and inspire developers and founders to build impactful solutions and achieve billionaire success, drawing from FeatBit's best practices in feature management.
 
-## GCP
+Go to the root of KnowledgeBase folder that contains KnowledgeBase.Server and KnowledgeBase.Client folders.
 
-### Connect to Memorystore
-
-Based on [post in stackoverflow](https://stackoverflow.com/questions/50281492/accessing-gcp-memorystore-from-local-machines), create a VM instance in the same VPC network as your Redis instance
-
-```bash
-gcloud compute instances create redis-forwarder --machine-type=f1-micro  // doesn't exist, manually create a e1 instance
+```shell
+cd KnowledgeBase
+dotnet tool restore
 ```
 
-Actually, my compliance project doesn't work with command above, I have to manually create a VM instance in the same VPC network as my Redis instance. The only difference with the command above is that I have to specify the compute resource to e1-micro, define the zone and the network (default one).
+Run command below in terminal to generate initial migration script for PG.
 
-Then by using the command below (generated in [gcloud doc](https://cloud.google.com/memorystore/docs/redis/connect-redis-instance#connecting_from_a_local_machine_with_port_forwarding)), I can connect to the Redis instance from my local machine.
-
-```bash
-gcloud compute ssh redis-forwarder --zone=us-east1-d -- -N -L 6378:10.15.114.117:6378
+```shell
+dotnet ef dbcontext script --project KnowledgeBase.Server --startup-project KnowledgeBase.Server --context KnowledgeBaseDbContext --verbose -o migrations/initial_postgresql.sql
 ```
 
-The command above should be run in git bash, not in PowerShell. Then a PuTTY window will pop up.
 
-Then you can open a redis gui to connect to the Redis instance:
+Error when execute the command above:
 
-- host: localhost
-- port: 6378
-- password: auth string in memorystore for redis instance
-- no username
-- name: featbit
-- no other selected cases
+```shell
+Unable to create a 'DbContext' of type 'KnowledgeBaseDbContext'. The exception 'No suitable constructor was found for entity type 'Vector'. The following constructors had parameters that could not be bound to properties of the entity type:
+    Cannot bind 'v' in 'Vector(ReadOnlyMemory<float> v)'
+    Cannot bind 's' in 'Vector(string s)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728
+```
 
-### Connect to MongoDB
-
-featbit
-OW1aJ8KY4OXcRaSM
-
-mongodb+srv://featbit:OW1aJ8KY4OXcRaSM@cluster0.wiirw.mongodb.net/
-mongodb+srv://featbit:OW1aJ8KY4OXcRaSM@cluster0.wiirw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-
-mongodb://atlas-sql-67a39e6a1bded35b308f60ba-wiirw.a.query.mongodb.net/sample_mflix?ssl=true&authSource=admin
+I think it's because 

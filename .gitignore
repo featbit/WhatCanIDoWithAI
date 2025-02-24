@@ -59,3 +59,4 @@ dkms.conf
 bin/
 obj/
 appsettings.Development.json
+.vscode/
