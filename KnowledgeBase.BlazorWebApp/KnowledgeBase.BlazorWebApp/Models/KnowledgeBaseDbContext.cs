@@ -14,9 +14,6 @@ namespace KnowledgeBase.BlazorWebApp.Models
         {
         }
 
-        // Define your DbSet properties here
-        // public DbSet<YourEntity> YourEntities { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("vector");
