@@ -3,6 +3,7 @@ using FeatBit.Sdk.Server.DependencyInjection;
 using FeatBit.Sdk.Server;
 using KnowledgeBase.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using KnowledgeBase.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,12 @@ builder.Services.AddDbContext<KnowledgeBaseDbContext>(options =>
         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 );
 
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+
+builder.Services.AddTransient<IQuestionVectorSearchService, QuestionVectorSearchService>();
+
 // Add FeatBit .NET Server SDK
 builder.Services.AddFeatBit(options =>
 {
@@ -28,6 +35,8 @@ builder.Services.AddFeatBit(options =>
     options.EventUri = new Uri(featBitSection["EventUri"] ?? "");
     options.StartWaitTime = TimeSpan.FromSeconds(3);
 });
+
+
 
 var app = builder.Build();
 

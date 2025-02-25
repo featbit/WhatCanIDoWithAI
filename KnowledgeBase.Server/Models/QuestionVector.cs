@@ -16,7 +16,13 @@ namespace KnowledgeBase.Server.Models
         [Column("question_text")]
         public string QuestionText { get; set; }
 
-        //[Column("embedding", TypeName = "vector(3)")]
-        //public Vector? Embedding { get; set; }
+        [Column("vector_op_txt_emb_3_lg", TypeName = "vector(3072)")]
+        public Vector? OpTextEmb3LgVector { get; set; }
+
+        [Column("vector_op_txt_emb_3_sm", TypeName = "vector(1536)")]
+        public Vector? OpTextEmb3SmVector { get; set; }
+
+        [Column("vector_ge_txt_emb_004", TypeName = "vector(768)")]
+        public Vector? GeTextEmb004Vector { get; set; }
     }
 }
