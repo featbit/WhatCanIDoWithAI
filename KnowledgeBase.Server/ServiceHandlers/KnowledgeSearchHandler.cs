@@ -9,7 +9,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
         public string? RequestSerieId { get; set; }
     }
 
-    public class KnowledgeSearchHandler(IQuestionVectorSearchService questionSearchService) : IRequestHandler<KnowledgeSearchRequest, string>
+    public class KnowledgeSearchHandler(IKeywordVectorSearchService questionSearchService) : IRequestHandler<KnowledgeSearchRequest, string>
     {
         public async Task<string> Handle(KnowledgeSearchRequest request, CancellationToken cancellationToken)
         {

@@ -24,7 +24,7 @@ builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
-builder.Services.AddTransient<IQuestionVectorSearchService, QuestionVectorSearchService>();
+builder.Services.AddTransient<IKeywordVectorSearchService, KeywordVectorSearchService>();
 
 // Add FeatBit .NET Server SDK
 builder.Services.AddFeatBit(options =>
