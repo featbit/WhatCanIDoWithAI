@@ -4,6 +4,7 @@ using FeatBit.Sdk.Server;
 using KnowledgeBase.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using KnowledgeBase.Server.Services;
+using KnowledgeBase.Server.FeatureFlag;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,5 +75,7 @@ app.MapGet("/fbclienttest", (IFbClient fbClient) => {
         _ => "False"
     };
 });
+
+app.MapHub<FeatureFlagHub>("/featureflaghub");
 
 app.Run();
