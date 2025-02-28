@@ -2,21 +2,28 @@
 using KnowledgeBase.SpecGenerator;
 using KnowledgeBase.SpecGenerator.Models;
 using MediatR;
+using Pgvector.EntityFrameworkCore;
 
 namespace KnowledgeBase.Server.ServiceHandlers
 {
-    public class SpecGenRequest : IRequest<Definition?>
+    public class SpecGenRequest : IRequest<Specification>
     {
         public string Query { get; set; }
         public string? Step { get; set; }
     }
 
-    public class SpecificationGenHandler(ISpecificationGenService specGenService) : IRequestHandler<SpecGenRequest, Definition?>
+    public class SpecificationGenHandler(ISpecificationGenService specGenService) : IRequestHandler<SpecGenRequest, Specification>
     {
-        public async Task<Definition?> Handle(SpecGenRequest request, CancellationToken cancellationToken)
+        public async Task<Specification> Handle(SpecGenRequest request, CancellationToken cancellationToken)
         {
-            Definition? definition = await specGenService.GenerateDefinitionAsync(request.Query);
-            return definition;
+            Specification spec = new()
+            {
+                Title = request.Query,
+                Definition = await specGenService.GenerateDefinitionAsync(request.Query)
+            };
+            if (spec.Definition != null)
+                spec.Content = await specGenService.GenerateContentAsync(spec.Title, spec.Definition);
+            return spec;
         }
     }
 }

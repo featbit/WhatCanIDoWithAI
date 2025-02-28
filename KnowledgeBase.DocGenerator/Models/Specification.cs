@@ -9,6 +9,7 @@ namespace KnowledgeBase.SpecGenerator.Models
     public class Specification
     {
         public string Title { get; set; }
-        public Definition Definition { get; set; }
+        public Definition? Definition { get; set; }
+        public Content? Content { get; set; }
     }
 }
