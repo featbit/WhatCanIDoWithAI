@@ -5,6 +5,8 @@ using KnowledgeBase.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using KnowledgeBase.Server.Services;
 using KnowledgeBase.Server.FeatureFlag;
+using KnowledgeBase.OpenAI;
+using KnowledgeBase.SpecGenerator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,10 @@ builder.Services.AddMediatR(cfg => {
 });
 
 builder.Services.AddTransient<IKeywordVectorSearchService, KeywordVectorSearchService>();
+
+builder.AddServiceDefaults();
+builder.AddOpenAIServices();
+builder.AddSpecificationGenServices();
 
 // Add FeatBit .NET Server SDK
 builder.Services.AddFeatBit(options =>

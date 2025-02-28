@@ -5,12 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KnowledgeBase.Server.Controllers
 {
-    [Route("api/knwoledge-search")]
-    [ApiController]
-    public class KnowledgeSearchController(IFbClient fbClient, ISender mediator) : ControllerBase
+    [Route("api/spec-gen")]
+    public class SpecificationGenController(IFbClient fbClient, ISender mediator) : ControllerBase
     {
-        [HttpPost("search")]
-        public async Task<IActionResult> Search(KnowledgeSearchRequest request)
+        [HttpPost("definition")]
+        public async Task<IActionResult> GenDefinitionAsync([FromBody]SpecGenRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);

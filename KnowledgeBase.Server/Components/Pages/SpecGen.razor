@@ -1,0 +1,16 @@
+﻿@page "/specgen"
+@using KnowledgeBase.Client.Components
+@inject IFbClient fbClient
+
+<PageTitle>Specification Generation</PageTitle>
+
+<h1>Specification Generation</h1>
+
+<GenDefinition />
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

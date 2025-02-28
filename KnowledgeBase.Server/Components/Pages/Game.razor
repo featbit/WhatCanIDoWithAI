@@ -16,8 +16,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var fbUser = FeatBit.Sdk.Server.Model.FbUser.Builder("123").Build();
-        var customReportFlag = fbClient.BoolVariation("custom-report", fbUser, defaultValue: false);
-        initalCount = customReportFlag ? 11 : 0;
+        // var fbUser = FeatBit.Sdk.Server.Model.FbUser.Builder("123").Build();
+        // var customReportFlag = fbClient.BoolVariation("custom-report", fbUser, defaultValue: false);
+        // initalCount = customReportFlag ? 11 : 0;
     }
 }
