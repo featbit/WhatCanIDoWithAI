@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KnowledgeBase.Models\KnowledgeBase.Models.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
     <ProjectReference Include="..\KnowledgeBase.OpenAI\KnowledgeBase.OpenAI.csproj" />
   </ItemGroup>
 

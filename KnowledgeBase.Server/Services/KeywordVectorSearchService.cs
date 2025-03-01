@@ -1,7 +1,6 @@
-﻿using KnowledgeBase.Server.Models;
-using Pgvector.EntityFrameworkCore;
+﻿using KnowledgeBase.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
+using Pgvector.EntityFrameworkCore;
 
 namespace KnowledgeBase.Server.Services
 {

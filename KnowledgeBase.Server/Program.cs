@@ -1,7 +1,7 @@
 using KnowledgeBase.Server.Components;
 using FeatBit.Sdk.Server.DependencyInjection;
 using FeatBit.Sdk.Server;
-using KnowledgeBase.Server.Models;
+using KnowledgeBase.Models;
 using Microsoft.EntityFrameworkCore;
 using KnowledgeBase.Server.Services;
 using KnowledgeBase.Server.FeatureFlag;

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using KnowledgeBase.Models.Components.SpecGenerator;
-using KnowledgeBase.Server.Models;
+using KnowledgeBase.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 

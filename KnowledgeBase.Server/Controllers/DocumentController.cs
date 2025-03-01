@@ -1,5 +1,5 @@
 ﻿using FeatBit.Sdk.Server;
-using KnowledgeBase.Server.Models;
+using KnowledgeBase.Models;
 using KnowledgeBase.Server.ServiceHandlers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
