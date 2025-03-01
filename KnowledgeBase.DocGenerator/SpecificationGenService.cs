@@ -61,7 +61,7 @@ namespace KnowledgeBase.SpecGenerator
                 {
                     DetailDescription = detail.DetailDescription,
                     Id = moduleId,
-                    Name = module.Name,
+                    Name = detail.Name,
                     ShortDescription = module.ShortDescription
                 };
             });

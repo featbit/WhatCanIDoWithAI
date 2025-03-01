@@ -36,5 +36,5 @@ namespace KnowledgeBase.SpecGenerator.Models
         public string DetailDescription { get; set; }
         [JsonPropertyName("module_name")]
         public string Name { get; set; }
-    }`
+    }
 }
