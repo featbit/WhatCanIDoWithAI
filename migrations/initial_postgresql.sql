@@ -14,9 +14,9 @@ CREATE TABLE keyword_vectors (
     id uuid NOT NULL,
     document_id uuid NOT NULL,
     keywords text NOT NULL,
-    vector_op_txt_emb_3_lg vector(3072) NULL,
-    vector_op_txt_emb_3_sm vector(1536) NULL,
-    vector_ge_txt_emb_004 vector(768) NULL,
+    vector_op_txt_emb_3_lg vector(3072),
+    vector_op_txt_emb_3_sm vector(1536),
+    vector_ge_txt_emb_004 vector(768),
     CONSTRAINT "PK_keyword_vectors" PRIMARY KEY (id)
 );
 
@@ -25,10 +25,18 @@ CREATE TABLE question_vectors (
     id uuid NOT NULL,
     document_id uuid NOT NULL,
     question_text text NOT NULL,
-    vector_op_txt_emb_3_lg vector(3072) NULL,
-    vector_op_txt_emb_3_sm vector(1536) NULL,
-    vector_ge_txt_emb_004 vector(768 ) NULL
+    vector_op_txt_emb_3_lg vector(3072),
+    vector_op_txt_emb_3_sm vector(1536),
+    vector_ge_txt_emb_004 vector(768),
     CONSTRAINT "PK_question_vectors" PRIMARY KEY (id)
+);
+
+
+CREATE TABLE reports (
+    id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    specification jsonb NOT NULL,
+    CONSTRAINT "PK_reports" PRIMARY KEY (id)
 );
 
 

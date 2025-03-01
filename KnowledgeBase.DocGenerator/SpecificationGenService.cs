@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.OpenAI;
+﻿using KnowledgeBase.Models.Components.SpecGenerator;
+using KnowledgeBase.OpenAI;
 using KnowledgeBase.SpecGenerator.Models;
 using System.Text.Json;
 
@@ -38,8 +39,8 @@ namespace KnowledgeBase.SpecGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "module_detail_description": "", // detailed description of the module
-                        "module_name": "" // name of the module with less than 100 characters
+                        "module_detail_description": "", // detailed description of the module, in chinese
+                        "module_name": "" // name of the module with less than 100 characters, in chinese
                     }
 
                     """;
@@ -98,7 +99,7 @@ namespace KnowledgeBase.SpecGenerator
 
 
                     {
-                        "service_description": "" // define what the SaaS "###{title}###" should looks like
+                        "service_description": "" // define what the SaaS "###{title}###" should looks like, in chinese
                         "saas_features": [
                             {
                                 "feature": "", // main feature of the SaaS "###{title}###"
@@ -132,18 +133,18 @@ namespace KnowledgeBase.SpecGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "service_description": "", // define what the SaaS "###{title}###" should looks like
+                        "service_description": "", // define what the SaaS "###{title}###" should looks like, in chinese
                         "saas_features": [] // list from 2 to 5 main features randomly of the SaaS "###{title}###"
                     }
 
                     ## Output Example
 
                     {
-                        ""service_description"": ""An AIGC product where help people to generate content without a profession skill"",
-                        ""saas_features"": [
-                            ""prompt input module that user can input aigc command and manage them"",
-                            ""result showing panel to display generated result such as image, video and article"",
-                            ""user management module to manage user account and subscription""
+                        "service_description": "An AIGC product where help people to generate content without a profession skill",
+                        "saas_features": [
+                            "prompt input module that user can input aigc command and manage them",
+                            "result showing panel to display generated result such as image, video and article",
+                            ""user management module to manage user account and subscription"
                         ]
                     }
                     """;

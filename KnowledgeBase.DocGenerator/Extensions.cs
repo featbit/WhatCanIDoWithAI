@@ -8,6 +8,7 @@ namespace KnowledgeBase.SpecGenerator
         public static TBuilder AddSpecificationGenServices<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
         {
             builder.Services.AddScoped<ISpecificationGenService, SpecificationGenService>();
+            builder.Services.AddScoped<ISpecificationGenRepo, SpecificationGenRepo>();
             return builder;
         }
     }

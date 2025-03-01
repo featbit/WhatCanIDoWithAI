@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\KnowledgeBase.Client\KnowledgeBase.Client.csproj" />
     <ProjectReference Include="..\KnowledgeBase.DocGenerator\KnowledgeBase.SpecGenerator.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.Models\KnowledgeBase.Models.csproj" />
     <ProjectReference Include="..\KnowledgeBase.OpenAI\KnowledgeBase.OpenAI.csproj" />
     <ProjectReference Include="..\KnowledgeBase.ServiceDefaults\KnowledgeBase.ServiceDefaults.csproj" />
     <PackageReference Include="FeatBit.ServerSdk" Version="1.2.2" />

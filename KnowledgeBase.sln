@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{E2CFD8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.ServiceDefaults", "KnowledgeBase.ServiceDefaults\KnowledgeBase.ServiceDefaults.csproj", "{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Models", "KnowledgeBase.Models\KnowledgeBase.Models.csproj", "{B0581D0A-2BB9-47B2-A932-B41D34BA384C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0581D0A-2BB9-47B2-A932-B41D34BA384C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0581D0A-2BB9-47B2-A932-B41D34BA384C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0581D0A-2BB9-47B2-A932-B41D34BA384C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0581D0A-2BB9-47B2-A932-B41D34BA384C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{551BA1DF-717B-4352-AA85-7B7AB0DBA223} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7EC454F3-7400-4F06-B462-28378CA6294B} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
+		{B0581D0A-2BB9-47B2-A932-B41D34BA384C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E910DB-725C-4162-A509-6BE030E9B900}
