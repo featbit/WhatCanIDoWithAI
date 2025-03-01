@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace KnowledgeBase.SpecGenerator.Models
 {
@@ -25,4 +20,21 @@ namespace KnowledgeBase.SpecGenerator.Models
         [JsonPropertyName("saas_features")]
         public List<SaaSFeature> SaasFeatures { get; set; }
     }
+
+    public class Definition
+    {
+        [JsonPropertyName("service_description")]
+        public string ServiceDescription { get; set; }
+
+        [JsonPropertyName("saas_features")]
+        public List<string> SaasFeatures { get; set; }
+    }
+
+    public class ModuleDetail
+    {
+        [JsonPropertyName("module_detail_description")]
+        public string DetailDescription { get; set; }
+        [JsonPropertyName("module_name")]
+        public string Name { get; set; }
+    }`
 }

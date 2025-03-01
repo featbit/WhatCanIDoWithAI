@@ -1,7 +1,4 @@
 using KnowledgeBase.Server.Models;
-using Pgvector.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace KnowledgeBase.Server.Services
 {

@@ -8,6 +8,12 @@ using KnowledgeBase.Server.FeatureFlag;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.SpecGenerator;
 
+// Set the OpenAI.Experimental.EnableOpenTelemetry context switch
+AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
+
+// Set the OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY environment variable
+Environment.SetEnvironmentVariable("OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY", "true");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -53,25 +53,31 @@ public static class Extensions
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
+                    .AddRuntimeInstrumentation()
+                    .AddMeter("OpenAI.*");
             })
             .WithTracing(tracing =>
             {
-                tracing.AddSource(builder.Environment.ApplicationName)
-                    .AddAspNetCoreInstrumentation()
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
+                tracing
+                    .AddSource(builder.Environment.ApplicationName)
+                    .AddSource("OpenAI.*")
+                    //.AddAspNetCoreInstrumentation()
+                    //.AddOtlpExporter()
                     //.AddGrpcClientInstrumentation()
-                    .AddAspNetCoreInstrumentation(options => {
-                    // Record exceptions as events in traces
+                    .AddAspNetCoreInstrumentation(options =>
+                    {
+                        // Record exceptions as events in traces
                         options.RecordException = true;
                         // Include more exception details
-                        options.EnrichWithException = (activity, exception) => {
+                        options.EnrichWithException = (activity, exception) =>
+                        {
                             activity.SetTag("exception.stacktrace", exception.StackTrace);
                             activity.SetTag("exception.message", exception.Message);
                             activity.SetTag("exception.type", exception.GetType().Name);
                         };
                     })
-                    .AddHttpClientInstrumentation(options => {
+                    .AddHttpClientInstrumentation(options =>
+                    {
                         // Track HTTP client exceptions
                         options.RecordException = true;
                     });

@@ -2,11 +2,13 @@
 using OpenAI;
 using OpenAI.Chat;
 using System.ClientModel;
+using System.Diagnostics;
 
 namespace KnowledgeBase.OpenAI
 {
     public interface IOpenAiChatService
     {
+        Task<string> CompleteChatAsync(string message, string callName = "", bool enforceJson = false);
         Task<string> CompleteChatAsync(string message, bool enforceJson = false);
     }
 
@@ -29,14 +31,17 @@ namespace KnowledgeBase.OpenAI
         }
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false)
+            => await CompleteChatAsync(message, string.Empty, enforceJson);
+
+        public async Task<string> CompleteChatAsync(string message, string callName, bool enforceJson = false)
         {
             ChatCompletion completion = await _chatClient.CompleteChatAsync([
                 new SystemChatMessage(message)
             ]);
+
             string response = completion.Content[0].Text;
-            if (enforceJson == true)
-                return response.CleanResult();
-            return response;
+
+            return enforceJson ? response.CleanResult() : response;
         }
     }
 }
