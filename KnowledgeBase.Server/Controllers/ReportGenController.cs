@@ -34,5 +34,18 @@ namespace KnowledgeBase.Server.Controllers
             var result = await mediator.Send(request);
             return Ok(result);
         }
+
+        [HttpPost("code/module")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> CodeSingleModuleGenAsync([FromBody] FeatureModuleGenRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.CodeSingleModulesGen))
+            {
+                return NotFound();
+            }
+
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
     }
 }

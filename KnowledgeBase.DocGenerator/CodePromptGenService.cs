@@ -5,6 +5,9 @@ namespace KnowledgeBase.ReportGenerator
 {
     public interface ICodePromptGenService
     {
+        Task<string> FeatureModuleGenAsync(
+            string serviceName, string serviceDescription, string featureDescription, string moduleDescription);
+
         Task<string> MenuItemCodeGenAsync(Specification spec);
     }
 

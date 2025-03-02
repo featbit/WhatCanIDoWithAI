@@ -10,6 +10,7 @@ namespace KnowledgeBase.ReportGenerator
     {
         Task AddReportAsync(Specification spec);
         Task<Specification?> GetSpecificationByIdAsync(string id);
+        Task<Specification?> GetReportByIdAsync(string id);
     }
 
     public class ReportRepo(KnowledgeBaseDbContext dbContext) : IReportRepo
@@ -44,6 +45,14 @@ namespace KnowledgeBase.ReportGenerator
 
             Report? report = await dbContext.Reports.FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
             return report?.Specification;
+        }
+
+        public async Task<Report?> GetReportByIdAsync(string id)
+        {
+            dbContext.Reports.Where(p => p.Id == Guid.Parse(id)).Load();
+
+            Report? report = await dbContext.Reports.FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+            return report;
         }
     }
 }

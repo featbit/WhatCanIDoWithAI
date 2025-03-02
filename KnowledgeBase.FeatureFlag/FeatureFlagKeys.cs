@@ -8,5 +8,6 @@
         public static string GameRunner = "game-runner";
         public static string SpecGen = "spec-gen";
         public static string CodeMenuItemsGen = "code-menuitems-gen";
+        public static string CodeSingleModulesGen = "code-menuitems-gen";
     }
 }
