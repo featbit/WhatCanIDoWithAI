@@ -1,6 +1,6 @@
-﻿using KnowledgeBase.Models.Components.SpecGenerator;
-using KnowledgeBase.SpecGenerator;
-using KnowledgeBase.SpecGenerator.Models;
+﻿using KnowledgeBase.DataModels.ReportGenerator;
+using KnowledgeBase.ReportGenerator;
+using KnowledgeBase.ReportGenerator.Models;
 using MediatR;
 
 namespace KnowledgeBase.Server.ServiceHandlers
@@ -13,7 +13,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
 
     public class SpecificationGenHandler(
         ISpecificationGenService specGenService,
-        ISpecificationGenRepo specGenRepo) : IRequestHandler<SpecGenRequest, Specification>
+        IReportRepo reportRepo) : IRequestHandler<SpecGenRequest, Specification>
     {
         public async Task<Specification> Handle(SpecGenRequest request, CancellationToken cancellationToken)
         {
@@ -44,7 +44,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
                 spec.Features[i] = f;
             }
 
-            await specGenRepo.AddReportAsync(spec);
+            await reportRepo.AddReportAsync(spec);
 
             return spec;
         }

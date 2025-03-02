@@ -1,9 +1,9 @@
-﻿using KnowledgeBase.Models.Components.SpecGenerator;
+﻿using KnowledgeBase.DataModels.ReportGenerator;
 using KnowledgeBase.OpenAI;
-using KnowledgeBase.SpecGenerator.Models;
+using KnowledgeBase.ReportGenerator.Models;
 using System.Text.Json;
 
-namespace KnowledgeBase.SpecGenerator
+namespace KnowledgeBase.ReportGenerator
 {
     public interface ISpecificationGenService
     {

@@ -4,7 +4,7 @@ using KnowledgeBase.Models;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.Server.Components;
 using KnowledgeBase.Server.Services;
-using KnowledgeBase.SpecGenerator;
+using KnowledgeBase.ReportGenerator;
 using Microsoft.EntityFrameworkCore;
 
 // Set the OpenAI.Experimental.EnableOpenTelemetry context switch

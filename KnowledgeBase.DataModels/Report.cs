@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using KnowledgeBase.Models.Components.SpecGenerator;
+using KnowledgeBase.DataModels.ReportGenerator;
 
 namespace KnowledgeBase.Models
 {
@@ -14,7 +14,7 @@ namespace KnowledgeBase.Models
         public DateTime? CreatedAt { get; set; }
 
 
-        [Column("specification", TypeName = "jsonb")]
+        [Column("specification")]
         public Specification Specification { get; set; }
     }
 }
