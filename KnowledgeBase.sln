@@ -6,9 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Server", "Kno
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.Client", "KnowledgeBase.Client\KnowledgeBase.Client.csproj", "{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAPPForDebugAndTest", "ConsoleAPPForDebugAndTest\ConsoleAPPForDebugAndTest.csproj", "{348F8D95-4FEA-468E-82B6-732A9AC38C0D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.SpecGenerator", "KnowledgeBase.DocGenerator\KnowledgeBase.SpecGenerator.csproj", "{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.ReportGenerator", "KnowledgeBase.DocGenerator\KnowledgeBase.ReportGenerator.csproj", "{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.OpenAI", "KnowledgeBase.OpenAI\KnowledgeBase.OpenAI.csproj", "{551BA1DF-717B-4352-AA85-7B7AB0DBA223}"
 EndProject
@@ -21,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.ServiceDefaults", "KnowledgeBase.ServiceDefaults\KnowledgeBase.ServiceDefaults.csproj", "{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DataModels", "KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj", "{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.FeatureFlag", "KnowledgeBase.FeatureFlag\KnowledgeBase.FeatureFlag.csproj", "{06FAF74E-E9FF-4020-A86D-720F7F6555F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +36,6 @@ Global
 		{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{348F8D95-4FEA-468E-82B6-732A9AC38C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{348F8D95-4FEA-468E-82B6-732A9AC38C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{348F8D95-4FEA-468E-82B6-732A9AC38C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{348F8D95-4FEA-468E-82B6-732A9AC38C0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,17 +56,21 @@ Global
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{348F8D95-4FEA-468E-82B6-732A9AC38C0D} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{F2B5C33C-D56B-47CD-8384-DB35F9641DBF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{551BA1DF-717B-4352-AA85-7B7AB0DBA223} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7EC454F3-7400-4F06-B462-28378CA6294B} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{06FAF74E-E9FF-4020-A86D-720F7F6555F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E910DB-725C-4162-A509-6BE030E9B900}

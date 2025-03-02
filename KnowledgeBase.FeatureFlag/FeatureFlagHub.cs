@@ -1,8 +1,6 @@
-﻿using FeatBit.Sdk.Server;
-using Microsoft.AspNetCore.SignalR;
-using System.Net;
+﻿using Microsoft.AspNetCore.SignalR;
 
-namespace KnowledgeBase.Server.FeatureFlag
+namespace KnowledgeBase.FeatureFlag
 {
     public class FeatureFlagHub() : Hub
     {

@@ -1,18 +1,16 @@
-using KnowledgeBase.Server.Components;
-using FeatBit.Sdk.Server.DependencyInjection;
 using FeatBit.Sdk.Server;
+using KnowledgeBase.FeatureFlag;
 using KnowledgeBase.Models;
-using Microsoft.EntityFrameworkCore;
-using KnowledgeBase.Server.Services;
-using KnowledgeBase.Server.FeatureFlag;
 using KnowledgeBase.OpenAI;
+using KnowledgeBase.Server.Components;
+using KnowledgeBase.Server.Services;
 using KnowledgeBase.SpecGenerator;
+using Microsoft.EntityFrameworkCore;
 
 // Set the OpenAI.Experimental.EnableOpenTelemetry context switch
 AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
-
 // Set the OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY environment variable
-Environment.SetEnvironmentVariable("OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY", "true");
+//Environment.SetEnvironmentVariable("OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY", "true");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,18 +36,7 @@ builder.Services.AddTransient<IKeywordVectorSearchService, KeywordVectorSearchSe
 builder.AddServiceDefaults();
 builder.AddOpenAIServices();
 builder.AddSpecificationGenServices();
-
-// Add FeatBit .NET Server SDK
-builder.Services.AddFeatBit(options =>
-{
-    var featBitSection = builder.Configuration.GetSection("FeatBit");
-    options.EnvSecret = featBitSection["EnvSecret"];
-    options.StreamingUri = new Uri(featBitSection["StreamingUri"] ?? "");
-    options.EventUri = new Uri(featBitSection["EventUri"] ?? "");
-    options.StartWaitTime = TimeSpan.FromSeconds(3);
-});
-
-
+builder.AddFeatureFlagServices();
 
 var app = builder.Build();
 

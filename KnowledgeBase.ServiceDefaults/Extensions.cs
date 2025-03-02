@@ -62,6 +62,7 @@ public static class Extensions
                 tracing
                     .AddSource(builder.Environment.ApplicationName)
                     .AddSource("OpenAI.*")
+                    .AddSource("FeatBit.*")
                     //.AddAspNetCoreInstrumentation()
                     //.AddOtlpExporter()
                     //.AddGrpcClientInstrumentation()

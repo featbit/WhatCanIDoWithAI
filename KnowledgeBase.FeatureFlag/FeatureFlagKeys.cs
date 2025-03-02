@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.Server.FeatureFlag
+﻿namespace KnowledgeBase.FeatureFlag
 {
     public class FeatureFlagKeys
     {
@@ -6,5 +6,6 @@
         /// Game runner feature flag
         /// </summary>
         public static string GameRunner = "game-runner";
+        public static string SpecGen = "spec-gen";
     }
 }
