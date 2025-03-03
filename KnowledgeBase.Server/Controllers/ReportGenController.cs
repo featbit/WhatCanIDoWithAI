@@ -35,11 +35,11 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("code/module")]
+        [HttpPost("code/functionality")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> CodeSingleModuleGenAsync([FromBody] FeatureModuleGenRequest request)
+        public async Task<IActionResult> CodeFunctionalityGenAsync([FromBody] FunctionalityGenRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.CodeSingleModulesGen))
+            if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
             {
                 return NotFound();
             }
