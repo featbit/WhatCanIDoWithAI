@@ -10,7 +10,7 @@ namespace KnowledgeBase.ReportGenerator
     {
         Task AddReportAsync(Specification spec);
         Task<Specification?> GetSpecificationByIdAsync(string id);
-        Task<Specification?> GetReportByIdAsync(string id);
+        Task<Report?> GetReportByIdAsync(string id);
     }
 
     public class ReportRepo(KnowledgeBaseDbContext dbContext) : IReportRepo

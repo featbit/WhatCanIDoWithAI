@@ -4,8 +4,10 @@ namespace KnowledgeBase.ReportGenerator.Models
 {
     public class SaaSFeature
     {
-        [JsonPropertyName("feature")]
+        [JsonPropertyName("feature_description")]
         public string Feature { get; set; }
+        [JsonPropertyName("feature_name")]
+        public string FeatureName { get; set; }
         [JsonPropertyName("sub_features")]
         public List<string> SubFeatures { get; set; }
         [JsonPropertyName("menu_item")]

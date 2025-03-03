@@ -102,11 +102,37 @@ namespace KnowledgeBase.ReportGenerator
                         "service_description": "" // define what the SaaS "###{title}###" should looks like, in chinese
                         "saas_features": [
                             {
-                                "feature": "", // main feature of the SaaS "###{title}###"
-                                "sub_features": [] // list 1,2,or 3 sub features of the main feature, describing its functionalities with details as a specification
+                                "feature_description": "", // main feature of the SaaS "###{title}###", should describe details as a specification. at least more than 100 characters
+                                "feature_name": "", // name of the main feature
+                                "sub_features": [], // list 1,2,or 3 sub features (modules) of the main feature, describing its functionalities with details as a specification. at least more than 100 characters
                                 "menu_item": "" // menu item name for the main feature
                             }
                         ] // list 3-5 main features of the SaaS "###{title}###"
+                    }
+
+                    ## Output Example
+                    {
+                        "service_description": "An AIGC product where help people to generate content without a profession skill", 
+                        "saas_features": [
+                            {
+                                "feature_description": "prompt input module that user can input aigc command and manage them. here should describe more details about the feature.",
+                                "feature_name": "Prompt Input Management",
+                                "sub_features": [
+                                    "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
+                                    "user management module to manage user account and subscription. here should describe more details about the feature."
+                                ],
+                                "menu_item": "Prompt Input"
+                            },
+                            {
+                                "feature_description": "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
+                                "feature_name": "Result Management Panel",
+                                "sub_features": [
+                                    "prompt input module that user can input aigc command and manage them. here should describe more details about the feature.",
+                                    "user management module to manage user account and subscription. here should describe more details about the feature."
+                                ],
+                                "menu_item": "Result Panel"
+                            }
+                        ]
                     }
 
                     """;
@@ -134,17 +160,17 @@ namespace KnowledgeBase.ReportGenerator
 
                     {
                         "service_description": "", // define what the SaaS "###{title}###" should looks like, in chinese
-                        "saas_features": [] // list from 2 to 5 main features randomly of the SaaS "###{title}###"
+                        "saas_features": [] // list from 2 to 5 main features randomly of the SaaS "###{title}###". at least more than 100 characters
                     }
 
                     ## Output Example
 
                     {
-                        "service_description": "An AIGC product where help people to generate content without a profession skill",
+                        "service_description": "An AIGC product where help people to generate content without a profession skill", 
                         "saas_features": [
-                            "prompt input module that user can input aigc command and manage them",
-                            "result showing panel to display generated result such as image, video and article",
-                            ""user management module to manage user account and subscription"
+                            "prompt input module that user can input aigc command and manage them. here should describe more details about the feature.",
+                            "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
+                            ""user management module to manage user account and subscription. here should describe more details about the feature."
                         ]
                     }
                     """;

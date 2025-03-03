@@ -14,6 +14,7 @@ namespace KnowledgeBase.DataModels.ReportGenerator
     public class Feature
     {
         public string Description { get; set; }
+        public string Name { get; set; }
         
         //[NotMapped]
         public List<Module> Modules { get; set; }

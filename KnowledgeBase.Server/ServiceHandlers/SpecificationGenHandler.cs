@@ -29,6 +29,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
             spec.Features = cnt.SaasFeatures.Select(f => new Feature
             {
                 Description = f.Feature,
+                Name = f.FeatureName,
                 Modules = f.SubFeatures.Select(sf => new Module
                 {
                     ShortDescription = sf,
