@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.DataModels.ReportGenerator;
+﻿using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.Models;
 using KnowledgeBase.ReportGenerator;
 using MediatR;
@@ -18,7 +18,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
     {
         public async Task<string> Handle(FeatureModuleGenRequest request, CancellationToken cancellationToken)
         {
-            Specification report = await reportRepo.GetSpecificationByIdAsync(request.Id) ??
+            Specification report = await reportRepo.GetSpecificationByReportIdAsync(request.Id) ??
                  throw new Exception("Failed to get specification");
 
             return await codePromptGenService.FeatureModuleGenAsync(

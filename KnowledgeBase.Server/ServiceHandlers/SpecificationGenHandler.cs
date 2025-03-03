@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.DataModels.ReportGenerator;
+﻿using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.ReportGenerator;
 using KnowledgeBase.ReportGenerator.Models;
 using MediatR;
@@ -24,19 +24,25 @@ namespace KnowledgeBase.Server.ServiceHandlers
             Definition def = await specGenService.GenerateDefinitionAsync(request.Query) ??
                 throw new Exception("Failed to generate definition");
             spec.Definition = def.ServiceDescription;
-            Content cnt = await specGenService.GenerateContentAsync(spec.Title, def) ??
-                throw new Exception("Failed to generate content");
-            spec.Features = cnt.SaasFeatures.Select(f => new Feature
-            {
-                Description = f.Feature,
-                Name = f.FeatureName,
-                Modules = f.SubFeatures.Select(sf => new Module
-                {
-                    ShortDescription = sf,
-                    Id = Guid.NewGuid().ToString()
-                }).ToList(),
-                MenuItem = f.MenuItem,
-            }).ToList();
+
+            spec.Features = await specGenService.GenerateFeatureContentAsync(spec, def.SaasFeatures) ??
+                    throw new Exception("Failed to generate feature functionalities");
+
+            //Content cnt = await specGenService.GenerateContentAsync(spec.Title, def) ??
+            //    throw new Exception("Failed to generate content");
+
+            //spec.Features = cnt.SaasFeatures.Select(f => new Feature
+            //{
+            //    Description = f.Feature,
+            //    Name = f.FeatureName,
+            //    Modules = f.SubFeatures.Select(sf => new Module
+            //    {
+            //        ShortDescription = sf,
+            //        Id = Guid.NewGuid().ToString()
+            //    }).ToList(),
+            //    MenuItem = f.MenuItem,
+            //}).ToList();
+
             for (int i = 0; i < spec.Features.Count; i++)
             {
                 Feature f = spec.Features[i];

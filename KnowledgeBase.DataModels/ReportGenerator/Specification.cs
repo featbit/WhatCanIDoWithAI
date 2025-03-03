@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KnowledgeBase.DataModels.ReportGenerator
+namespace KnowledgeBase.Models.ReportGenerator
 {
     public class Specification
     {

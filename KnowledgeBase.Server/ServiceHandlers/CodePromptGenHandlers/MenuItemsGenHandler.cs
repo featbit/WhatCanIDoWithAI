@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.DataModels.ReportGenerator;
+﻿using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.ReportGenerator;
 using MediatR;
 
@@ -15,7 +15,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
     {
         public async Task<string> Handle(MenuItemsGenRequest request, CancellationToken cancellationToken)
         {
-           Specification spec = await reportRepo.GetSpecificationByIdAsync(request.ReportId) ??
+           Specification spec = await reportRepo.GetSpecificationByReportIdAsync(request.ReportId) ??
                 throw new Exception("Failed to get specification");
 
             return await codePromptGenService.MenuItemCodeGenAsync(spec);

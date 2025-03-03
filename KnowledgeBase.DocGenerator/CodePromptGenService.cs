@@ -1,4 +1,4 @@
-﻿using KnowledgeBase.DataModels.ReportGenerator;
+﻿using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.OpenAI;
 
 namespace KnowledgeBase.ReportGenerator

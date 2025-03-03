@@ -2,14 +2,14 @@
 using KnowledgeBase.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using KnowledgeBase.DataModels.ReportGenerator;
+using KnowledgeBase.Models.ReportGenerator;
 
 namespace KnowledgeBase.ReportGenerator
 {
     public interface IReportRepo
     {
         Task AddReportAsync(Specification spec);
-        Task<Specification?> GetSpecificationByIdAsync(string id);
+        Task<Specification?> GetSpecificationByReportIdAsync(string reportId);
         Task<Report?> GetReportByIdAsync(string id);
     }
 
@@ -39,9 +39,9 @@ namespace KnowledgeBase.ReportGenerator
             await connection.ExecuteAsync(sql, reportObj);
         }
 
-        public async Task<Specification?> GetSpecificationByIdAsync(string id)
+        public async Task<Specification?> GetSpecificationByReportIdAsync(string id)
         {
-            dbContext.Reports.Where(p => p.Id == Guid.Parse(id)).Load();
+            //dbContext.Reports.Where(p => p.Id == Guid.Parse(id)).Load();
 
             Report? report = await dbContext.Reports.FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
             return report?.Specification;

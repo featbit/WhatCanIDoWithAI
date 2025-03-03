@@ -1,0 +1,112 @@
+﻿@page "/report"
+@page "/report/{reportId}"
+@using KnowledgeBase.Client.Components
+@using KnowledgeBase.Models.ReportGenerator
+@inject ISpecificationGenService specGenService
+@inject NavigationManager Navigation
+
+<PageTitle>Report</PageTitle>
+
+<p>Report Id: @reportId</p>
+
+<h1>@specification.Title</h1>
+
+<strong>V1.0 版本</strong>
+<h2>说明书</h2>
+
+<br />
+<br />
+<h2>
+    一、背景概述
+</h2>
+<p>
+    |
+    |
+    |
+    |
+    |
+</p>
+
+<br />
+<br />
+<h2>
+    二、运行环境
+</h2>
+<p>
+    |
+    |
+    |
+    |
+    |
+</p>
+
+<br />
+<br />
+<h2>
+    三、系统主要功能及技术特点
+</h2>
+<p>
+    |
+    |
+    |
+    |
+    |
+</p>
+
+@if (specification == null)
+{
+    <p>Error...</p>
+}
+else
+{
+    @foreach (var feature in specification.Features)
+    {
+        <br />
+        <br />
+        <h2>
+            @feature.Name
+        </h2>
+        <p>
+            @feature.Description
+        </p>
+        @foreach (var module in feature.Modules)
+        {
+            <br />
+            <h3>
+                @module.Name
+            </h3>
+            <p>
+                @module.DetailDescription
+            </p>
+        }
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string? reportId { get; set; }
+    private Specification specification { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        reportId = reportId ?? query["reportId"];
+
+
+        specification = new Specification()
+        {
+            Features = new List<Feature>()
+        };
+        try
+        {
+            specification = await specGenService.GetSpecificationByReportIdAsync(reportId);
+        }
+        catch (Exception ex)
+        {
+            specification = new Specification();
+        }
+    }
+}
