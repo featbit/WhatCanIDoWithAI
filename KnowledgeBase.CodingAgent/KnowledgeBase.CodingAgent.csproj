@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
+  </ItemGroup>
+
 </Project>

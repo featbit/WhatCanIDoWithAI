@@ -8,7 +8,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
 {
     public class FunctionalityGenRequest : IRequest<string>
     {
-        public string Id { get; set; }
+        public string ReportId { get; set; }
         public string FeatureId { get; set; }
         public string ModuleId { get; set; }
     }
@@ -19,7 +19,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
     {
         public async Task<string> Handle(FunctionalityGenRequest request, CancellationToken cancellationToken)
         {
-            Specification spec = await reportRepo.GetSpecificationByReportIdAsync(request.Id) ??
+            Specification spec = await reportRepo.GetSpecificationByReportIdAsync(request.ReportId) ??
                  throw new Exception("Failed to get specification");
 
             return await codePromptGenService.FunctionalityGenAsync(

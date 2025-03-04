@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DataModels", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.FeatureFlag", "KnowledgeBase.FeatureFlag\KnowledgeBase.FeatureFlag.csproj", "{06FAF74E-E9FF-4020-A86D-720F7F6555F6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agent", "Agent", "{85D22485-3CDC-4BA3-85D9-73742FB00A61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.CodingAgent", "KnowledgeBase.CodingAgent\KnowledgeBase.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,10 @@ Global
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +79,7 @@ Global
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921} = {85D22485-3CDC-4BA3-85D9-73742FB00A61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E910DB-725C-4162-A509-6BE030E9B900}

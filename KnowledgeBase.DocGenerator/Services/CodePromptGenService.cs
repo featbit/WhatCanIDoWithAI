@@ -1,6 +1,7 @@
 ﻿using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.ReportGenerator.Models;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Functionality = KnowledgeBase.Models.ReportGenerator.Functionality;
 
@@ -17,6 +18,7 @@ namespace KnowledgeBase.ReportGenerator
     }
 
     public class CodePromptGenService(
+        ILogger<CodePromptGenService> logger,
         IOpenAiChatService openaiChatService,
         IAntropicChatService antropicChatService) : ICodePromptGenService
     {
@@ -103,6 +105,8 @@ namespace KnowledgeBase.ReportGenerator
                 .Replace("###{secondary_color}###", secondaryColor)
                 .Replace("###{font_family}###", fontFamily);
 
+            logger.LogDebug($"CodePromptGenService: {prompt}");
+
             string code = await antropicChatService.CompleteChatAsync(prompt);
             return code;
             //return JsonSerializer.Deserialize<Functionality>(codeJson);
@@ -114,6 +118,8 @@ namespace KnowledgeBase.ReportGenerator
                 ## Task
 
                 Modify the existing code, change the menu items with feature data. Each feature corresponds to a menu item.
+
+                Each menu item should has its id, label (in chinese) and icon (svg).
                     
                 Return a the new code as output.
 
@@ -121,13 +127,15 @@ namespace KnowledgeBase.ReportGenerator
 
                 ```js
                 window.menuItems = [
-                    { id: 'home', label: 'Dashboard', icon: 'cog' }
+                    { id: 'home', label: '控制面板', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>' }
                 ];
                 ```
 
                 ### feature data 
 
-                Here are name of features, each feature corresponds to a menu item:
+                Here are features information, includes: MenuItem (id), feature name, and feature description
+                
+                each feature corresponds to a menu item:
 
                 ###{feature_data}###
 
@@ -138,19 +146,27 @@ namespace KnowledgeBase.ReportGenerator
                 ## Output Example
 
                 window.menuItems = [
-                    { id: 'item-1', label: 'Item one', icon: 'cog' },
-                    { id: 'item-2', label: 'Item one', icon: 'cog' },
-                    { id: 'item-3', label: 'Item one', icon: 'cog' }
+                    { id: 'user-login', label: '登录页面', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>' },
+                    { id: 'users-management', label: '用户管理', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>' },
+                    { id: 'calendar-schedule', label: '预约管理', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>' }
                 ];
 
                 """;
 
-            List<string> menuItems = spec.Features.Select(f => "- " + f.MenuItem).ToList();
+                //List<string> menuItems = spec.Features.Select(f => "- " + f.MenuItem).ToList();
+                List<MenuItemFeature> menuItems = spec.Features.Select(f => new MenuItemFeature
+                { 
+                    MenuItem = f.MenuItem,
+                    Name = f.Name,
+                    Description = f.Description
+                }).ToList();
             string prompt = rawPrompt
-                .Replace("###{feature_data}###", string.Join("\n", menuItems));
+                .Replace("###{feature_data}###", 
+                        JsonSerializer.Serialize<List<MenuItemFeature>>(
+                            menuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) }));
 
-            return await openaiChatService.CompleteChatAsync(prompt);
-            //return await antropicChatService.CompleteChatAsync(prompt);
+            //return await openaiChatService.CompleteChatAsync(prompt);
+            return await antropicChatService.CompleteChatAsync(prompt);
         }
     }
 }

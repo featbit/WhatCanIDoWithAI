@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.FeatureFlag;
 using KnowledgeBase.Models.ReportGenerator;
+using KnowledgeBase.OpenAI;
 using KnowledgeBase.ReportGenerator;
 using KnowledgeBase.Server.ServiceHandlers;
 using MediatR;
@@ -13,7 +14,8 @@ namespace KnowledgeBase.Server.Controllers
     public class ReportGenController(
         IFeatureFlagService flagService, 
         IReportRepo reportRepo,
-        ISender mediator) : ControllerBase
+        ISender mediator,
+        IAntropicChatService antropicChatService) : ControllerBase
     {
         [HttpPost("specification")]
         [RequestTimeout(600)]
@@ -42,7 +44,7 @@ namespace KnowledgeBase.Server.Controllers
         }
 
         [HttpPost("code/functionality")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> CodeFunctionalityGenAsync([FromBody] FunctionalityGenRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
@@ -81,6 +83,18 @@ namespace KnowledgeBase.Server.Controllers
                 };
             }).ToList<object>();
             return JsonSerializer.Serialize(metadata);
+        }
+
+        [HttpGet("db/specification/{reportId}")]
+        public async Task<Specification> GetSpecificationByReportIdAsync(string reportId)
+        {
+            return await reportRepo.GetSpecificationByReportIdAsync(reportId);
+        }
+
+        [HttpGet("antropictest")]
+        public async Task<string> AntropicTest()
+        {
+            return await antropicChatService.CompleteChatAsync("hello");
         }
     }
 }

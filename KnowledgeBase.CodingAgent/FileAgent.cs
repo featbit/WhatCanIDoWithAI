@@ -8,6 +8,12 @@ namespace KnowledgeBase.CodingAgent
 {
     public class FileAgent
     {
+        public static void AppendFileContent(string filePath, string newText)
+        {
+            System.IO.File.Create(filePath).Dispose();
+            System.IO.File.AppendAllText(filePath, newText);
+        }
+
         public static void RewriteFileContent(string filePath, string newText)
         {
             System.IO.File.WriteAllText(filePath, newText);

@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
 // Set the OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY environment variable
 //Environment.SetEnvironmentVariable("OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY", "true");
+//Environment.SetEnvironmentVariable("OTEL_LOG_LEVEL", "debug");
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,8 @@ builder.AddServiceDefaults();
 builder.AddOpenAIServices();
 builder.AddSpecificationGenServices();
 builder.AddFeatureFlagServices();
+
+
 
 var app = builder.Build();
 

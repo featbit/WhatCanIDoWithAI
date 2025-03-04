@@ -23,7 +23,7 @@ namespace KnowledgeBase.OpenAI
             OpenAIClientOptions options = new()
             {
                 Endpoint = new Uri(endpointUrl),
-                NetworkTimeout = TimeSpan.FromSeconds(60)
+                NetworkTimeout = TimeSpan.FromSeconds(600)
             };
             _chatClient = new(model: "claude-3-7-sonnet-20250219", credential, options);
         }
