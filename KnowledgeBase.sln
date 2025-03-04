@@ -22,10 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DataModels", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.FeatureFlag", "KnowledgeBase.FeatureFlag\KnowledgeBase.FeatureFlag.csproj", "{06FAF74E-E9FF-4020-A86D-720F7F6555F6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{01BF6E14-4600-43A8-99C0-F7919E7900FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.CodingAgent", "KnowledgeBase.CodingAgent\KnowledgeBase.CodingAgent.csproj", "{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,10 +60,6 @@ Global
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,7 +71,6 @@ Global
 		{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8} = {E2CFD8A6-EACA-4863-B205-F6494583FB7B}
 		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{06FAF74E-E9FF-4020-A86D-720F7F6555F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{E66F5C1F-B9E6-44D2-9614-F1E0E25ABB7A} = {01BF6E14-4600-43A8-99C0-F7919E7900FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E910DB-725C-4162-A509-6BE030E9B900}

@@ -6,7 +6,7 @@ using KnowledgeBase.ReportGenerator.Models;
 
 namespace KnowledgeBase.Server.ServiceHandlers
 {
-    public class FunctionalityGenRequest : IRequest<Functionality>
+    public class FunctionalityGenRequest : IRequest<string>
     {
         public string Id { get; set; }
         public string FeatureId { get; set; }
@@ -15,18 +15,15 @@ namespace KnowledgeBase.Server.ServiceHandlers
 
     public class FunctionalityGenHandler(
         ICodePromptGenService codePromptGenService,
-        IReportRepo reportRepo) : IRequestHandler<FunctionalityGenRequest, Functionality>
+        IReportRepo reportRepo) : IRequestHandler<FunctionalityGenRequest, string>
     {
-        public async Task<Functionality> Handle(FunctionalityGenRequest request, CancellationToken cancellationToken)
+        public async Task<string> Handle(FunctionalityGenRequest request, CancellationToken cancellationToken)
         {
-            Specification report = await reportRepo.GetSpecificationByReportIdAsync(request.Id) ??
+            Specification spec = await reportRepo.GetSpecificationByReportIdAsync(request.Id) ??
                  throw new Exception("Failed to get specification");
 
             return await codePromptGenService.FunctionalityGenAsync(
-                    report.Title,
-                    report.Definition,
-                    report.Features[0].Description,
-                    report.Features[0].Modules[0].DetailDescription);
+                spec, request.FeatureId, request.ModuleId);
         }
     }
 }

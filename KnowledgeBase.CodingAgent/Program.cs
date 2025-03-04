@@ -1,6 +1,9 @@
 ﻿
 using KnowledgeBase.CodingAgent;
+using System.Text.Json;
 using System.Threading.Tasks;
+
+const string reportId = "7a11797a-4f40-4fb5-bd43-f31a7e957df4"; 
 
 string codingRootPath = @"C:/Code/aicoding/softwarepatent";
 string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
@@ -8,41 +11,46 @@ string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
 FileAgent.RewriteFileContent(menuItemsFilePath,
     """
     window.menuItems = [
-        { id: 'path-planning', label: '路径规划', icon: 'cog' },
-        { id: 'data-monitoring', label: '数据监测', icon: 'cog' },
-        { id: 'treatment-progress', label: '治疗进度', icon: 'cog' },
-        { id: 'data-analysis', label: '数据分析', icon: 'cog' }
+        { id: 'intelligent-path-planning', label: 'Intelligent Path Planning', icon: 'cog' },
+        { id: 'data-analysis-report', label: 'Data Analysis Report', icon: 'cog' },
+        { id: 'user-management', label: 'User Management', icon: 'cog' },
+        { id: 'treatment-monitoring', label: 'Treatment Monitoring', icon: 'cog' }
     ];
     """);
 
 
-List<FileObject> featureFilePaths = new List<FileObject>()
-{
-    new FileObject
-    {
-        Id = "path-planning",
-        FeatureName = "路径规划",
-        FunctionName = "renderPathPlanningPage"
-    },
-    new FileObject
-    {
-        Id = "data-monitoring",
-        FeatureName = "数据监测",
-        FunctionName = "renderDataMonitoringPage"
-    },
-    new FileObject
-    {
-        Id = "treatment-progress",
-        FeatureName = "治疗进度",
-        FunctionName = "renderTreatmentProgressPage"
-    },
-    new FileObject
-    {
-        Id = "data-analysis",
-        FeatureName = "数据分析",
-        FunctionName = "renderDataAnalysisPage"
-    },
-};
+string filePathString = await ApiCaller.GetMenuItemsMetadataAsync(reportId);
+
+List<FileObject> featureFilePaths = JsonSerializer.Deserialize<List<FileObject>>(filePathString);
+    
+    
+//    new List<FileObject>()
+//{
+//    new FileObject
+//    {
+//        Id = "path-planning",
+//        FeatureName = "路径规划",
+//        FunctionName = "renderPathPlanningPage"
+//    },
+//    new FileObject
+//    {
+//        Id = "data-monitoring",
+//        FeatureName = "数据监测",
+//        FunctionName = "renderDataMonitoringPage"
+//    },
+//    new FileObject
+//    {
+//        Id = "treatment-progress",
+//        FeatureName = "治疗进度",
+//        FunctionName = "renderTreatmentProgressPage"
+//    },
+//    new FileObject
+//    {
+//        Id = "data-analysis",
+//        FeatureName = "数据分析",
+//        FunctionName = "renderDataAnalysisPage"
+//    },
+//};
 
 var subPageInitTasks = featureFilePaths.Select(async f =>
 {

@@ -5,33 +5,33 @@ using System.ClientModel;
 
 namespace KnowledgeBase.OpenAI
 {
-    public interface IOpenAiChatService
+    public interface IAntropicChatService
     {
         Task<string> CompleteChatAsync(string message, bool enforceJson = false);
     }
 
-    public class OpenAiChatService : IOpenAiChatService
+    public class AntropicChatService : IAntropicChatService
     {
         private readonly ChatClient _chatClient;
 
-        public OpenAiChatService(IConfiguration configuration)
+        public AntropicChatService(IConfiguration configuration)
         {
             ApiKeyCredential credential = new ApiKeyCredential(
-                configuration["OpenAI:ApiKey"] ?? throw new Exception("OpenAI API key is missing"));
-            string endpointUrl = configuration["OpenAI:EndpointUrl"] ??
-                throw new Exception("OpenAI endpoint URL is missing");
+                configuration["Antropic:ApiKey"] ?? throw new Exception("Antropic API key is missing"));
+            string endpointUrl = configuration["Antropic:EndpointUrl"] ??
+                throw new Exception("Antropic endpoint URL is missing");
             OpenAIClientOptions options = new()
             {
                 Endpoint = new Uri(endpointUrl),
                 NetworkTimeout = TimeSpan.FromSeconds(60)
             };
-            _chatClient = new(model: "o3-mini", credential, options);
+            _chatClient = new(model: "claude-3-7-sonnet-20250219", credential, options);
         }
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false)
         {
             ChatCompletion completion = await _chatClient.CompleteChatAsync([
-                new SystemChatMessage(message)
+                new UserChatMessage(message)
             ]);
 
             string response = completion.Content[0].Text;

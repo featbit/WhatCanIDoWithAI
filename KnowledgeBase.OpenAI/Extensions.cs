@@ -8,6 +8,7 @@ namespace KnowledgeBase.OpenAI
         public static TBuilder AddOpenAIServices<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
         {
             builder.Services.AddTransient<IOpenAiChatService, OpenAiChatService>();
+            builder.Services.AddScoped<IAntropicChatService, AntropicChatService>();
             return builder;
         }
     }

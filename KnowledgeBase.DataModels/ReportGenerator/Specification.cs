@@ -13,16 +13,17 @@ namespace KnowledgeBase.Models.ReportGenerator
 
     public class Feature
     {
+        public string FeatureId { get; set; }
         public string Description { get; set; }
         public string Name { get; set; }
         
         //[NotMapped]
-        public List<Module> Modules { get; set; }
+        public List<Functionality> Modules { get; set; }
         
         public string MenuItem { get; set; }
     }
 
-    public class Module
+    public class Functionality
     {
         public string ShortDescription { get; set; }
         public string DetailDescription { get; set; }

@@ -10,10 +10,9 @@ namespace KnowledgeBase.ReportGenerator
     {
         Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features);
         Task<Specification> GetSpecificationByReportIdAsync(string id);
-        Task<Feature?> GenerateSubFeatureDetailAsync(
+        Task<Feature?> GenerateFunctionalityDetailAsync(
             string softwareTitle, string serviceDescription, Feature feature);
         Task<Definition?> GenerateDefinitionAsync(string title);
-        Task<Content?> GenerateContentAsync(string title, Definition definition);
     }
 
     public class SpecificationGenService(
@@ -26,13 +25,13 @@ namespace KnowledgeBase.ReportGenerator
                 throw new Exception("Specification not found");
         }
 
-        public async Task<Feature> GenerateSubFeatureDetailAsync(
+        public async Task<Feature> GenerateFunctionalityDetailAsync(
             string softwareTitle, string serviceDescription, Feature feature)
         {
             string rawPrompt = """
                     ## Task
 
-                    I am writing a specification for software "###{title}###". I need you to write the detailed specification of a specific module of a feature in the software. 
+                    I am writing a specification for software "###{title}###". I need you to write the detailed specification of a specific Functionality of a feature in the software. 
                     
                     ## Information
 
@@ -42,7 +41,7 @@ namespace KnowledgeBase.ReportGenerator
                     ### Feature description
                     ###{feature_desc}###
                     
-                    ### Module short description
+                    ### Functionality short description
                     ###{module_desc}###
 
                     ## Output Format
@@ -51,13 +50,13 @@ namespace KnowledgeBase.ReportGenerator
 
                     {
                         "module_detail_description": "", // detailed description of the module, in chinese
-                        "module_name": "" // name of the module with less than 100 characters, in chinese
+                        "module_name": "" // name of the module with less than 100 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
                     }
 
                     """;
 
             // Create tasks for each subfeature
-            var tasks = feature.Modules.Select(async module =>
+            var tasks = feature.Modules.Select(async functionality =>
             {
                 string moduleId = Guid.NewGuid().ToString();
 
@@ -65,97 +64,33 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{title}###", softwareTitle)
                     .Replace("###{service_desc}###", serviceDescription)
                     .Replace("###{feature_desc}###", feature.Description)
-                    .Replace("###{module_desc}###", module.ShortDescription);
+                    .Replace("###{module_desc}###", functionality.ShortDescription);
 
-                string result = await openaiChatService.CompleteChatAsync(prompt, "spec-gen-module", true);
+                string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 ModuleDetail detail = JsonSerializer.Deserialize<ModuleDetail>(result);
-                return new Module
+                return new KnowledgeBase.Models.ReportGenerator.Functionality
                 {
                     DetailDescription = detail.DetailDescription,
                     Id = moduleId,
                     Name = detail.Name,
-                    ShortDescription = module.ShortDescription
+                    ShortDescription = functionality.ShortDescription
                 };
             });
 
-            feature.Modules = (await Task.WhenAll(tasks)).ToList();
+            var functionalities = (await Task.WhenAll(tasks)).ToList();
+
+            List<KnowledgeBase.Models.ReportGenerator.Functionality> distinctedFunctionalities = new();
+            for (int i = 0; i < functionalities.Count; i++)
+            {
+                if (distinctedFunctionalities.All(f => f.Name != functionalities[i].Name))
+                    distinctedFunctionalities.Add(functionalities[i]);
+            }
+
+            feature.Modules = distinctedFunctionalities;
 
             return feature;
         }
 
-        public async Task<Content?> GenerateContentAsync(string title, Definition definition)
-        {
-            string rawPrompt = """
-                    ## Task
-
-                    I am writing a specification for software "###{title}###", please help me to generate the following data:
-
-                    1. main features of the software. maximum 4 main features.
-                    2. sub features in each main feature. maximum 3 sub features for each main feature.
-                    3. the menu item name for each main feature.
-
-                    ## Information
-
-                    ###{service_description}###
-
-                    It has mainly ###{featurenumber}### features:
-
-                    """ +
-                    string.Join("\n", definition.SaasFeatures.Select(feature => $"- {feature}"))
-                    + """
-
-                    ## Output Format
-                
-                    Return the result in json format without any other characters:
-
-                    {
-                        "service_description": "" // define what the SaaS "###{title}###" should looks like, in chinese
-                        "saas_features": [
-                            {
-                                "feature_description": "", // main feature of the SaaS "###{title}###", should describe details as a specification. at least more than 100 characters
-                                "feature_name": "", // name of the main feature
-                                "sub_features": [], // list 1,2,or 3 sub features (modules) of the main feature, describing its functionalities with details as a specification. at least more than 100 characters
-                                "menu_item": "" // menu item name for the main feature
-                            }
-                        ] // list 3-5 main features of the SaaS "###{title}###"
-                    }
-
-                    ## Output Example
-                    {
-                        "service_description": "An AIGC product where help people to generate content without a profession skill", 
-                        "saas_features": [
-                            {
-                                "feature_description": "prompt input module that user can input aigc command and manage them. here should describe more details about the feature.",
-                                "feature_name": "Prompt Input Management",
-                                "sub_features": [
-                                    "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
-                                    "user management module to manage user account and subscription. here should describe more details about the feature."
-                                ],
-                                "menu_item": "Prompt Input"
-                            },
-                            {
-                                "feature_description": "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
-                                "feature_name": "Result Management Panel",
-                                "sub_features": [
-                                    "prompt input module that user can input aigc command and manage them. here should describe more details about the feature.",
-                                    "user management module to manage user account and subscription. here should describe more details about the feature."
-                                ],
-                                "menu_item": "Result Panel"
-                            }
-                        ]
-                    }
-
-                    """;
-
-            string prompt = rawPrompt
-                .Replace("###{title}###", title)
-                .Replace("###{service_description}###", definition.ServiceDescription)
-                .Replace("###{featurenumber}###", definition.SaasFeatures.Count.ToString());
-
-            string result = await openaiChatService.CompleteChatAsync(prompt, "spec-gen-content", true);
-
-            return JsonSerializer.Deserialize<Content>(result);
-        }
 
         public async Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features)
         {
@@ -186,8 +121,9 @@ namespace KnowledgeBase.ReportGenerator
                     - Name of feature
                     - Detailed description of the feature.
                     - Functionality or modules of the feature.
-                    - Menu item name for the feature.
+                    - Menu item code for the feature.
 
+                    Note: Feature Functionalities should differ from each other.
 
                     ## Output format
 
@@ -197,7 +133,7 @@ namespace KnowledgeBase.ReportGenerator
                         "feature_description": "", // detailed description of the feature, in chinese
                         "feature_name": "", // name of the feature with less than 100 characters, in chinese
                         "feature_functionalities": [], // list 1,2,or 3 functionalities of the feature, describing functionalities with details. at least more than 100 characters
-                        "menu_item": "" // menu item name for the feature
+                        "menu_item": "" // menu item code for the feature, in english, format:  xxx or xxx-xxx in lower case
                     }
 
                     ## Output Example
@@ -209,7 +145,7 @@ namespace KnowledgeBase.ReportGenerator
                             "result showing panel to display generated result such as image, video and article. here should describe more details about the feature.",
                             "user management module to manage user account and subscription. here should describe more details about the feature."
                         ],
-                        "menu_item": "Prompt Input" 
+                        "menu_item": "prompt-input" 
                     }
 
                     """;
@@ -224,8 +160,9 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{featurenumber}###", features.Count.ToString())
                     .Replace("###{feature_description}###", f);
 
-                string result = await openaiChatService.CompleteChatAsync(prompt, "spec-gen-module", true);
+                string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 var detail = JsonSerializer.Deserialize<FeatureFunctionalities>(result);
+               
                 return detail;
             });
 
@@ -233,13 +170,14 @@ namespace KnowledgeBase.ReportGenerator
 
             return ffs.Select(ff => new Feature
             {
+                FeatureId = Guid.NewGuid().ToString(),
                 Description = ff.FeatureDescription,
                 Name = ff.FeatureName,
                 MenuItem = ff.MenuItem,
-                Modules = ff.Functionalities.Select(f => new Module
+                Modules = ff.Functionalities.Select(f => new KnowledgeBase.Models.ReportGenerator.Functionality
                 {
                     ShortDescription = f,
-                    Id = Guid.NewGuid().ToString()
+                    Id = Guid.NewGuid().ToString(),
                 }).ToList()
             }).ToList();
         }
@@ -272,7 +210,7 @@ namespace KnowledgeBase.ReportGenerator
                     }
                     """;
             string prompt = rawPrompt.Replace("###{title}###", title);
-            string result = await openaiChatService.CompleteChatAsync(prompt, "spec-gen-definition", true);
+            string result = await openaiChatService.CompleteChatAsync(prompt, true);
 
             return JsonSerializer.Deserialize<Definition>(result);
         }

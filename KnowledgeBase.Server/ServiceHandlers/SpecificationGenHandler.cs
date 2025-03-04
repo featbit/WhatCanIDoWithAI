@@ -46,7 +46,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
             for (int i = 0; i < spec.Features.Count; i++)
             {
                 Feature f = spec.Features[i];
-                f = await specGenService.GenerateSubFeatureDetailAsync(spec.Title, spec.Definition, f) ??
+                f = await specGenService.GenerateFunctionalityDetailAsync(spec.Title, spec.Definition, f) ??
                     throw new Exception("Failed to generate subfeature detail");
                 spec.Features[i] = f;
             }
