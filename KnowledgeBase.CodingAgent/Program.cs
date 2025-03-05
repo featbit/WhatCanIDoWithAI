@@ -9,14 +9,14 @@ string codingRootPath = @"C:/Code/aicoding/softwarepatent";
 
 Specification spec = await ApiCaller.GetSpecificationAsync(reportId);
 
-//string menuItemsCode = await ApiCaller.GenerateMenuItemsCodeAsync(reportId);
-//string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
-//FileAgent.RewriteFileContent(menuItemsFilePath, menuItemsCode);
+string menuItemsCode = await ApiCaller.GenerateMenuItemsCodeAsync(reportId);
+string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
+FileAgent.RewriteFileContent(menuItemsFilePath, menuItemsCode);
 
-//await CreateSubpageFilesAndInitCodeAsync(codingRootPath, spec);
+await CreateSubpageFilesAndInitCodeAsync(codingRootPath, spec);
 
 
-for(int i = 0; i < spec.Features.Count; i++)
+for (int i = 0; i < spec.Features.Count; i++)
 {
     if (spec.Features[i].MenuItem == "data-analysis-report")
         continue;

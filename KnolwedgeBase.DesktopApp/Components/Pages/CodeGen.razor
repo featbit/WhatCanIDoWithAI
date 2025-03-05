@@ -1,0 +1,42 @@
+﻿@page "/codegen"
+
+<div>
+    <GridRow>
+        <Tabs DefaultActiveKey="0" TabPosition="TabPosition.Left" Style="height: 220px;">
+            <TabPane Key="0" >
+                <TabTemplate>
+                    <span><Icon Type="@IconType.Outline.Android" />Tab 1</span>
+                </TabTemplate>
+                <ChildContent>Tab 1</ChildContent>
+            </TabPane>
+        </Tabs>
+    </GridRow>
+    <GridRow>
+        <Button Type="ButtonType.Primary"
+        OnClick="@GetSpecification">Get Specification Json</Button>
+    </GridRow>
+    <GridRow>
+        @getSpec
+    </GridRow>
+</div>
+
+
+
+@code {
+
+    string tabPosition { get; set; }
+    string getSpec { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate a loading indicator
+        //await Task.Delay(500);
+    }
+
+    public void GetSpecification()
+    {
+        getSpec = "abc";
+
+        FileAgent.CreateAndInitFile(@"C:\Users\hu-be\Downloads\testas\test.txt", "");
+    }
+}
