@@ -64,4 +64,12 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\Components\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
+    </ItemGroup>
+
 </Project>

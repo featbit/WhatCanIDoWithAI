@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DataModels", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.CodingAgent", "KnowledgeBase.CodingAgent\KnowledgeBase.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnolwedgeBase.DesktopApp", "KnolwedgeBase.DesktopApp\KnolwedgeBase.DesktopApp.csproj", "{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,13 +22,13 @@ Global
 		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{5D0D1902-DDEA-5C79-C9F5-C24CF9962921} = {85D22485-3CDC-4BA3-85D9-73742FB00A61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63E910DB-725C-4162-A509-6BE030E9B900}
