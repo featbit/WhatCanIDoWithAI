@@ -1,0 +1,77 @@
+﻿<GridRow>
+    <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle">
+        <GridRow>
+            <h1>Menu Items</h1>
+        </GridRow>
+        <GridRow>
+            <Button Type="ButtonType.Primary"
+            OnClick="@GenerateMenuItemsCodeAsync">
+                Generate Menu Items Code
+            </Button>
+        </GridRow>
+        @if(isLoading == true)
+        {
+            <GridRow>
+                <Spin>
+                </Spin>
+            </GridRow>
+        }
+        else
+        {
+            <GridRow Gutter="4">
+                <TextArea AutoSize Width="100%" Rows="10"
+                Value="@menuItemsCode"/>
+                <Button Type="ButtonType.Primary"
+                OnClick="@GenerateMenuItemsCodeAsync">
+                    Write Code to File
+                </Button>
+            </GridRow>
+        }
+    </Flex>
+</GridRow>
+
+@code {
+    [Parameter]
+    public string ReportId { get; set; }
+    [Parameter]
+    public string CodingRootPath { get; set; }
+    [Parameter]
+    public KnowledgeBase.Models.ReportGenerator.Specification Spec { get; set; }
+
+    private bool isLoading { get; set; }
+    private string menuItemsCode { get; set; }
+
+    protected override void OnInitialized()
+    {
+        isLoading = false;
+    }
+
+    protected override void OnParametersSet()
+    {
+
+    }
+
+    private async Task GenerateMenuItemsCodeAsync()
+    {
+        try
+        {
+            isLoading = true;
+            menuItemsCode = await ApiCaller.GenerateMenuItemsCodeAsync(ReportId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void WriteCodeToFile()
+    {
+        string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
+        FileAgent.RewriteFileContent(menuItemsFilePath, menuItemsCode);
+    }
+
+}

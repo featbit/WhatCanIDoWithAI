@@ -65,10 +65,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\Components\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
     </ItemGroup>
 
