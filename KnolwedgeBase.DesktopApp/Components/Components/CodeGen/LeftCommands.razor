@@ -1,0 +1,67 @@
+﻿@inject CodeGenStateContainer codeGenStateContainer
+
+
+<Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="padding-bottom:10px;">
+    <AntDesign.Button OnClick="@SwitchToSpec"
+    Type="@(codeGenStateContainer.ActiveComponent == 0? ButtonType.Primary : ButtonType.Default)">
+        1. Specification</AntDesign.Button>
+    <AntDesign.Button OnClick="@SwitchToMenuItems"
+    Type="@(codeGenStateContainer.ActiveComponent == 1? ButtonType.Primary : ButtonType.Default)">
+        2. MenuItems</AntDesign.Button>
+
+    @{
+        for (int i = 0; i < codeGenStateContainer.Specification.Features.Count; i++)
+        {
+            var feature = codeGenStateContainer.Specification.Features[i];
+            for (int j = 0; j < feature.Modules.Count; j++)
+            {
+                int positionI = i, positionJ = j;
+                int functionalityCount = feature.Modules.Count;
+                string functionalityName = feature.Modules[j].Name;
+                string featureId = feature.FeatureId;
+                string functionalityId = feature.Modules[j].Id;
+                <AntDesign.Button 
+                    Style="height:53px;"
+                    OnClick="@(()=>SwitchToFunctionality(
+                                    positionI, positionJ, functionalityCount, 
+                                    featureId, functionalityId))"
+                                  Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+2)?
+                                    ButtonType.Primary : ButtonType.Default)">
+                    @positionI-@positionJ - @feature.Name <br/>
+                    @functionalityName
+                </AntDesign.Button>
+            }
+        }
+    }
+</Flex>
+
+@code {
+
+    private bool isLoading { get; set; }
+    private string errorMessage { get; set; }
+
+    protected override void OnInitialized()
+    {
+        codeGenStateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        codeGenStateContainer.OnChange -= StateHasChanged;
+    }
+
+    public void SwitchToSpec()
+    {
+        codeGenStateContainer.ActiveComponent = 0;
+    }
+
+    public void SwitchToMenuItems()
+    {
+        codeGenStateContainer.ActiveComponent = 1;
+    }
+
+    public void SwitchToFunctionality(int i, int j, int funcCount, string featureId, string functionalityId)
+    {
+        codeGenStateContainer.ActiveComponent = 2 + i * funcCount + j;
+    }
+}

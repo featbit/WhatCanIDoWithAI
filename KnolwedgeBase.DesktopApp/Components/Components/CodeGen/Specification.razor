@@ -1,8 +1,14 @@
-﻿<GridRow>
-    <Flex Direction="FlexDirection.Vertical">
-        <p>Report Id: @ReportId</p>
+﻿@inject CodeGenStateContainer codeGenStateContainer
 
-        <h1>@Spec.Title</h1>
+<GridRow>
+    <Flex Direction="FlexDirection.Vertical">
+        <p>Report Id: @codeGenStateContainer.ReportId</p>
+
+        <Button Type="ButtonType.Primary">
+            Regenerate Specification
+        </Button>
+
+        <h1>@codeGenStateContainer.Specification.Title</h1>
 
         <strong>V1.0 版本</strong>
         <h2>说明书</h2>
@@ -28,13 +34,13 @@
         <p>
         </p>
 
-        @if (Spec == null)
+        @if (codeGenStateContainer.Specification == null)
         {
             <p>Error...</p>
         }
         else
         {
-            @foreach (var feature in Spec.Features)
+            @foreach (var feature in codeGenStateContainer.Specification.Features)
             {
                 <br />
                 <br />
@@ -68,13 +74,15 @@
 </GridRow>
 
 @code {
-    [Parameter]
-    public string ReportId { get; set; }
-    [Parameter]
-    public KnowledgeBase.Models.ReportGenerator.Specification Spec { get; set; }
 
     protected override void OnInitialized()
     {
+        codeGenStateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
 }

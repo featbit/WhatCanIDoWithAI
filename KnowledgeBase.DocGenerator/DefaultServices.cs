@@ -9,6 +9,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             builder.Services.AddScoped<ISpecificationGenService, SpecificationGenService>();
             builder.Services.AddScoped<IReportRepo, ReportRepo>();
+            builder.Services.AddScoped<IReportCodeRepo, ReportCodeRepo>();
 
             builder.Services.AddScoped<ICodePromptGenService, CodePromptGenService>();
 

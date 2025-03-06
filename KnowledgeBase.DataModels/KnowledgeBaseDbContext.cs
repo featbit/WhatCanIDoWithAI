@@ -1,3 +1,4 @@
+using KnowledgeBase.Models.ReportGenerator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -20,6 +21,7 @@ namespace KnowledgeBase.Models
         public DbSet<QuestionVector> QuestionVectors { get; set; }
         public DbSet<KeywordVector> KeywordVectors { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportCode> ReportCodes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -51,6 +53,20 @@ namespace KnowledgeBase.Models
                     });
                 });
             modelBuilder.Entity<Report>().ToTable("reports");
+
+            modelBuilder.Entity<ReportCode>()
+                .OwnsOne(r => r.Code, builder =>
+                {
+                    builder.ToJson("code");
+                    builder.OwnsMany(s => s.CodeFeatures, featureBuilder =>
+                    {
+                        featureBuilder.OwnsMany(f => f.CodeFunctionalities, moduleBuilder =>
+                        {
+                            moduleBuilder.ToJson();
+                        });
+                    });
+                });
+            modelBuilder.Entity<ReportCode>().ToTable("report_codes");
         }
     }
 }

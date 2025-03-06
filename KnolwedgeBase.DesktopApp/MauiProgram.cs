@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using KnolwedgeBase.DesktopApp.StateContainers;
+using Microsoft.Extensions.Logging;
 
 namespace KnolwedgeBase.DesktopApp;
 
@@ -15,7 +16,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddMauiBlazorWebView();
-
+        builder.Services.AddSingleton<CodeGenStateContainer>();
         builder.Services.AddAntDesign();
 
 #if DEBUG

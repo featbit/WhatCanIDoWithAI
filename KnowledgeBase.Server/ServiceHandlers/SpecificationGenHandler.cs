@@ -28,21 +28,6 @@ namespace KnowledgeBase.Server.ServiceHandlers
             spec.Features = await specGenService.GenerateFeatureContentAsync(spec, def.SaasFeatures) ??
                     throw new Exception("Failed to generate feature functionalities");
 
-            //Content cnt = await specGenService.GenerateContentAsync(spec.Title, def) ??
-            //    throw new Exception("Failed to generate content");
-
-            //spec.Features = cnt.SaasFeatures.Select(f => new Feature
-            //{
-            //    Description = f.Feature,
-            //    Name = f.FeatureName,
-            //    Modules = f.SubFeatures.Select(sf => new Module
-            //    {
-            //        ShortDescription = sf,
-            //        Id = Guid.NewGuid().ToString()
-            //    }).ToList(),
-            //    MenuItem = f.MenuItem,
-            //}).ToList();
-
             for (int i = 0; i < spec.Features.Count; i++)
             {
                 Feature f = spec.Features[i];

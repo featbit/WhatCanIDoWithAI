@@ -1,4 +1,5 @@
 ﻿@page "/codegen"
+@inject CodeGenStateContainer codeGenStateContainer
 
 <GridRow Style="height:100vh;
                 position:fixed;
@@ -12,7 +13,7 @@
             <div>Report Id</div>
             <AntDesign.Input Placeholder="Basic usage"
             Width="300px"
-            @bind-Value="@reportId">
+            @bind-Value="@codeGenStateContainer.ReportId">
             </AntDesign.Input>
             <Button Type="ButtonType.Primary"
             OnClick="@GetSpecification">
@@ -24,34 +25,26 @@
             <div>Repo Path</div>
             <AntDesign.Input Placeholder="Root Path"
             Width="300px"
-            @bind-Value="@codingRootPath">
+            @bind-Value="@codeGenStateContainer.CodeRootPath">
             </AntDesign.Input>
         </Flex>
     </GridRow>
     <GridRow Style="width:100%;height:calc(100vh-120px); position:fixed;top:120px;padding-right:20px;"
     Gutter="8">
-        <GridCol Span="6">
-            <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle">
-                <AntDesign.Button OnClick="@SwitchToSpec">1. Specification</AntDesign.Button>
-                <AntDesign.Button OnClick="@SwitchToMenuItems">2. MenuItems</AntDesign.Button>
-
-            </Flex>
+        <GridCol Span="6"
+            Style="height:80vh;overflow:auto;">
+            <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.LeftCommands />
         </GridCol>
         <GridCol Span="18" 
         Style="height:80vh;overflow:auto;padding:12px;
                         border:1px solid gray;">
-            @if (activeComponent == 0)
+            @if (codeGenStateContainer.ActiveComponent == 0)
             {
-                <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.Specification 
-                ReportId="@reportId"
-                Spec="@specification" />
+                <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.Specification  />
             }
-            else if (activeComponent == 1)
+            else if (codeGenStateContainer.ActiveComponent == 1)
             {
-                <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.MenuItems 
-                ReportId="@reportId"
-                        CodingRootPath="@codingRootPath"
-                Spec="@specification" />
+                <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.MenuItems />
             }
         </GridCol>
     </GridRow>
@@ -60,40 +53,53 @@
 
 
 @code {
-
-    string reportId { get; set; }
-    string codingRootPath { get; set; }
     bool specLoading { get; set; }
-    Specification specification { get; set; }
+    ReportCode reportCode { get; set; }
     string tabPosition { get; set; }
     string getSpec { get; set; }
-    int activeComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        specification = new()
-            {
-                Features = new()
-            };
-        activeComponent = 0;
+        codeGenStateContainer.OnChange += StateHasChanged;
     }
 
-    public void SwitchToSpec()
+    public void Dispose()
     {
-        activeComponent = 0;
-    }
-
-    public void SwitchToMenuItems()
-    {
-        activeComponent = 1;
+        codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
     public async Task GetSpecification()
     {
         specLoading = true;
-        specification = await ApiCaller.GetSpecificationAsync(reportId);
-        specLoading = false;
+        codeGenStateContainer.Specification = await ApiCaller.GetSpecificationAsync(codeGenStateContainer.ReportId);
+        var reportCode = await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId);
+        if (reportCode != null && reportCode.Code != null)
+            codeGenStateContainer.CodeForReport = reportCode.Code;
+        // if (codeGenStateContainer.CodeForReport.CodeFeatures.Count == 0 &&
+        //     codeGenStateContainer.Specification.Features.Count > 0)
+        // {
+        //     for (int i = 0; i < codeGenStateContainer.Specification.Features.Count; i++)
+        //     {
+        //         var feature = codeGenStateContainer.Specification.Features[i];
+        //         ReportCodeFeature rcf = new()
+        //             {
+        //                 Name = codeGenStateContainer.Specification.Features[i].Name,
+        //                 CodeFeatures = new List<ReportCodeFunctionality>()
+        //             };
+        //         for (int j = 0; j < feature.Modules.Count; j++)
+        //         {
+        //             var functionality = feature.Modules[j];
+        //             var codeModule = new ReportCodeFunctionality
+        //                 {
+        //                     Name = module.Name,
+        //                     Code = ""
+        //                 };
+        //             rcf.CodeFeatures.Add(codeModule);
+        //         }
+        //         codeGenStateContainer.CodeForReport.CodeFeatures.Add(rcf);
+        //     }
+        // }
 
-        //FileAgent.CreateAndInitFile(@"C:\Users\hu-be\Downloads\testas\test.txt", "");
+        specLoading = false;
     }
 }

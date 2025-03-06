@@ -1,66 +1,79 @@
-﻿<GridRow>
-    <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle">
-        <GridRow>
-            <h1>Menu Items</h1>
-        </GridRow>
-        <GridRow>
-            <Button Type="ButtonType.Primary"
-            OnClick="@GenerateMenuItemsCodeAsync">
-                Generate Menu Items Code
-            </Button>
-        </GridRow>
-        @if(isLoading == true)
+﻿@inject CodeGenStateContainer codeGenStateContainer
+
+<GridRow>
+    <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="width:100%">
+
+        @if (errorMessage != "")
         {
-            <GridRow>
-                <Spin>
-                </Spin>
-            </GridRow>
+            <Alert Message="@errorMessage" Type="AlertType.Error" />
         }
-        else
-        {
-            <GridRow Gutter="4">
-                <TextArea AutoSize Width="100%" Rows="10"
-                Value="@menuItemsCode"/>
-                <Button Type="ButtonType.Primary"
-                OnClick="@GenerateMenuItemsCodeAsync">
-                    Write Code to File
-                </Button>
-            </GridRow>
+
+        <GridRow>
+            <h1>Menu Items</h1> 
+        </GridRow> 
+        <GridRow> 
+            <Button Type="ButtonType.Primary" 
+            OnClick="@GenerateMenuItemsCodeAsync"> 
+                Generate Menu Items Code 
+            </Button> 
+        </GridRow> 
+        @if(isLoading == true) 
+        { 
+            <GridRow> 
+                <Spin> 
+                </Spin> 
+            </GridRow> 
+        } 
+        else 
+        { 
+                <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Small" Style="width:100%"> 
+                    <TextArea Rows="13" Style="width:100%"
+                @bind-Value="@codeGenStateContainer.CodeForReport.CodeMenuItems"/>
+                <Button Type="ButtonType.Primary" 
+                OnClick="@WriteCodeToFile"> 
+                    Write Code to File 
+                </Button> 
+                @if (fileWroteSuccess == true)
+                {
+                    <Alert Message="Code Updated to File Successfully" Type="AlertType.Success" />
+                }
+            </Flex> 
         }
     </Flex>
 </GridRow>
 
 @code {
-    [Parameter]
-    public string ReportId { get; set; }
-    [Parameter]
-    public string CodingRootPath { get; set; }
-    [Parameter]
-    public KnowledgeBase.Models.ReportGenerator.Specification Spec { get; set; }
 
     private bool isLoading { get; set; }
-    private string menuItemsCode { get; set; }
+    private string errorMessage { get; set; }
+    private bool fileWroteSuccess { get; set; }
 
     protected override void OnInitialized()
     {
+        codeGenStateContainer.OnChange += StateHasChanged;
+
         isLoading = false;
+        errorMessage = "";
+        fileWroteSuccess = false;
     }
 
-    protected override void OnParametersSet()
+    public void Dispose()
     {
-
+        codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
-    private async Task GenerateMenuItemsCodeAsync()
+    public async Task GenerateMenuItemsCodeAsync()
     {
         try
         {
             isLoading = true;
-            menuItemsCode = await ApiCaller.GenerateMenuItemsCodeAsync(ReportId);
+            errorMessage = "";
+            codeGenStateContainer.CodeForReport.CodeMenuItems = 
+                await ApiCaller.GenerateMenuItemsCodeAsync(codeGenStateContainer.ReportId);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            errorMessage = ex.Message;
         }
         finally
         {
@@ -68,10 +81,25 @@
         }
     }
 
-    private void WriteCodeToFile()
+    public void WriteCodeToFile()
     {
-        string menuItemsFilePath = codingRootPath + "/components/menuitems.js";
-        FileAgent.RewriteFileContent(menuItemsFilePath, menuItemsCode);
+        try
+        {
+            isLoading = true;
+            errorMessage = "";
+            fileWroteSuccess = false;
+            string menuItemsFilePath = codeGenStateContainer.CodeRootPath + "/components/menuitems.js";
+            FileAgent.RewriteFileContent(menuItemsFilePath, codeGenStateContainer.CodeForReport.CodeMenuItems);
+            fileWroteSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
 }

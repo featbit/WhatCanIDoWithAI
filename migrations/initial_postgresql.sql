@@ -32,9 +32,17 @@ CREATE TABLE question_vectors (
 );
 
 
+CREATE TABLE report_codes (
+    id uuid NOT NULL,
+    report_id uuid NOT NULL,
+    code jsonb NOT NULL,
+    CONSTRAINT "PK_report_codes" PRIMARY KEY (id)
+);
+
+
 CREATE TABLE reports (
     id uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone,
     specification jsonb NOT NULL,
     CONSTRAINT "PK_reports" PRIMARY KEY (id)
 );

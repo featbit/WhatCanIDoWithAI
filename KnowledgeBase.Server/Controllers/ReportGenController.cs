@@ -1,4 +1,5 @@
 ﻿using KnowledgeBase.FeatureFlag;
+using KnowledgeBase.Models;
 using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.ReportGenerator;
@@ -14,6 +15,7 @@ namespace KnowledgeBase.Server.Controllers
     public class ReportGenController(
         IFeatureFlagService flagService, 
         IReportRepo reportRepo,
+        IReportCodeRepo reportCodeRepo,
         ISender mediator,
         IAntropicChatService antropicChatService) : ControllerBase
     {
@@ -56,19 +58,6 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("code/claudsonnet")]
-        [RequestTimeout(600)]
-        public async Task<IActionResult> ClaudeSonnet([FromBody] FunctionalityGenRequest request)
-        {
-            if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
-            {
-                return NotFound();
-            }
-
-            var result = await mediator.Send(request);
-            return Ok(result);
-        }
-
         [HttpGet("db/menuitems-metadata/{reportId}")]
         public async Task<string> GetComponentPagesMetadataAsync(string reportId)
         {
@@ -91,10 +80,10 @@ namespace KnowledgeBase.Server.Controllers
             return await reportRepo.GetSpecificationByReportIdAsync(reportId);
         }
 
-        [HttpGet("antropictest")]
-        public async Task<string> AntropicTest()
+        [HttpGet("db/reportcode/{reportId}")]
+        public async Task<ReportCode> GetReportCodeByReportIdAsync(string reportId)
         {
-            return await antropicChatService.CompleteChatAsync("hello");
+            return await reportCodeRepo.GetReportCodeAsync(reportId);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
+﻿using KnowledgeBase.Models;
+using KnowledgeBase.Models.ReportGenerator;
+using System.Reflection;
 using System.Text.Json;
 
 namespace KnowledgeBase.CodingAgent
@@ -133,6 +135,36 @@ namespace KnowledgeBase.CodingAgent
                     if (response.IsSuccessStatusCode)
                     {
                         return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static async Task<ReportCode> GetReportCodeByReportId(string reportId)
+        {
+            string endpoint = _baseUrl + $"/api/reportgen/db/reportcode/{reportId}";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    HttpResponseMessage response = await client.GetAsync(endpoint);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = await response.Content.ReadAsStringAsync();
+                        return JsonSerializer.Deserialize<ReportCode>(json);
                     }
                     else
                     {
