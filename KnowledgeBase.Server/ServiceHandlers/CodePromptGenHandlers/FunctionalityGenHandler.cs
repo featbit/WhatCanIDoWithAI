@@ -15,15 +15,21 @@ namespace KnowledgeBase.Server.ServiceHandlers
 
     public class FunctionalityGenHandler(
         ICodePromptGenService codePromptGenService,
-        IReportRepo reportRepo) : IRequestHandler<FunctionalityGenRequest, string>
+        IReportRepo reportRepo,
+        IReportCodeRepo reportCodeRepo) : IRequestHandler<FunctionalityGenRequest, string>
     {
         public async Task<string> Handle(FunctionalityGenRequest request, CancellationToken cancellationToken)
         {
             Specification spec = await reportRepo.GetSpecificationByReportIdAsync(request.ReportId) ??
                  throw new Exception("Failed to get specification");
 
-            return await codePromptGenService.FunctionalityGenAsync(
-                spec, request.FeatureId, request.ModuleId);
+
+            //var code = await codePromptGenService.FunctionalityGenAsync(
+            //    spec, request.FeatureId, request.ModuleId);
+            string code = "abc";
+            await reportCodeRepo.UpsertFunctaionalityCodeAsync(code, request.ReportId, request.FeatureId, request.ModuleId);
+
+            return code;
         }
     }
 }

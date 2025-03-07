@@ -15,7 +15,7 @@ namespace KnolwedgeBase.DesktopApp.StateContainers
         private string? _reportId;
         public string ReportId
         {
-            get => _reportId ?? string.Empty;
+            get => _reportId ?? "7a11797a-4f40-4fb5-bd43-f31a7e957df4";
             set
             {
                 _reportId = value;
@@ -41,6 +41,73 @@ namespace KnolwedgeBase.DesktopApp.StateContainers
             set
             {
                 _activeComponent = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeFeatureId;
+        public string ActiveFeatureId
+        {
+            get => _activeFeatureId ?? string.Empty;
+            set
+            {
+                _activeFeatureId = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeFunctionalityId;
+        public string ActiveFunctionalityId
+        {
+            get => _activeFunctionalityId ?? string.Empty;
+            set
+            {
+                _activeFunctionalityId = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeFeatureName;
+        public string ActiveFeatureName
+        {
+            get => _activeFeatureName ?? string.Empty;
+            set
+            {
+                _activeFeatureName = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeFunctionalityName;
+        public string ActiveFunctionalityName
+        {
+            get => _activeFunctionalityName ?? string.Empty;
+            set
+            {
+                _activeFunctionalityName = value;
+                NotifyStateChanged();
+            }
+        }
+
+
+        private string _activeFunctionalityCode;
+        public string ActiveFunctionalityCode
+        {
+            get => _activeFunctionalityCode ?? string.Empty;
+            set
+            {
+                _activeFunctionalityCode = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeFunctionalityFilePath;
+        public string ActiveFunctionalityFilePath
+        {
+            get => _activeFunctionalityFilePath ?? string.Empty;
+            set
+            {
+                _activeFunctionalityFilePath = value;
                 NotifyStateChanged();
             }
         }
@@ -71,18 +138,6 @@ namespace KnolwedgeBase.DesktopApp.StateContainers
             }
         }
 
-
-        private string? savedString;
-
-        public string Property
-        {
-            get => savedString ?? string.Empty;
-            set
-            {
-                savedString = value;
-                NotifyStateChanged();
-            }
-        }
 
         public event Action? OnChange;
 

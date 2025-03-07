@@ -21,11 +21,11 @@
                 string featureId = feature.FeatureId;
                 string functionalityId = feature.Modules[j].Id;
                 <AntDesign.Button 
-                    Style="height:53px;"
-                    OnClick="@(()=>SwitchToFunctionality(
+                Style="height:53px;"
+                OnClick="@(()=>SwitchToFunctionality(
                                     positionI, positionJ, functionalityCount, 
                                     featureId, functionalityId))"
-                                  Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+2)?
+                Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+2)?
                                     ButtonType.Primary : ButtonType.Default)">
                     @positionI-@positionJ - @feature.Name <br/>
                     @functionalityName
@@ -63,5 +63,31 @@
     public void SwitchToFunctionality(int i, int j, int funcCount, string featureId, string functionalityId)
     {
         codeGenStateContainer.ActiveComponent = 2 + i * funcCount + j;
+
+        var f = codeGenStateContainer.Specification.Features[i];
+        var m = f.Modules[j];
+        if(f != null && m != null)
+        {
+            ReportCodeFeature feature = codeGenStateContainer.CodeForReport.CodeFeatures.FirstOrDefault(p => p.FeatureId == f.FeatureId);
+            if(feature != null)
+            {
+                ReportCodeFunctionality functionality = feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == m.Id);
+                codeGenStateContainer.ActiveFunctionalityCode = functionality.Code;
+                codeGenStateContainer.ActiveFunctionalityFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js";
+                codeGenStateContainer.ActiveFeatureName = f.Name;
+                codeGenStateContainer.ActiveFunctionalityName = m.Name;
+                codeGenStateContainer.ActiveFeatureId = f.FeatureId;
+                codeGenStateContainer.ActiveFunctionalityId = m.Id;
+            }
+            else
+            {
+                codeGenStateContainer.ActiveFunctionalityFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js";
+                codeGenStateContainer.ActiveFeatureName = f.Name;
+                codeGenStateContainer.ActiveFunctionalityName = m.Name;
+                codeGenStateContainer.ActiveFeatureId = f.FeatureId;
+                codeGenStateContainer.ActiveFunctionalityId = m.Id;
+                codeGenStateContainer.ActiveFunctionalityCode = "No code, please regenerate code";
+            }
+        }
     }
 }

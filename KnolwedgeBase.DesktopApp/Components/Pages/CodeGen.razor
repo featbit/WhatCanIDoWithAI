@@ -46,6 +46,10 @@
             {
                 <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.MenuItems />
             }
+            else
+            {
+                <KnolwedgeBase.DesktopApp.Components.Components.CodeGen.FunctionalityCode />
+            }
         </GridCol>
     </GridRow>
 </GridRow>
@@ -75,31 +79,6 @@
         var reportCode = await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId);
         if (reportCode != null && reportCode.Code != null)
             codeGenStateContainer.CodeForReport = reportCode.Code;
-        // if (codeGenStateContainer.CodeForReport.CodeFeatures.Count == 0 &&
-        //     codeGenStateContainer.Specification.Features.Count > 0)
-        // {
-        //     for (int i = 0; i < codeGenStateContainer.Specification.Features.Count; i++)
-        //     {
-        //         var feature = codeGenStateContainer.Specification.Features[i];
-        //         ReportCodeFeature rcf = new()
-        //             {
-        //                 Name = codeGenStateContainer.Specification.Features[i].Name,
-        //                 CodeFeatures = new List<ReportCodeFunctionality>()
-        //             };
-        //         for (int j = 0; j < feature.Modules.Count; j++)
-        //         {
-        //             var functionality = feature.Modules[j];
-        //             var codeModule = new ReportCodeFunctionality
-        //                 {
-        //                     Name = module.Name,
-        //                     Code = ""
-        //                 };
-        //             rcf.CodeFeatures.Add(codeModule);
-        //         }
-        //         codeGenStateContainer.CodeForReport.CodeFeatures.Add(rcf);
-        //     }
-        // }
-
         specLoading = false;
     }
 }
