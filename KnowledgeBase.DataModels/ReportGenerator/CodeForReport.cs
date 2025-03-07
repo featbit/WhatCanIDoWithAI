@@ -14,6 +14,7 @@ namespace KnowledgeBase.Models.ReportGenerator
     {
         [JsonPropertyName("FeatureId")]
         public string FeatureId { get; set; }
+
         [JsonPropertyName("CodeFunctionalities")]
         public List<ReportCodeFunctionality> CodeFunctionalities { get; set; }
     }
@@ -22,6 +23,7 @@ namespace KnowledgeBase.Models.ReportGenerator
     {
         [JsonPropertyName("FunctionalityId")]
         public string FunctionalityId { get; set; }
+
         [JsonPropertyName("Code")]
         public string Code { get; set; }
     }

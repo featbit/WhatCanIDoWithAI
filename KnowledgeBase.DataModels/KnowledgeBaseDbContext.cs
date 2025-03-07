@@ -60,9 +60,11 @@ namespace KnowledgeBase.Models
                     builder.ToJson("code");
                     builder.OwnsMany(s => s.CodeFeatures, featureBuilder =>
                     {
+                        featureBuilder.ToJson("CodeFeatures");
+                        //featureBuilder.ToJson();
                         featureBuilder.OwnsMany(f => f.CodeFunctionalities, moduleBuilder =>
                         {
-                            moduleBuilder.ToJson();
+                            moduleBuilder.ToJson("CodeFunctionalities");
                         });
                     });
                 });

@@ -72,7 +72,7 @@
             if(feature != null)
             {
                 ReportCodeFunctionality functionality = feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == m.Id);
-                codeGenStateContainer.ActiveFunctionalityCode = functionality.Code;
+                codeGenStateContainer.ActiveFunctionalityCode = functionality?.Code;
                 codeGenStateContainer.ActiveFunctionalityFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js";
                 codeGenStateContainer.ActiveFeatureName = f.Name;
                 codeGenStateContainer.ActiveFunctionalityName = m.Name;

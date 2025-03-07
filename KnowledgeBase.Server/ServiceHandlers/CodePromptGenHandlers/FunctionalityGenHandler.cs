@@ -24,9 +24,9 @@ namespace KnowledgeBase.Server.ServiceHandlers
                  throw new Exception("Failed to get specification");
 
 
-            //var code = await codePromptGenService.FunctionalityGenAsync(
-            //    spec, request.FeatureId, request.ModuleId);
-            string code = "abc";
+            var code = await codePromptGenService.FunctionalityGenAsync(
+                spec, request.FeatureId, request.ModuleId);
+            //string code = "abc";
             await reportCodeRepo.UpsertFunctaionalityCodeAsync(code, request.ReportId, request.FeatureId, request.ModuleId);
 
             return code;

@@ -1,6 +1,8 @@
-﻿using KnowledgeBase.Models;
+﻿using Dapper;
+using KnowledgeBase.Models;
 using KnowledgeBase.Models.ReportGenerator;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace KnowledgeBase.ReportGenerator
 {
@@ -18,71 +20,45 @@ namespace KnowledgeBase.ReportGenerator
             string code, string reportId, string featureId, string functionalityId)
         {
             var rc = await dbContext.ReportCodes.FirstOrDefaultAsync(p => p.ReportId == Guid.Parse(reportId));
-            if (rc == null)
+
+            var feature = rc.Code.CodeFeatures.FirstOrDefault(p => p.FeatureId == featureId);
+            if(feature == null)
             {
-                rc = new ReportCode
+                feature = new ReportCodeFeature
                 {
-                    Id = Guid.NewGuid(),
-                    ReportId = Guid.Parse(reportId),
-                    Code = new CodeForReport
-                    {
-                        CodeMenuItems = code,
-                        CodeFeatures = new List<ReportCodeFeature>()
-                        {
-                            new ReportCodeFeature
-                            {
-                                FeatureId = featureId,
-                                CodeFunctionalities = new List<ReportCodeFunctionality>
-                                {
-                                    new ReportCodeFunctionality
-                                    {
-                                        Code = code,
-                                        FunctionalityId = functionalityId
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    FeatureId = featureId,
+                    CodeFunctionalities = new List<ReportCodeFunctionality>()
                 };
-                dbContext.ReportCodes.Add(rc);
+                rc.Code.CodeFeatures.Add(feature);
             }
-            else
+            var functionality = feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == functionalityId);
+            if(functionality == null)
             {
-                var feature = rc.Code.CodeFeatures.FirstOrDefault(p => p.FeatureId == featureId);
-                if(feature != null)
+                functionality = new ReportCodeFunctionality
                 {
-                    var functionality = feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == functionalityId);
-                    if(functionality != null)
-                    {
-                        functionality.Code = code;
-                    }
-                    else
-                    {
-                        feature.CodeFunctionalities.Add(new ReportCodeFunctionality
-                        {
-                            Code = code,
-                            FunctionalityId = functionalityId
-                        });
-                    }
-                }
-                else
-                {
-                    rc.Code.CodeFeatures.Add(new ReportCodeFeature
-                    {
-                        FeatureId = featureId,
-                        //CodeFunctionalities = new List<ReportCodeFunctionality>
-                        //{
-                        //    new ReportCodeFunctionality
-                        //    {
-                        //        Code = code,
-                        //        FunctionalityId = functionalityId
-                        //    }
-                        //}
-                    });
-                }
-                dbContext.ReportCodes.Update(rc);
+                    FunctionalityId = functionalityId
+                };
+                feature.CodeFunctionalities.Add(functionality);
             }
-            await dbContext.SaveChangesAsync();
+            functionality.Code = code;
+
+
+            var connection = dbContext.Database.GetDbConnection();
+            const string sql = """
+                    UPDATE report_codes
+                    SET code = @code::jsonb
+                    WHERE id = @id;
+                    """;
+
+            object reportCodeObj = new
+            {
+                id = rc.Id,
+                //report_id = rc.ReportId,
+                code = JsonSerializer.Serialize(rc.Code),
+            };
+
+            await connection.ExecuteAsync(sql, reportCodeObj);
+
         }
 
         public async Task<ReportCode?> GetReportCodeAsync(string id)
