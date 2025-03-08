@@ -138,6 +138,27 @@ namespace KnolwedgeBase.DesktopApp.StateContainers
             }
         }
 
+        private CodeTheme? _themeCode;
+        public CodeTheme ThemeCode
+        {
+            get => _themeCode ?? new CodeTheme()
+            {
+                BodyBgColor = "",
+                BodyBgColorDrakMode = "",
+                DarkMode = "",
+                FontFamily = "",
+                PrimaryColor = "",
+                SecondaryColor = "",
+                TextColor = "",
+                TextColorDarkMode = ""
+            };
+            set
+            {
+                _themeCode = value;
+                NotifyStateChanged();
+            }
+        }
+
 
         public event Action? OnChange;
 

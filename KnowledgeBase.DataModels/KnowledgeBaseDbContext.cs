@@ -67,6 +67,10 @@ namespace KnowledgeBase.Models
                             moduleBuilder.ToJson("CodeFunctionalities");
                         });
                     });
+                })
+                .OwnsOne(r => r.Theme, builder =>
+                {
+                    builder.ToJson("code_theme");
                 });
             modelBuilder.Entity<ReportCode>().ToTable("report_codes");
         }

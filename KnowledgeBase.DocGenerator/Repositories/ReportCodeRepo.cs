@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using KnowledgeBase.Models;
 using KnowledgeBase.Models.ReportGenerator;
+using KnowledgeBase.ReportGenerator.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -8,6 +9,8 @@ namespace KnowledgeBase.ReportGenerator
 {
     public interface IReportCodeRepo
     {
+        Task UpsertThemeCodeAsync(
+            CodeTheme code, string reportId);
         Task UpsertFunctaionalityCodeAsync(
             string code, string reportId, string featureId, string functionalityId);
         Task UpsertReportCodeMenuItemsAsync(string code, string reportId);
@@ -89,6 +92,47 @@ namespace KnowledgeBase.ReportGenerator
                 dbContext.ReportCodes.Update(rc);
             }
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpsertThemeCodeAsync(CodeTheme code, string reportId)
+        {
+            var rc = await dbContext.ReportCodes.FirstOrDefaultAsync(p => p.ReportId == Guid.Parse(reportId));
+
+            if (rc == null)
+            {
+                rc = new ReportCode
+                {
+                    Id = Guid.NewGuid(),
+                    ReportId = Guid.Parse(reportId),
+                    Code = new CodeForReport
+                    {
+                        CodeMenuItems = "",
+                        CodeFeatures = new List<ReportCodeFeature>(),
+                    },
+                    Theme = code
+                };
+                dbContext.ReportCodes.Add(rc);
+                await dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                rc.Theme = code;
+
+                var connection = dbContext.Database.GetDbConnection();
+                const string sql = """
+                    UPDATE report_codes
+                    SET code_theme = @code_theme::jsonb
+                    WHERE id = @id;
+                    """;
+
+                object reportCodeObj = new
+                {
+                    id = rc.Id,
+                    code_theme = JsonSerializer.Serialize(rc.Theme),
+                };
+
+                await connection.ExecuteAsync(sql, reportCodeObj);
+            }
         }
     }
 }

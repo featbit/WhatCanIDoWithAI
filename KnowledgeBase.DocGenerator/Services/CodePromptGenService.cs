@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
+﻿using KnowledgeBase.Models;
+using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.ReportGenerator.Models;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,8 @@ namespace KnowledgeBase.ReportGenerator
             string fontFamily = "'roboto': ['Roboto', 'sans-serif'],");
 
         Task<string> MenuItemCodeGenAsync(Specification spec);
+
+        Task<string> ThemeGenAsync(Specification spec);
     }
 
     public class CodePromptGenService(
@@ -105,11 +108,8 @@ namespace KnowledgeBase.ReportGenerator
                 .Replace("###{secondary_color}###", secondaryColor)
                 .Replace("###{font_family}###", fontFamily);
 
-            logger.LogDebug($"CodePromptGenService: {prompt}");
-
             string code = await antropicChatService.CompleteChatAsync(prompt);
             return code;
-            //return JsonSerializer.Deserialize<Functionality>(codeJson);
         }
 
         public async Task<string> MenuItemCodeGenAsync(Specification spec)
@@ -165,8 +165,126 @@ namespace KnowledgeBase.ReportGenerator
                         JsonSerializer.Serialize<List<MenuItemFeature>>(
                             menuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) }));
 
-            //return await openaiChatService.CompleteChatAsync(prompt);
             return await antropicChatService.CompleteChatAsync(prompt);
+        }
+
+        public async Task<string> ThemeGenAsync(Specification spec)
+        {
+            string rawPrompt = """
+
+                ## Task
+
+                In a javascript + html + tailwind project, you need to define the them based on the project  information (name, definition and features).
+
+                Project Information:
+
+                - Software: ###{service_name}###. ###{service_desc}###
+                - Features:
+                ###{feature_data}###
+
+
+                Here're the code snippet that will use the theme:
+                ```javascript
+                tailwind.config = {
+                    darkMode: 'class', // example of theme dark mode in tailwind
+                    theme: {
+                        extend: {
+                            colors: {
+                                primary: '#4a90e2', // example of primary color
+                                secondary: '#f8f8f8', // example of secondary color
+                            },
+                            fontFamily: {
+                                'roboto': ['Roboto', 'sans-serif'], // example of font family
+                            },
+                        }
+                    }
+                }
+
+                <!-- 
+                example of body background color in tailwind: bg-white 
+                example of body dark mode background color in tailwind: dark:bg-gray-900
+                example of text color in tailwind: text-gray-800
+                example of dark mode text color in tailwind: dark:text-gray-200 
+                -->
+                <body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+                    <div class="flex flex-col h-screen">
+                        <!-- Top Bar -->
+                        <div id="topbar" />
+                        <div class="flex flex-1 overflow-hidden">
+                            <!-- Left Bar -->
+                            <div id="leftbar" class="flex-shrink-0" />
+                            <!-- Main Content -->
+                            <div id="main" class="flex-1 overflow-y-auto p-6" />
+                        </div>
+                        <!-- Footer -->
+                        <div id="footer" />
+                    </div>
+
+                    <!-- Import component scripts -->
+                    <script src="components/menuitems.js"></script>
+                    <script src="components/topbar.js"></script>
+                    <script src="components/leftbar.js"></script>
+                    <script src="components/main.js"></script>
+                    <script src="components/footer.js"></script>
+                </body>
+                ```
+
+                So you should generate the theme data below:
+
+                - theme dark mode in tailwind
+                - theme primary color
+                - theme secondary color
+                - theme font family
+                - body dark mode background color in tailwind
+                - body dark mode background color in tailwind
+                - text color in tailwind
+                - dark mode text color in tailwind
+
+                ## Output Format
+
+                Return the code in json format without any explaination, markdown symboles and other characters. :
+
+                {
+                    "DarkMode": "", // theme dark mode in tailwind                   
+                    "FontFamily": "", // theme font family
+                    "PrimaryColor": "", // theme primary color
+                    "SecondaryColor": "", // theme secondary color
+                    "BodyBgColor": "", // body background color in tailwind
+                    "BodyBgColorDrakMode": "", // body dark mode background color in tailwind
+                    "TextColor": "",  // text color in tailwind
+                    "TextColorDarkMode": "" // dark mode text color in tailwind
+                }
+
+                ## Output Example
+
+                {
+                    "DarkMode": "class",            
+                    "FontFamily": "'roboto': ['Roboto', 'sans-serif']",
+                    "PrimaryColor": "#4a90e2",
+                    "SecondaryColor": "#f8f8f8",
+                    "BodyBgColor": "bg-white",
+                    "BodyBgColorDrakMode": "dark:bg-gray-900",
+                    "TextColor": "text-gray-800",
+                    "TextColorDarkMode": "dark:text-gray-200"
+                }
+
+                """;
+
+
+            List<MenuItemFeature> menuItems = spec.Features.Select(f => new MenuItemFeature
+            {
+                MenuItem = f.MenuItem,
+                Name = f.Name,
+                Description = f.Description
+            }).ToList();
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{feature_data}###", JsonSerializer.Serialize<List<MenuItemFeature>>(
+                            menuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) }));
+
+            string code = await antropicChatService.CompleteChatAsync(prompt);
+            return code;
         }
     }
 }

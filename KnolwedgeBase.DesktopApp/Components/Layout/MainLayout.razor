@@ -1,44 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @* <div class="sidebar"> *@
-    @*     <NavMenu /> *@
-    @* </div> *@
 
-    @* <main> *@
-    @*     <div class="top-row px-4"> *@
-    @*         <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a> *@
-    @*     </div> *@
-
-    @*     <article class="content px-4"> *@
-    @*         @Body *@
-    @*     </article> *@
-    @* </main> *@
-
-    <Layout>
-        <Header Class="header">
-            <div class="logo"></div>
-            <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal" DefaultSelectedKeys=@(new[]{"4"})>
-                <MenuItem Key="1" RouterLink="/">
-                    <Icon Type="@IconType.Outline.Home" />
-                    <span class="nav-text">Home</span>
-                </MenuItem>
-                <MenuItem Key="2" RouterLink="/counter">
-                    <Icon Type="@IconType.Outline.PlusSquare" />
-                    <span class="nav-text">Counter</span>
-                </MenuItem>
-                <MenuItem Key="3" RouterLink="/weather">
-                    <Icon Type="@IconType.Outline.Info" />
-                    <span class="nav-text">Weather</span>
-                </MenuItem>
-                <MenuItem Key="4" RouterLink="/codegen">
-                    <Icon Type="@IconType.Outline.Code" />
-                    <span class="nav-text">Code Gen</span>
-                </MenuItem>
-            </Menu>
-        </Header>
-        <Content Style="padding: 0 0px">
-            @Body
-        </Content>
-    </Layout>
-</div>
+<Layout Class="layout">
+    <NavMenu />
+    <Content Style="padding: 0 0px">
+        @Body
+    </Content>
+</Layout>

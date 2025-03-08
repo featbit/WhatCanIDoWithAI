@@ -36,6 +36,10 @@ main {
             text-overflow: ellipsis;
         }
 
+a {
+    text-decoration: none;
+}
+
 @media (max-width: 640.98px) {
     .top-row {
         justify-content: space-between;

@@ -26,7 +26,7 @@ namespace KnowledgeBase.Server.ServiceHandlers
 
             var code = await codePromptGenService.FunctionalityGenAsync(
                 spec, request.FeatureId, request.ModuleId);
-            //string code = "abc";
+
             await reportCodeRepo.UpsertFunctaionalityCodeAsync(code, request.ReportId, request.FeatureId, request.ModuleId);
 
             return code;

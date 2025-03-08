@@ -1,5 +1,4 @@
 ﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.Models;
 using KnowledgeBase.OpenAI;
 using KnowledgeBase.ReportGenerator.Models;
 using System.Text.Json;
@@ -31,7 +30,10 @@ namespace KnowledgeBase.ReportGenerator
             string rawPrompt = """
                     ## Task
 
-                    I am writing a specification for software "###{title}###". I need you to write the detailed specification of a specific Functionality of a feature in the software. 
+                    I am writing a specification for software "###{title}###". I need you to write the detailed specification of a specific Functionality of a feature in the software. The detail should includes:
+
+                    1. The description of the functionality in the feature. This should be a detailed description of the functionality in chinese.
+                    2. Steps to use the functionality if it is a user interface. This shouldn't be too detailed, just a brief description. In chinese
                     
                     ## Information
 
@@ -42,15 +44,15 @@ namespace KnowledgeBase.ReportGenerator
                     ###{feature_desc}###
                     
                     ### Functionality short description
-                    ###{module_desc}###
+                    ###{functionality_desc}###
 
                     ## Output Format
                     
                     Return the result in json format without any other characters:
 
                     {
-                        "module_detail_description": "", // detailed description of the module, in chinese
-                        "module_name": "" // name of the module with less than 100 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
+                        "module_detail_description": "", // detailed description and steps to use (if it's a user interface) of the functionality, in chinese
+                        "module_name": "" // name of the functionality with less than 50 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
                     }
 
                     """;
@@ -64,7 +66,7 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{title}###", softwareTitle)
                     .Replace("###{service_desc}###", serviceDescription)
                     .Replace("###{feature_desc}###", feature.Description)
-                    .Replace("###{module_desc}###", functionality.ShortDescription);
+                    .Replace("###{functionality_desc}###", functionality.ShortDescription);
 
                 string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 ModuleDetail detail = JsonSerializer.Deserialize<ModuleDetail>(result);

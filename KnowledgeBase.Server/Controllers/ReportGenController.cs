@@ -32,6 +32,19 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("code/theme")]
+        [RequestTimeout(600000)]
+        public async Task<IActionResult> CodeDefineThemeAsync([FromBody] ThemeGenRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
+            {
+                return NotFound();
+            }
+
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
+
         [HttpPost("code/menuitems")]
         [RequestTimeout(600)]
         public async Task<IActionResult> CodeMenuItemsGenAsync([FromBody] MenuItemsGenRequest request)

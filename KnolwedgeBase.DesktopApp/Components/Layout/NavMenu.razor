@@ -1,34 +1,37 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">FeatGen</a>
-    </div>
-</div>
+﻿<Header >  
+    <Flex Direction="FlexDirection.Horizontal">
+        <div class="top-row">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="">FeatGen</a>
+            </div>
+        </div>
+        <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal" DefaultSelectedKeys=@(new[]{"3"})>
+            <MenuItem Key="1" RouterLink="/">
+                <Icon Type="@IconType.Outline.Home" />
+                <span style="text-decoration: none;font-weight:500;font-size:14px;">Home  </span>
+            </MenuItem>
+            <MenuItem Key="2" RouterLink="/specgen" style="text-decoration: none !important;">
+                <Icon Type="@IconType.Outline.Comment" />
+                <span style="text-decoration: none;font-weight:500;font-size:14px;">Spec Gen</span>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+            </MenuItem>
+            <MenuItem Key="3" RouterLink="/codegen">
+                <Icon Type="@IconType.Outline.Code" />
+                <span style="text-decoration: none;font-weight:500;font-size:14x;">Code Gen</span>
+            </MenuItem>
+        </Menu>
+    </Flex>
+ </Header> 
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="codegen">
-                <span aria-hidden="true" style="margin-right:5px">
-                    <Icon Type="@IconType.Fill.Code" Width="2em" />
-                </span> Code Gen
-            </NavLink>
-        </div>
-    </nav>
-</div>
+
+
+@code{
+
+    protected override void OnInitialized()
+    {
+    }
+
+    public void Dispose()
+    {
+    }
+}

@@ -4,9 +4,12 @@
 <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="padding-bottom:10px;">
     <AntDesign.Button OnClick="@SwitchToSpec"
     Type="@(codeGenStateContainer.ActiveComponent == 0? ButtonType.Primary : ButtonType.Default)">
-        1. Specification</AntDesign.Button>
-    <AntDesign.Button OnClick="@SwitchToMenuItems"
+        0. Specification</AntDesign.Button>
+    <AntDesign.Button OnClick="@SwitchToTheme"
     Type="@(codeGenStateContainer.ActiveComponent == 1? ButtonType.Primary : ButtonType.Default)">
+        1. Theme</AntDesign.Button>
+    <AntDesign.Button OnClick="@SwitchToMenuItems"
+    Type="@(codeGenStateContainer.ActiveComponent == 2? ButtonType.Primary : ButtonType.Default)">
         2. MenuItems</AntDesign.Button>
 
     @{
@@ -25,7 +28,7 @@
                 OnClick="@(()=>SwitchToFunctionality(
                                     positionI, positionJ, functionalityCount, 
                                     featureId, functionalityId))"
-                Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+2)?
+                Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+3)?
                                     ButtonType.Primary : ButtonType.Default)">
                     @positionI-@positionJ - @feature.Name <br/>
                     @functionalityName
@@ -55,14 +58,19 @@
         codeGenStateContainer.ActiveComponent = 0;
     }
 
-    public void SwitchToMenuItems()
+    public void SwitchToTheme()
     {
         codeGenStateContainer.ActiveComponent = 1;
     }
 
+    public void SwitchToMenuItems()
+    {
+        codeGenStateContainer.ActiveComponent = 2;
+    }
+
     public void SwitchToFunctionality(int i, int j, int funcCount, string featureId, string functionalityId)
     {
-        codeGenStateContainer.ActiveComponent = 2 + i * funcCount + j;
+        codeGenStateContainer.ActiveComponent = 3 + i * funcCount + j;
 
         var f = codeGenStateContainer.Specification.Features[i];
         var m = f.Modules[j];

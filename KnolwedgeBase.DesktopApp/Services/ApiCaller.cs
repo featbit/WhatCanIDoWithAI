@@ -150,6 +150,49 @@ namespace KnowledgeBase.CodingAgent
             }
         }
 
+
+        public static async Task<string> GenerateThemeCodeAsync(
+            string reportId)
+        {
+            string endpoint = _baseUrl + $"/api/reportgen/code/theme";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    dynamic requestData = new
+                    {
+                        reportId
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
         public static async Task<ReportCode> GetReportCodeByReportId(string reportId)
         {
             string endpoint = _baseUrl + $"/api/reportgen/db/reportcode/{reportId}";
