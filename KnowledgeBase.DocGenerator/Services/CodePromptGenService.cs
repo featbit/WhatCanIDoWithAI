@@ -44,7 +44,7 @@ namespace KnowledgeBase.ReportGenerator
                 - Feature Description: ###{feature_desc}###
                 - Functionality Description: ###{functionality_desc}###
 
-                You should generate the code for the Functionality described above. The code you will generate will be in a restricted .js file "path-planning.js" that have already the code below:
+                You should generate the code for the Functionality described above. The code should be finished with a closing curly brace. The code you will generate will be in a restricted .js file that have already the code below:
 
                 ```javascript
                 window.render###{method_name}###Page = function(container) {
@@ -88,9 +88,11 @@ namespace KnowledgeBase.ReportGenerator
                 - components/topbar.js
                 ###{feature_files}###
 
+                Note: Keep your answer under 24000 characters with a finished code (closing curly brace). Don't make the logical and code too complicated.
+
                 ## Output Format
 
-                Return the pure code only without any explaination, markdown symboles and other characters.
+                Return the pure code only without any explaination, markdown symboles and other characters. Keep your answer under 24000 characters with a finished code.
 
                 """;
 
@@ -109,6 +111,7 @@ namespace KnowledgeBase.ReportGenerator
                 .Replace("###{font_family}###", fontFamily);
 
             string code = await antropicChatService.CompleteChatAsync(prompt);
+            code = code.CleanJsCodeQuote();
             return code;
         }
 

@@ -20,17 +20,24 @@ namespace KnowledgeBase.OpenAI
                 configuration["Antropic:ApiKey"] ?? throw new Exception("Antropic API key is missing"));
             string endpointUrl = configuration["Antropic:EndpointUrl"] ??
                 throw new Exception("Antropic endpoint URL is missing");
+            string model = configuration["Antropic:Model"] ??
+                throw new Exception("Antropic model is missing");
             OpenAIClientOptions options = new()
             {
                 Endpoint = new Uri(endpointUrl),
                 NetworkTimeout = TimeSpan.FromSeconds(600)
             };
-            _chatClient = new(model: "claude-3-7-sonnet-20250219", credential, options);
+            _chatClient = new(model: model, credential, options);
         }
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false)
         {
-            ChatCompletion completion = await _chatClient.CompleteChatAsync([
+            //ChatCompletionOptions options = new ChatCompletionOptions
+            //{
+            //    MaxOutputTokenCount = 128000
+            //};
+            ChatCompletion completion = await _chatClient.CompleteChatAsync(
+            [
                 new UserChatMessage(message)
             ]);
 

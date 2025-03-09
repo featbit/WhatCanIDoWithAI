@@ -12,5 +12,14 @@
             }
             return result.Substring(startIndex, endIndex - startIndex + 1);
         }
+        public static string CleanJsCodeQuote(this string result)
+        {
+            result = result.Trim();
+            if(result.StartsWith("```javascript"))
+                result = result.Replace("```javascript", "");
+            if (result.EndsWith("```"))
+                result = result.Substring(0, result.Length - 3);
+            return result;
+        }
     }
 }
