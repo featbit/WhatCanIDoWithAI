@@ -15,6 +15,7 @@ namespace KnowledgeBase.ReportGenerator
             string code, string reportId, string featureId, string functionalityId);
         Task UpsertReportCodeMenuItemsAsync(string code, string reportId);
         Task<ReportCode?> GetReportCodeAsync(string id);
+        Task<List<Report>> GetReportsAsync();
     }
 
     public class ReportCodeRepo(KnowledgeBaseDbContext dbContext) : IReportCodeRepo
@@ -133,6 +134,11 @@ namespace KnowledgeBase.ReportGenerator
 
                 await connection.ExecuteAsync(sql, reportCodeObj);
             }
+        }
+
+        public Task<List<Report>> GetReportsAsync()
+        {
+            return dbContext.Reports.ToListAsync();
         }
     }
 }

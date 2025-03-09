@@ -98,5 +98,11 @@ namespace KnowledgeBase.Server.Controllers
         {
             return await reportCodeRepo.GetReportCodeAsync(reportId);
         }
+
+        [HttpGet("db/reports/")]
+        public async Task<List<Report>> GetReportsAsync()
+        {
+            return await reportCodeRepo.GetReportsAsync();
+        }
     }
 }

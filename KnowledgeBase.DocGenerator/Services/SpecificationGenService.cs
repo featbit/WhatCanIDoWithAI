@@ -30,10 +30,10 @@ namespace KnowledgeBase.ReportGenerator
             string rawPrompt = """
                     ## Task
 
-                    I am writing a specification for software "###{title}###". I need you to write the detailed specification of a specific Functionality of a feature in the software. The detail should includes:
+                    I am writing a specification and user manual for software "###{title}###". I need you to write the detailed description and user manual of a specific Functionality of a feature in the software. The detail should includes:
 
                     1. The description of the functionality in the feature. This should be a detailed description of the functionality in chinese.
-                    2. Steps to use the functionality if it is a user interface. This shouldn't be too detailed, just a brief description. In chinese
+                    2. Steps to use the functionality. In chinese. Should include at least 2 steps.
                     
                     ## Information
 
@@ -51,7 +51,7 @@ namespace KnowledgeBase.ReportGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "module_detail_description": "", // detailed description and steps to use (if it's a user interface) of the functionality, in chinese
+                        "module_detail_description": "", // detailed description and steps to use of the functionality, in chinese
                         "module_name": "" // name of the functionality with less than 50 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
                     }
 
@@ -186,10 +186,11 @@ namespace KnowledgeBase.ReportGenerator
 
         public async Task<Definition?> GenerateDefinitionAsync(string title)
         {
+            int featureNumbers = new Random().Next(5, 7);
             string rawPrompt = """
                     ## Task description
 
-                    Please define what the SaaS "###{title}###" should looks like.
+                    Please define what the Software "###{title}###" should looks like. Define ###{feature_number}### features of the Software. Login should be included as the first feature.
 
                     ## Output format
 
@@ -197,7 +198,7 @@ namespace KnowledgeBase.ReportGenerator
 
                     {
                         "service_description": "", // define what the SaaS "###{title}###" should looks like, in chinese
-                        "saas_features": [] // list from 2 to 5 main features randomly of the SaaS "###{title}###". at least more than 100 characters
+                        "saas_features": [] // list from ###{feature_number}### features of the SaaS "###{title}###". at least more than 100 characters
                     }
 
                     ## Output Example
@@ -211,7 +212,7 @@ namespace KnowledgeBase.ReportGenerator
                         ]
                     }
                     """;
-            string prompt = rawPrompt.Replace("###{title}###", title);
+            string prompt = rawPrompt.Replace("###{title}###", title).Replace("###{feature_number}###", featureNumbers.ToString());
             string result = await openaiChatService.CompleteChatAsync(prompt, true);
 
             return JsonSerializer.Deserialize<Definition>(result);

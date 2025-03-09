@@ -98,7 +98,7 @@
             string fileContent = IndexHtml.GetHtmlContent(codeGenStateContainer.ThemeCode);
             string path = codeGenStateContainer.CodeRootPath + "/index.html";
             FileAgent.RewriteFileContent(
-                codeGenStateContainer.ActiveFunctionalityFilePath,
+                path,
                 fileContent);
 
             fileWroteSuccess = true;

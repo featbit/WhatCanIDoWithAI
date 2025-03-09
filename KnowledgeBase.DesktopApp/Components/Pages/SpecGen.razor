@@ -1,47 +1,41 @@
-﻿@inject CodeGenStateContainer codeGenStateContainer
+﻿@page "/specgen"
+@using AntDesign.TableModels
+@using System.ComponentModel.DataAnnotations
+@inject CodeGenStateContainer codeGenStateContainer
 
 <GridRow>
     <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="width:100%">
+        <Flex Direction="FlexDirection.Horizontal" Gap="FlexGap.Middle">
+            <AntDesign.Input Placeholder="Software Name"
+            Width="300px"
+            @bind-Value="@newSoftwareName">
+            </AntDesign.Input>
 
+            <Button Type="ButtonType.Primary"
+            OnClick="@GenerateNewSpec">
+                Generate New Spec
+            </Button>
+        </Flex>
         @if (errorMessage != "")
         {
-                <Alert Message="@errorMessage" Type="AlertType.Error" />
+            <Alert Message="@errorMessage" Type="AlertType.Error" />
         }
 
-        <GridRow>
-            <h2>@codeGenStateContainer.ActiveFeatureName</h2>
-            <h2> -- </h2>
-            <h2>@codeGenStateContainer.ActiveFunctionalityName</h2>
-            <br/>
-            <p>@codeGenStateContainer.ActiveFunctionalityFilePath</p>
-        </GridRow> 
-        <GridRow> 
-            <Button Type="ButtonType.Primary" 
-            OnClick="@GenerateCodeAsync"> 
-                Generate Code
-            </Button> 
-        </GridRow> 
         @if (isLoading == true)
         { 
-                <GridRow> 
-                    <Spin> 
-                    </Spin> 
-                </GridRow> 
+            <GridRow> 
+                <Spin> 
+                </Spin> 
+            </GridRow> 
         }
         else
-        { 
-                <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Small" Style="width:100%"> 
-                    <TextArea Rows="13" Style="width:100%"
-                    @bind-Value="@codeGenStateContainer.ActiveFunctionalityCode"/>
-                    <Button Type="ButtonType.Primary" 
-                    OnClick="@WriteCodeToFile"> 
-                        Write Code to File 
-                    </Button> 
-                @if (fileWroteSuccess == true)
-                {
-                            <Alert Message="Code Updated to File Successfully" Type="AlertType.Success" />
-                }
-                </Flex> 
+        {
+            <Table TItem="SpecGenReport" PageSize="5"
+            Total="reports.Count" DataSource="reports">
+                <ColumnDefinitions Context="row">
+                    <GenerateColumns Definitions="@((n,c) => { c.Filterable = true; c.Sortable = true; })" />
+                </ColumnDefinitions>
+            </Table>
         }
     </Flex>
 </GridRow>
@@ -51,11 +45,29 @@
     private bool isLoading { get; set; }
     private string errorMessage { get; set; }
     private bool fileWroteSuccess { get; set; }
+    private string newSoftwareName { get; set; }
 
-    protected override void OnInitialized()
+    private List<SpecGenReport> reports = new List<SpecGenReport>();
+
+    protected override async Task OnInitializedAsync()
     {
         errorMessage = "";
+
         codeGenStateContainer.OnChange += StateHasChanged;
+
+        isLoading = true;
+        var data = await ApiCaller.GetReportsAsync();
+        reports = data.Select(p =>
+        {
+            return new SpecGenReport
+                {
+                    ReportId = p.Id.ToString(),
+                    ReportName = p.Specification.Title,
+                    CreatedAt = p.CreatedAt == null ? "" : (p.CreatedAt ?? new DateTime()).ToString("yyyy-MM-dd HH:mm:ss")
+                };
+        }).ToList();
+
+        isLoading = false;
     }
 
     public void Dispose()
@@ -63,20 +75,25 @@
         codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
-    public async Task GenerateCodeAsync()
+    public async Task GenerateNewSpec()
     {
+        isLoading = true;
+        errorMessage = "";
+
         try
         {
-            isLoading = true;
-            errorMessage = "";
-            var newCode = await ApiCaller.GenerateFunctionalityCodeAsync(
-                codeGenStateContainer.ReportId,
-                codeGenStateContainer.ActiveFeatureId,
-                codeGenStateContainer.ActiveFunctionalityId);
+            await ApiCaller.GenerateNewSpecificationAsync(newSoftwareName);
 
-            var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));
-            codeGenStateContainer.CodeForReport = reportCode.Code;
-            codeGenStateContainer.ActiveFunctionalityCode = newCode;
+            var data = await ApiCaller.GetReportsAsync();
+            reports = data.Select(p =>
+            {
+                return new SpecGenReport
+                    {
+                        ReportId = p.Id.ToString(),
+                        ReportName = p.Specification.Title,
+                        CreatedAt = p.CreatedAt == null ? "" : (p.CreatedAt ?? new DateTime()).ToString("yyyy-MM-dd HH:mm:ss")
+                    };
+            }).ToList();
         }
         catch (Exception ex)
         {
@@ -86,29 +103,15 @@
         {
             isLoading = false;
         }
+
+
+
     }
 
-    public void WriteCodeToFile()
+    protected class SpecGenReport
     {
-        try
-        {
-            fileWroteSuccess = false;
-            isLoading = true;
-
-            FileAgent.RewriteFileContent(
-                codeGenStateContainer.ActiveFunctionalityFilePath,
-                codeGenStateContainer.ActiveFunctionalityCode);
-
-            fileWroteSuccess = true;
-        }
-        catch (Exception exp)
-        {
-            errorMessage = exp.Message;
-        }
-        finally
-        {
-            isLoading = false;
-        }
-
+        public string ReportId { get; set; }
+        public string ReportName { get; set; }
+        public string CreatedAt { get; set; }
     }
 }
