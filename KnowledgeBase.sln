@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agent", "Agent", "{85D22485
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.CodingAgent", "KnowledgeBase.CodingAgent\KnowledgeBase.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnolwedgeBase.DesktopApp", "KnolwedgeBase.DesktopApp\KnolwedgeBase.DesktopApp.csproj", "{E4E8D1A9-91EF-463B-B34A-661AB6F78B92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DesktopApp", "KnowledgeBase.DesktopApp\KnowledgeBase.DesktopApp.csproj", "{E4E8D1A9-91EF-463B-B34A-661AB6F78B92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

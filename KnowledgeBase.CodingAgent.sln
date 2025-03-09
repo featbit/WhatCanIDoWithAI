@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DataModels", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.CodingAgent", "KnowledgeBase.CodingAgent\KnowledgeBase.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnolwedgeBase.DesktopApp", "KnolwedgeBase.DesktopApp\KnolwedgeBase.DesktopApp.csproj", "{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DesktopApp", "KnowledgeBase.DesktopApp\KnowledgeBase.DesktopApp.csproj", "{D632A8C1-4E2C-36C6-A5CF-63432BA023AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
