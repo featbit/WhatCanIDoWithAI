@@ -9,11 +9,11 @@
         }
 
         <GridRow>
-            <h2>@codeGenStateContainer.ActiveFeatureName</h2>
+            <h2>@codeGenStateContainer.ActiveFeatureBlock.FeatureName</h2>
             <h2> -- </h2>
-            <h2>@codeGenStateContainer.ActiveFunctionalityName</h2>
+            <h2>@codeGenStateContainer.ActiveFeatureBlock.FunctionalityId</h2>
             <br/>
-            <p>@codeGenStateContainer.ActiveFunctionalityFilePath</p>
+            <p>@codeGenStateContainer.ActiveFeatureBlock.ActiveFilePath</p>
         </GridRow> 
         <GridRow> 
             <Button Type="ButtonType.Primary" 
@@ -32,7 +32,7 @@
         { 
             <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Small" Style="width:100%"> 
                 <TextArea Rows="13" Style="width:100%"
-                @bind-Value="@codeGenStateContainer.ActiveFunctionalityCode"/>
+                          @bind-Value="@codeGenStateContainer.ActiveFeatureBlock.Code" />
                 <Button Type="ButtonType.Primary" 
                 OnClick="@WriteCodeToFile"> 
                     Write Code to File 
@@ -71,12 +71,12 @@
             errorMessage = "";
             var newCode = await ApiCaller.GenerateFunctionalityCodeAsync(
                 codeGenStateContainer.ReportId,
-                codeGenStateContainer.ActiveFeatureId,
-                codeGenStateContainer.ActiveFunctionalityId);
+                codeGenStateContainer.ActiveFeatureBlock.FeatureId,
+                codeGenStateContainer.ActiveFeatureBlock.FunctionalityId);
 
             var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));
             codeGenStateContainer.CodeForReport = reportCode.Code;
-            codeGenStateContainer.ActiveFunctionalityCode = newCode;
+            codeGenStateContainer.ActiveFeatureBlock.Code = newCode;
         }
         catch (Exception ex)
         {
@@ -96,8 +96,8 @@
             isLoading = true;
 
             FileAgent.RewriteFileContent(
-                codeGenStateContainer.ActiveFunctionalityFilePath,
-                codeGenStateContainer.ActiveFunctionalityCode);
+                codeGenStateContainer.ActiveFeatureBlock.ActiveFilePath,
+                codeGenStateContainer.ActiveFeatureBlock.Code);
 
             fileWroteSuccess = true;
         }

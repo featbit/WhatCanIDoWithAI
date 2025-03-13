@@ -15,6 +15,9 @@ namespace KnowledgeBase.Models.ReportGenerator
         [JsonPropertyName("FeatureId")]
         public string FeatureId { get; set; }
 
+        [JsonPropertyName("FeatureCode")]
+        public string FeatureCode { get; set; }
+
         [JsonPropertyName("CodeFunctionalities")]
         public List<ReportCodeFunctionality> CodeFunctionalities { get; set; }
     }

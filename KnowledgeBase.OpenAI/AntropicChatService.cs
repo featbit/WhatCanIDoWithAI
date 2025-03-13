@@ -32,10 +32,6 @@ namespace KnowledgeBase.OpenAI
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false)
         {
-            //ChatCompletionOptions options = new ChatCompletionOptions
-            //{
-            //    MaxOutputTokenCount = 128000
-            //};
             ChatCompletion completion = await _chatClient.CompleteChatAsync(
             [
                 new UserChatMessage(message)

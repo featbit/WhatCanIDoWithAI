@@ -3,32 +3,41 @@
 
 <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="padding-bottom:10px;">
     <AntDesign.Button OnClick="@SwitchToSpec"
-    Type="@(codeGenStateContainer.ActiveComponent == 0? ButtonType.Primary : ButtonType.Default)">
+    Type="@(codeGenStateContainer.ActiveComponent == "spec" ? ButtonType.Primary : ButtonType.Default)">
         0. Specification</AntDesign.Button>
     <AntDesign.Button OnClick="@SwitchToTheme"
-    Type="@(codeGenStateContainer.ActiveComponent == 1? ButtonType.Primary : ButtonType.Default)">
+    Type="@(codeGenStateContainer.ActiveComponent == "theme" ? ButtonType.Primary : ButtonType.Default)">
         1. Theme</AntDesign.Button>
     <AntDesign.Button OnClick="@SwitchToMenuItems"
-    Type="@(codeGenStateContainer.ActiveComponent == 2? ButtonType.Primary : ButtonType.Default)">
+    Type="@(codeGenStateContainer.ActiveComponent == "menu-items" ? ButtonType.Primary : ButtonType.Default)">
         2. MenuItems</AntDesign.Button>
 
     @{
         for (int i = 0; i < codeGenStateContainer.Specification.Features.Count; i++)
         {
             var feature = codeGenStateContainer.Specification.Features[i];
+            int functionalityCount = feature.Modules.Count;
+            string featureId = feature.FeatureId;
+            int positionI = i;
+
+            <AntDesign.Button Style="height:53px;"
+            OnClick="@(()=>SwitchToFeature(positionI, functionalityCount, featureId))"
+            Type="@(CheckIfFeatureButtonsActive(featureId, "")?
+                                    ButtonType.Primary : ButtonType.Default)">
+                @positionI - @feature.Name <br />
+            </AntDesign.Button>
+
             for (int j = 0; j < feature.Modules.Count; j++)
             {
-                int positionI = i, positionJ = j;
-                int functionalityCount = feature.Modules.Count;
+                int positionJ = j;
                 string functionalityName = feature.Modules[j].Name;
-                string featureId = feature.FeatureId;
                 string functionalityId = feature.Modules[j].Id;
                 <AntDesign.Button 
                 Style="height:53px;"
                 OnClick="@(()=>SwitchToFunctionality(
-                                    positionI, positionJ, functionalityCount, 
-                                    featureId, functionalityId))"
-                Type="@(codeGenStateContainer.ActiveComponent == (positionI*functionalityCount+positionJ+3)?
+                                positionI, positionJ, functionalityCount, 
+                                featureId, functionalityId))"
+                Type="@(CheckIfFeatureButtonsActive(featureId, functionalityId)?
                                     ButtonType.Primary : ButtonType.Default)">
                     @positionI-@positionJ - @feature.Name <br/>
                     @functionalityName
@@ -42,9 +51,11 @@
 
     private bool isLoading { get; set; }
     private string errorMessage { get; set; }
+    private int funcBeforeFeatureAndFunctionality { get; set; }
 
     protected override void OnInitialized()
     {
+        funcBeforeFeatureAndFunctionality = 3;
         codeGenStateContainer.OnChange += StateHasChanged;
     }
 
@@ -53,49 +64,73 @@
         codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
+    public bool CheckIfFeatureButtonsActive(string featureId, string functionalityId)
+    {
+        if (codeGenStateContainer.ActiveFeatureBlock != null &&
+            !string.IsNullOrWhiteSpace(codeGenStateContainer.ActiveFeatureBlock.FeatureId))
+        {
+            if (featureId == codeGenStateContainer.ActiveFeatureBlock.FeatureId &&
+                functionalityId == codeGenStateContainer.ActiveFeatureBlock.FunctionalityId)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void SwitchToSpec()
     {
-        codeGenStateContainer.ActiveComponent = 0;
+        codeGenStateContainer.ActiveComponent = "spec";
     }
 
     public void SwitchToTheme()
     {
-        codeGenStateContainer.ActiveComponent = 1;
+        codeGenStateContainer.ActiveComponent = "theme";
     }
 
     public void SwitchToMenuItems()
     {
-        codeGenStateContainer.ActiveComponent = 2;
+        codeGenStateContainer.ActiveComponent = "menu-items";
+    }
+
+    public void SwitchToFeature(int i, int funcCount, string featureId)
+    {
+        codeGenStateContainer.ActiveComponent = "feature";
+
+        var f = codeGenStateContainer.Specification.Features[i];
+        ReportCodeFeature feature =
+            codeGenStateContainer.CodeForReport.CodeFeatures.FirstOrDefault(p => p.FeatureId == f.FeatureId);
+
+        codeGenStateContainer.ActiveFeatureBlock = new ActiveFeatureBlock()
+            {
+                ActiveFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js",
+                Code = feature.FeatureCode,
+                FeatureId = f.FeatureId,
+                FeatureName = f.Name,
+                FunctionalityId = "",
+                FunctionalityName = ""
+            };
     }
 
     public void SwitchToFunctionality(int i, int j, int funcCount, string featureId, string functionalityId)
     {
-        codeGenStateContainer.ActiveComponent = 3 + i * funcCount + j;
+        codeGenStateContainer.ActiveComponent = "functionality";
 
         var f = codeGenStateContainer.Specification.Features[i];
         var m = f.Modules[j];
-        if(f != null && m != null)
-        {
-            ReportCodeFeature feature = codeGenStateContainer.CodeForReport.CodeFeatures.FirstOrDefault(p => p.FeatureId == f.FeatureId);
-            if(feature != null)
+        ReportCodeFeature feature = 
+            codeGenStateContainer.CodeForReport.CodeFeatures.FirstOrDefault(p => p.FeatureId == f.FeatureId);
+        ReportCodeFunctionality functionality = 
+            feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == m.Id);
+
+        codeGenStateContainer.ActiveFeatureBlock = new ActiveFeatureBlock()
             {
-                ReportCodeFunctionality functionality = feature.CodeFunctionalities.FirstOrDefault(p => p.FunctionalityId == m.Id);
-                codeGenStateContainer.ActiveFunctionalityCode = functionality?.Code;
-                codeGenStateContainer.ActiveFunctionalityFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js";
-                codeGenStateContainer.ActiveFeatureName = f.Name;
-                codeGenStateContainer.ActiveFunctionalityName = m.Name;
-                codeGenStateContainer.ActiveFeatureId = f.FeatureId;
-                codeGenStateContainer.ActiveFunctionalityId = m.Id;
-            }
-            else
-            {
-                codeGenStateContainer.ActiveFunctionalityFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js";
-                codeGenStateContainer.ActiveFeatureName = f.Name;
-                codeGenStateContainer.ActiveFunctionalityName = m.Name;
-                codeGenStateContainer.ActiveFeatureId = f.FeatureId;
-                codeGenStateContainer.ActiveFunctionalityId = m.Id;
-                codeGenStateContainer.ActiveFunctionalityCode = "No code, please regenerate code";
-            }
-        }
+                ActiveFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}-{j}.js",
+                FeatureId = f.FeatureId,
+                FeatureName = f.Name,
+                Code = functionality == null ? "No code, please regenerate code" : functionality?.Code,
+                FunctionalityId = m.Id,
+                FunctionalityName = m.Name
+            };
     }
 }

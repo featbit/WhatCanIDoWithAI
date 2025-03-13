@@ -38,15 +38,15 @@
         <GridCol Span="18" 
         Style="height:80vh;overflow:auto;padding:12px;
                         border:1px solid gray;">
-            @if (codeGenStateContainer.ActiveComponent == 0)
+            @if (codeGenStateContainer.ActiveComponent == "spec")
             {
                 <KnowledgeBase.DesktopApp.Components.Components.CodeGen.Specification  />
             }
-            else if (codeGenStateContainer.ActiveComponent == 1)
+            else if (codeGenStateContainer.ActiveComponent == "theme")
             {
                 <KnowledgeBase.DesktopApp.Components.Components.CodeGen.Theme />
             }
-            else if (codeGenStateContainer.ActiveComponent == 2)
+            else if (codeGenStateContainer.ActiveComponent == "menu-items")
             {
                 <KnowledgeBase.DesktopApp.Components.Components.CodeGen.MenuItems />
             }

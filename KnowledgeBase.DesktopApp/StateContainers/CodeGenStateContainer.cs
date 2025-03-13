@@ -34,10 +34,21 @@ namespace KnowledgeBase.DesktopApp.StateContainers
             }
         }
 
-        private int? _activeComponent;
-        public int ActiveComponent
+        private ActiveFeatureBlock? _activeFeatureBlock;
+        public ActiveFeatureBlock ActiveFeatureBlock
         {
-            get => _activeComponent ?? 0;
+            get => _activeFeatureBlock ?? new ActiveFeatureBlock();
+            set
+            {
+                _activeFeatureBlock = value;
+                NotifyStateChanged();
+            }
+        }
+
+        private string _activeComponent;
+        public string ActiveComponent
+        {
+            get => _activeComponent;
             set
             {
                 _activeComponent = value;
@@ -45,72 +56,83 @@ namespace KnowledgeBase.DesktopApp.StateContainers
             }
         }
 
-        private string _activeFeatureId;
-        public string ActiveFeatureId
-        {
-            get => _activeFeatureId ?? string.Empty;
-            set
-            {
-                _activeFeatureId = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFeatureId;
+        //public string ActiveFeatureId
+        //{
+        //    get => _activeFeatureId ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFeatureId = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
-        private string _activeFunctionalityId;
-        public string ActiveFunctionalityId
-        {
-            get => _activeFunctionalityId ?? string.Empty;
-            set
-            {
-                _activeFunctionalityId = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFunctionalityId;
+        //public string ActiveFunctionalityId
+        //{
+        //    get => _activeFunctionalityId ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFunctionalityId = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
-        private string _activeFeatureName;
-        public string ActiveFeatureName
-        {
-            get => _activeFeatureName ?? string.Empty;
-            set
-            {
-                _activeFeatureName = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFeatureName;
+        //public string ActiveFeatureName
+        //{
+        //    get => _activeFeatureName ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFeatureName = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
-        private string _activeFunctionalityName;
-        public string ActiveFunctionalityName
-        {
-            get => _activeFunctionalityName ?? string.Empty;
-            set
-            {
-                _activeFunctionalityName = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFeatureCode;
+        //public string ActiveFeatureCode
+        //{
+        //    get => _activeFeatureCode ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFeatureCode = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
+
+        //private string _activeFunctionalityName;
+        //public string ActiveFunctionalityName
+        //{
+        //    get => _activeFunctionalityName ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFunctionalityName = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
 
-        private string _activeFunctionalityCode;
-        public string ActiveFunctionalityCode
-        {
-            get => _activeFunctionalityCode ?? string.Empty;
-            set
-            {
-                _activeFunctionalityCode = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFunctionalityCode;
+        //public string ActiveFunctionalityCode
+        //{
+        //    get => _activeFunctionalityCode ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFunctionalityCode = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
-        private string _activeFunctionalityFilePath;
-        public string ActiveFunctionalityFilePath
-        {
-            get => _activeFunctionalityFilePath ?? string.Empty;
-            set
-            {
-                _activeFunctionalityFilePath = value;
-                NotifyStateChanged();
-            }
-        }
+        //private string _activeFunctionalityFilePath;
+        //public string ActiveFunctionalityFilePath
+        //{
+        //    get => _activeFunctionalityFilePath ?? string.Empty;
+        //    set
+        //    {
+        //        _activeFunctionalityFilePath = value;
+        //        NotifyStateChanged();
+        //    }
+        //}
 
         private Specification? _specification;
         public Specification Specification
@@ -163,5 +185,15 @@ namespace KnowledgeBase.DesktopApp.StateContainers
         public event Action? OnChange;
 
         private void NotifyStateChanged() => OnChange?.Invoke();
+    }
+
+    public class ActiveFeatureBlock
+    {
+        public string FeatureId { get; set; }
+        public string FeatureName { get; set; }
+        public string Code { get; set; }
+        public string FunctionalityId { get; set; }
+        public string FunctionalityName { get; set; }
+        public string ActiveFilePath { get; set; }
     }
 }
