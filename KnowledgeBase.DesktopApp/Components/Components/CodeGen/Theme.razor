@@ -72,7 +72,7 @@
         {
             isLoading = true;
             errorMessage = "";
-            var newCode = await ApiCaller.GenerateThemeCodeAsync(
+            await ApiCaller.GenerateThemeCodeAsync(
                 codeGenStateContainer.ReportId);
 
             var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));

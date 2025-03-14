@@ -4,13 +4,18 @@
 <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Middle" Style="padding-bottom:10px;">
     <AntDesign.Button OnClick="@SwitchToSpec"
     Type="@(codeGenStateContainer.ActiveComponent == "spec" ? ButtonType.Primary : ButtonType.Default)">
-        0. Specification</AntDesign.Button>
+        Specification</AntDesign.Button>
     <AntDesign.Button OnClick="@SwitchToTheme"
     Type="@(codeGenStateContainer.ActiveComponent == "theme" ? ButtonType.Primary : ButtonType.Default)">
-        1. Theme</AntDesign.Button>
+        Theme</AntDesign.Button>
     <AntDesign.Button OnClick="@SwitchToMenuItems"
     Type="@(codeGenStateContainer.ActiveComponent == "menu-items" ? ButtonType.Primary : ButtonType.Default)">
-        2. MenuItems</AntDesign.Button>
+        MenuItems
+    </AntDesign.Button>
+    <AntDesign.Button OnClick="@SwitchToLogin"
+    Type="@(codeGenStateContainer.ActiveComponent == "login" ? ButtonType.Primary : ButtonType.Default)">
+        Login
+    </AntDesign.Button>
 
     @{
         for (int i = 0; i < codeGenStateContainer.Specification.Features.Count; i++)
@@ -93,18 +98,35 @@
         codeGenStateContainer.ActiveComponent = "menu-items";
     }
 
+    public void SwitchToLogin()
+    {
+        codeGenStateContainer.ActiveComponent = "login";
+    }
+
     public void SwitchToFeature(int i, int funcCount, string featureId)
     {
         codeGenStateContainer.ActiveComponent = "feature";
 
-        var f = codeGenStateContainer.Specification.Features[i];
+        var f = codeGenStateContainer.Specification.Features.FirstOrDefault(p => p.FeatureId == featureId);
+
         ReportCodeFeature feature =
             codeGenStateContainer.CodeForReport.CodeFeatures.FirstOrDefault(p => p.FeatureId == f.FeatureId);
+
+        if(feature == null)
+        {
+            feature = new ReportCodeFeature()
+                {
+                    CodeFunctionalities = new List<ReportCodeFunctionality>(),
+                    FeatureCode = "",
+                    FeatureId = f.FeatureId
+                };
+            codeGenStateContainer.CodeForReport.CodeFeatures.Add(feature);
+        }
 
         codeGenStateContainer.ActiveFeatureBlock = new ActiveFeatureBlock()
             {
                 ActiveFilePath = codeGenStateContainer.CodeRootPath + $"/components/pages/{f.MenuItem}.js",
-                Code = feature.FeatureCode,
+                Code = feature?.FeatureCode,
                 FeatureId = f.FeatureId,
                 FeatureName = f.Name,
                 FunctionalityId = "",

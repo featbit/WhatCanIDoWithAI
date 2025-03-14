@@ -17,5 +17,14 @@ namespace KnowledgeBase.ReportGenerator.Models
         public string Description { get; set; }
         public string Name { get; set; }
         public string MenuItem { get; set; }
+
+        public List<SubMenuItem> SubMenuItems { get; set; }
+    }
+
+    public class SubMenuItem
+    {
+        public string Name { get; set; }
+        public string ShortDescription { get; set; }
+        public string MenuItem { get; set; }
     }
 }

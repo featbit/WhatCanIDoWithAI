@@ -79,6 +79,46 @@ namespace KnowledgeBase.CodingAgent
             }
         }
 
+        public static async Task<string> GenerateLoginCodeAsync(
+            string reportId)
+        {
+            string endpoint = _baseUrl + $"/api/reportgen/code/login";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
         public static async Task<string> GenerateMenuItemsCodeAsync(string reportId)
         {
             string endpoint = _baseUrl + $"/api/reportgen/code/menuitems";
@@ -128,6 +168,50 @@ namespace KnowledgeBase.CodingAgent
                 {
                     client.BaseAddress = new Uri(_baseUrl);
                     HttpResponseMessage response = await client.GetAsync(endpoint);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+
+        public static async Task<string> GenerateFeatureCodeAsync(
+            string reportId, string featureId)
+        {
+            string endpoint = _baseUrl + $"/api/reportgen/code/feature";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    dynamic requestData = new
+                    {
+                        ReportId = reportId,
+                        FeatureId = featureId
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
 
                     if (response.IsSuccessStatusCode)
                     {

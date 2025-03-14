@@ -190,7 +190,7 @@ namespace KnowledgeBase.ReportGenerator
             string rawPrompt = """
                     ## Task description
 
-                    Please define what the Software "###{title}###" should looks like. Define ###{feature_number}### features of the Software. Login should be included as the first feature.
+                    Please define what the Software "###{title}###" should looks like. Define ###{feature_number}### features of the Software. Login should be included as the first feature without sub functionalities.
 
                     ## Output format
 

@@ -8,6 +8,8 @@ namespace KnowledgeBase.Models.ReportGenerator
         public List<ReportCodeFeature> CodeFeatures { get; set; }
         [JsonPropertyName("CodeMenuItems")]
         public string CodeMenuItems { get; set; }
+        [JsonPropertyName("CodeLogin")]
+        public string CodeLogin { get; set; }
     }
 
     public class ReportCodeFeature

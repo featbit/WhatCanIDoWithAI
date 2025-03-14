@@ -116,7 +116,7 @@ namespace KnowledgeBase.DesktopApp.PreparedCode
             string prompt = rawPrompt
                 .Replace("###{dark_mode}###", theme.DarkMode ?? "class")
                 .Replace("###{font_family}###", theme.FontFamily ?? "'roboto': ['Roboto', 'sans-serif']")
-                .Replace("###{primary_color}###", theme.PrimaryColor ?? "#4a90e2")
+                .Replace("###{primary_color}###", theme.PrimaryColor ?? "#8ca201")
                 .Replace("###{secondary_color}###", theme.SecondaryColor ?? "#f8f8f8")
                 .Replace("###{body_bg_color}###", theme.BodyBgColor ?? "bg-white")
                 .Replace("###{body_bg_color_dark_mode}###", theme.BodyBgColorDrakMode ?? "dark:bg-gray-900")

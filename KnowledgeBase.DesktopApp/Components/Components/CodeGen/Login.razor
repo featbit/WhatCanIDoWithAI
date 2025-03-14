@@ -9,12 +9,12 @@
         }
 
         <GridRow>
-            <h1>Menu Items</h1> 
+            <h1>Login Page</h1> 
         </GridRow> 
         <GridRow> 
-            <Button Type="ButtonType.Primary" 
-            OnClick="@GenerateMenuItemsCodeAsync"> 
-                Generate Menu Items Code 
+            <Button Type="ButtonType.Primary"
+                    OnClick="@GenerateLoginCodeAsync">
+                Generate Login Page
             </Button> 
         </GridRow> 
         @if(isLoading == true) 
@@ -28,7 +28,7 @@
         { 
                 <Flex Direction="FlexDirection.Vertical" Gap="FlexGap.Small" Style="width:100%"> 
                     <TextArea Rows="13" Style="width:100%"
-                @bind-Value="@codeGenStateContainer.CodeForReport.CodeMenuItems"/>
+                @bind-Value="@codeGenStateContainer.CodeForReport.CodeLogin"/>
                 <Button Type="ButtonType.Primary" 
                 OnClick="@WriteCodeToFile"> 
                     Write Code to File 
@@ -62,15 +62,17 @@
         codeGenStateContainer.OnChange -= StateHasChanged;
     }
 
-    public async Task GenerateMenuItemsCodeAsync()
+    public async Task GenerateLoginCodeAsync()
     {
         try
         {
             isLoading = true;
             errorMessage = "";
-            await ApiCaller.GenerateMenuItemsCodeAsync(codeGenStateContainer.ReportId);
+            await ApiCaller.GenerateLoginCodeAsync(
+                codeGenStateContainer.ReportId);
+
             var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));
-            codeGenStateContainer.CodeForReport = reportCode.Code;
+            codeGenStateContainer.CodeForReport.CodeLogin = reportCode.Code.CodeLogin;
         }
         catch (Exception ex)
         {
@@ -89,8 +91,8 @@
             isLoading = true;
             errorMessage = "";
             fileWroteSuccess = false;
-            string menuItemsFilePath = codeGenStateContainer.CodeRootPath + "/components/menuitems.js";
-            FileAgent.RewriteFileContent(menuItemsFilePath, codeGenStateContainer.CodeForReport.CodeMenuItems);
+            string menuItemsFilePath = codeGenStateContainer.CodeRootPath + "/components/pages/login-module.js";
+            FileAgent.RewriteFileContent(menuItemsFilePath, codeGenStateContainer.CodeForReport.CodeLogin);
             fileWroteSuccess = true;
         }
         catch (Exception ex)

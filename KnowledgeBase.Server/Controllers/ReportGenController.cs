@@ -58,6 +58,19 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("code/feature")]
+        [RequestTimeout(600000)]
+        public async Task<IActionResult> CodeFeatureGenAsync([FromBody] FeatureGenRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
+            {
+                return NotFound();
+            }
+
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
+
         [HttpPost("code/functionality")]
         [RequestTimeout(600000)]
         public async Task<IActionResult> CodeFunctionalityGenAsync([FromBody] FunctionalityGenRequest request)
@@ -70,6 +83,21 @@ namespace KnowledgeBase.Server.Controllers
             var result = await mediator.Send(request);
             return Ok(result);
         }
+
+
+        [HttpPost("code/login")]
+        [RequestTimeout(600000)]
+        public async Task<IActionResult> CodeloginGenAsync([FromBody] LoginGenRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.CodeFunctionatlityGen))
+            {
+                return NotFound();
+            }
+
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
+        
 
         [HttpGet("db/menuitems-metadata/{reportId}")]
         public async Task<string> GetComponentPagesMetadataAsync(string reportId)
