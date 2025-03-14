@@ -93,71 +93,11 @@ namespace KnowledgeBase.ReportGenerator
             string selectedFeatureId,
             string primaryColor, string secondaryColor)
         {
-            string rawPrompt = """
-                ## Task
+            string prompt = FeaturePagePrompts.V1(spec, selectedFeatureId, primaryColor, secondaryColor);
 
-                In our SaaS "光疗临床路径智能规划系统", one of features called "治疗过程跟踪" includes 3 functionalities:
-
-                - 实时治疗数据监控 - #/treatment-tracking-0
-                - 治疗日志记录功能 - #/treatment-tracking-1
-                - 智能提醒功能 - #/treatment-tracking-2
-
-                Each of them has their own sub page with hash route #/xxxx-xxx-x
-
-                You should rewrite the code 
-
-                ```javascript
-                window.renderTREATMENTTRACKINGPage = function(container) {
-                    container.innerHTML = `
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                            <h1 class="text-2xl font-bold mb-6 text-primary">治疗过程跟踪</h1>
-                            <div id="function" class="bg-secondary dark:bg-gray-700 p-4 rounded-lg my-4">
-                            </div>
-                        </div>`;
-                }
-                ```
-
-                Theme
-                - Primary Color: #4a90e2
-                - Secondary Color: #f8f8f8
-
-                To let the feature page contains 3 functionalities, when user click on each functinality, the page can be navigated to its corresponds sub page. Don't generate code for functionalities, only code for feature home page as a guide menu page.
-
-                ## Reference information
-
-                About "治疗过程跟踪", it means "治疗过程跟踪功能能够实时监控患者在光疗治疗过程中的各项数据和治疗细节。系统会自动记录每次治疗的实施情况，包括光疗设备的使用参数、治疗时间、患者的反应以及可能出现的副作用等。同时，系统会根据实时数据分析，提醒医生是否需要调整治疗方案或采取其他措施，以确保患者能够得到最佳治疗效果。该功能有助于提高治疗的精准性和安全性，确保每位患者都能接受最适合的治疗"
-
-                About "实时治疗数据监控", it means "实时监控功能是光疗临床路径智能规划系统中的一项关键功能，旨在确保治疗过程中患者的各项数据能够实时被跟踪和监控。该功能通过连接传感器和医疗设备，实时采集患者在光疗过程中的治疗数据，包括光疗设备的使用参数、治疗时间、患者的反应和副作用等。系统会自动记录每一次治疗的详细情况，并根据采集到的数据进行分析，为医生提供实时反馈。如果系统发现治疗过程中出现异常数据或患者的反应不佳，会及时提醒医生调整治疗方案或采取其他必要措施。通过这种方式，实时监控功能能够提高治疗的精准性和安全性，确保患者接受到最适合的光疗方案，最大限度地提高治疗效果。"
-
-                About "治疗日志记录功能", it means "治疗记录功能是光疗临床路径智能规划系统中的一个关键模块，旨在确保每次治疗的详细情况都能得到精确记录。该功能通过自动化方式记录每次光疗治疗的实施细节，包括光疗设备的使用参数、治疗时间、患者的反应以及可能的副作用等。这些数据会实时上传至系统，并生成详细的治疗日志，医生可以随时查看这些日志，确保治疗的透明性和可追溯性。治疗记录功能有助于医生根据实时数据对治疗方案进行调整，及时发现并处理可能出现的问题，确保患者能够获得最安全、最有效的治疗。该功能还可以根据历史治疗记录进行数据分析，为医生提供优化治疗路径的参考依据。"
-
-
-                ## Ouput format
-
-                Return the pure code only without any explaination, markdown symboles and other characters.
-                """;
-
-            string promptInVscode = """
-                In our SaaS "光疗临床路径智能规划系统", one of features called "用户管理模块" includes 2 functionalities:
-
-                用户权限控制与角色权限管理 - #/user-management-0
-                历史记录管理功能 - #/user-management-1
-
-                Each of them has their own sub page with hash route #/xxxx-xxx-x
-
-                To let the feature page contains 3 functionalities, when user click on each functinality, the page can be navigated to its corresponds sub page. Don't generate code for functionalities, only code for feature home page as a guide menu page.
-
-                Reference information
-                About "用户管理", it means "用户管理模块是光疗临床路径智能规划系统中的核心功能之一，旨在有效地管理系统中的各类用户角色，包括医生、患者和管理员。该模块能够根据用户的身份和权限进行相应的操作控制，确保每位用户只能访问其授权范围内的功能。模块还支持管理用户的历史记录，提供灵活的角色权限配置，以便实现更加个性化和精细化的用户管理。"
-
-                About "用户权限控制与角色权限管理", it means "用户权限控制功能是光疗临床路径智能规划系统中的一个重要功能，旨在根据用户的角色和权限，限制其在系统中的操作范围。通过此功能，管理员可以对不同角色（如医生、患者、管理员等）赋予不同的操作权限，确保系统中的数据和操作安全。例如，医生可以查看和修改患者的光疗治疗路径，但不能访问系统设置或其他用户的敏感信息；而患者只能查看自己的治疗进度和记录，不能修改治疗计划。系统管理员则拥有全权限，能够管理所有用户及其权限设置。此外，用户权限控制还支持对一些敏感操作（如删除患者数据、修改治疗计划等）设置访问限制，以保障数据的完整性与安全性。"
-
-                About "历史记录管理功能", it means "历史记录管理功能旨在记录并存储系统中每个用户的操作历史。该功能会追踪并保存所有与治疗相关的记录、用户操作记录以及任何修改或更新操作。通过这个功能，管理员或医生可以方便地查看每个用户的操作行为，确保所有的操作都能够追溯到源头，从而提升系统的透明度和安全性。这有助于及时发现问题并进行修正，确保治疗方案和操作符合医疗规范，进一步提高系统的管理效能和患者的安全保障。"
-
-                Please update rewrite user-management.js file
-                """;
-
-            throw new NotImplementedException();
+            string code = await antropicChatService.CompleteChatAsync(prompt);
+            code = code.CleanJsCodeQuote();
+            return code;
         }
 
         public async Task<string> FunctionalityGenAsync(
@@ -167,7 +107,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             Feature selectedFeature = spec.Features.FirstOrDefault(p => p.FeatureId == selectedFeatureId);
             Functionality selectedFunctionality = selectedFeature.Modules.FirstOrDefault(p => p.Id == selectedFunctionalityId);
-
+            int funcIndex = selectedFeature.Modules.IndexOf(selectedFunctionality);
             string rawPrompt = """
 
                 ## Task
@@ -185,10 +125,6 @@ namespace KnowledgeBase.ReportGenerator
                 window.render###{method_name}###Page = function(container) {
                     container.innerHTML = `
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                            <h1 class="text-2xl font-bold mb-6 text-primary">###{feature_name}###</h1>
-                            <div id="function" class="bg-secondary dark:bg-gray-700 p-4 rounded-lg my-4">
-                                <h2>###{functionality_name}###</h2>
-                            </div>
                         </div>
                     `;
                 }
@@ -239,7 +175,7 @@ namespace KnowledgeBase.ReportGenerator
                 .Replace("###{feature_name}###", selectedFeature.Name)
                 .Replace("###{functionality_desc}###", selectedFunctionality?.Name + ". " + selectedFunctionality?.DetailDescription)
                 .Replace("###{functionality_name}###", selectedFunctionality?.Name)
-                .Replace("###{method_name}###", selectedFeature.MenuItem.Replace("-", "").ToUpper())
+                .Replace("###{method_name}###", selectedFeature.MenuItem.Replace("-", "").ToUpper() + funcIndex.ToString())
                 .Replace("###{feature_files}###", string.Join("\n", spec.Features.Select(f => $"- components/pages/{f.MenuItem}.js")))
                 .Replace("###{primary_color}###", primaryColor)
                 .Replace("###{secondary_color}###", secondaryColor)
