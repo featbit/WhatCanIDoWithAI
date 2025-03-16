@@ -1,5 +1,6 @@
 ﻿using KnowledgeBase.Models;
 using KnowledgeBase.Models.ReportGenerator;
+using Microsoft.VisualBasic;
 using System.Reflection;
 using System.Text.Json;
 
@@ -189,7 +190,7 @@ namespace KnowledgeBase.CodingAgent
 
 
         public static async Task<string> GenerateFeatureCodeAsync(
-            string reportId, string featureId)
+            string reportId, string featureId, string genVersion, string additionalRequirement)
         {
             string endpoint = _baseUrl + $"/api/reportgen/code/feature";
 
@@ -203,7 +204,9 @@ namespace KnowledgeBase.CodingAgent
                     dynamic requestData = new
                     {
                         ReportId = reportId,
-                        FeatureId = featureId
+                        FeatureId = featureId,
+                        GenVersion = genVersion,
+                        AdditionalSpec = additionalRequirement
                     };
 
                     var content = new StringContent(
@@ -233,7 +236,7 @@ namespace KnowledgeBase.CodingAgent
 
 
         public static async Task<string> GenerateFunctionalityCodeAsync(
-            string reportId, string featureId, string moduleId)
+            string reportId, string featureId, string moduleId, string genVersion, string additionalRequirement)
         {
             string endpoint = _baseUrl + $"/api/reportgen/code/functionality";
 
@@ -248,7 +251,9 @@ namespace KnowledgeBase.CodingAgent
                     {
                         ReportId = reportId,
                         FeatureId = featureId,
-                        ModuleId = moduleId
+                        ModuleId = moduleId,
+                        GenVersion = genVersion,
+                        AdditionalSpec = additionalRequirement
                     };
 
                     var content = new StringContent(

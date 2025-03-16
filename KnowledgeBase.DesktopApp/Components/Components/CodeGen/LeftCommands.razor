@@ -27,7 +27,7 @@
 
             <AntDesign.Button Style="height:53px;"
             OnClick="@(()=>SwitchToFeature(positionI, functionalityCount, featureId))"
-            Type="@(CheckIfFeatureButtonsActive(featureId, "")?
+            Type="@((codeGenStateContainer.ActiveComponent == "feature" && CheckIfFeatureButtonsActive(featureId, ""))?
                                     ButtonType.Primary : ButtonType.Default)">
                 @positionI - @feature.Name <br />
             </AntDesign.Button>
@@ -42,7 +42,7 @@
                 OnClick="@(()=>SwitchToFunctionality(
                                 positionI, positionJ, functionalityCount, 
                                 featureId, functionalityId))"
-                Type="@(CheckIfFeatureButtonsActive(featureId, functionalityId)?
+                Type="@((codeGenStateContainer.ActiveComponent == "functionality" && CheckIfFeatureButtonsActive(featureId, functionalityId)) ?
                                     ButtonType.Primary : ButtonType.Default)">
                     @positionI-@positionJ - @feature.Name <br/>
                     @functionalityName

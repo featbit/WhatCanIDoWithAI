@@ -8,6 +8,9 @@ namespace KnowledgeBase.Server.ServiceHandlers
     {
         public string ReportId { get; set; }
         public string FeatureId { get; set; }
+        public string GenVersion { get; set; }
+        public string ChangeDescription { get; set; }
+        public string AdditionalSpec { get; set; }
     }
 
     public class FeatureGenHandler(
@@ -21,8 +24,13 @@ namespace KnowledgeBase.Server.ServiceHandlers
                  throw new Exception("Failed to get specification");
             var reportCode = await reportCodeRepo.GetReportCodeAsync(request.ReportId);
 
+            var feature = reportCode.Code.CodeFeatures.FirstOrDefault(p => p.FeatureId == request.FeatureId);
+            string featureCode = feature == null ? "" : feature.FeatureCode;
+
             var code = await codePromptGenService.FeatureHomePageGenAsync(
-                spec, request.FeatureId, reportCode.Theme.PrimaryColor, reportCode.Theme.SecondaryColor);
+                spec, request.FeatureId, 
+                reportCode.Theme.PrimaryColor, reportCode.Theme.SecondaryColor,
+                request.GenVersion, request.ChangeDescription, featureCode);
 
             await reportCodeRepo.UpsertFeatureCodeAsync(code, request.ReportId, request.FeatureId);
 

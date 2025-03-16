@@ -15,11 +15,27 @@
             <br/>
             <p>@codeGenStateContainer.ActiveFeatureBlock.ActiveFilePath</p>
         </GridRow> 
-        <GridRow> 
-            <Button Type="ButtonType.Primary" 
-            OnClick="@GenerateCodeAsync"> 
-                Generate Code
-            </Button> 
+        <GridRow >
+            <Flex Gap="FlexGap.Middle" Direction="FlexDirection.Vertical">
+                <Flex Direction="FlexDirection.Horizontal" Gap="FlexGap.Small">
+                    <RadioGroup @bind-Value="genVersion">
+                        <Radio RadioButton Value="genVersions[0]">V1</Radio>
+                        <Radio RadioButton Value="genVersions[1]">V2</Radio>
+                        <Radio RadioButton Value="genVersions[2]">Modify</Radio>
+                    </RadioGroup>
+                    <Button Type="ButtonType.Primary"
+                            OnClick="@GenerateCodeAsync">
+                        Generate Code
+                    </Button>
+                </Flex>
+                <Flex Direction="FlexDirection.Vertical">
+                    <h4>
+                        Additional Requirement
+                    </h4>
+                    <TextArea Rows="13" Style="width:100%"
+                              @bind-Value="additionalRequirement" />
+                </Flex>
+            </Flex>
         </GridRow> 
         @if(isLoading == true) 
         { 
@@ -51,10 +67,14 @@
     private bool isLoading { get; set; }
     private string errorMessage { get; set; }
     private bool fileWroteSuccess { get; set; }
+    private string genVersion { get; set; }
+    private string additionalRequirement { get; set; }
+    private string[] genVersions = new string[] { "V1", "V2", "Modify" };
 
     protected override void OnInitialized()
     {
         errorMessage = "";
+        genVersion = "V1";
         codeGenStateContainer.OnChange += StateHasChanged;
     }
 
@@ -74,7 +94,9 @@
             {
                 var newCode = await ApiCaller.GenerateFeatureCodeAsync(
                     codeGenStateContainer.ReportId,
-                    codeGenStateContainer.ActiveFeatureBlock.FeatureId);
+                    codeGenStateContainer.ActiveFeatureBlock.FeatureId, 
+                    genVersion,
+                    additionalRequirement);
 
                 var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));
                 codeGenStateContainer.CodeForReport = reportCode.Code;
@@ -85,7 +107,9 @@
                 var newCode = await ApiCaller.GenerateFunctionalityCodeAsync(
                     codeGenStateContainer.ReportId,
                     codeGenStateContainer.ActiveFeatureBlock.FeatureId,
-                    codeGenStateContainer.ActiveFeatureBlock.FunctionalityId);
+                    codeGenStateContainer.ActiveFeatureBlock.FunctionalityId,
+                    genVersion,
+                    additionalRequirement);
 
                 var reportCode = (await ApiCaller.GetReportCodeByReportId(codeGenStateContainer.ReportId));
                 codeGenStateContainer.CodeForReport = reportCode.Code;

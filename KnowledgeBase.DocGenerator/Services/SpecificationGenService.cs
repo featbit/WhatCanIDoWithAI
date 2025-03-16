@@ -16,6 +16,7 @@ namespace KnowledgeBase.ReportGenerator
 
     public class SpecificationGenService(
         IOpenAiChatService openaiChatService,
+        IAntropicChatService antropicChatService,
         IReportRepo reportRepo) : ISpecificationGenService
     {
         public async Task<Specification> GetSpecificationByReportIdAsync(string id)
@@ -51,7 +52,7 @@ namespace KnowledgeBase.ReportGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "module_detail_description": "", // detailed description and steps to use of the functionality, in chinese
+                        "module_detail_description": "", // detailed description of the functionality; add steps of how to use this functionalities if needed ; in chinese
                         "module_name": "" // name of the functionality with less than 50 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
                     }
 
@@ -68,6 +69,7 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{feature_desc}###", feature.Description)
                     .Replace("###{functionality_desc}###", functionality.ShortDescription);
 
+                //string result = await antropicChatService.CompleteChatAsync(prompt, true);
                 string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 ModuleDetail detail = JsonSerializer.Deserialize<ModuleDetail>(result);
                 return new KnowledgeBase.Models.ReportGenerator.Functionality
@@ -122,10 +124,16 @@ namespace KnowledgeBase.ReportGenerator
                     
                     - Name of feature
                     - Detailed description of the feature.
-                    - Functionality or modules of the feature.
+                    - Functionality or modules of the feature.                    
                     - Menu item code for the feature.
 
-                    Note: Feature Functionalities should differ from each other.
+                    Note: 
+                    
+                    - Feature Functionalities should differ from each other.
+                    - Each functionality has an independent page in the software. A complete operation process shouldn't be splited into different functionalities. 
+                    - Please think if the feature need a list items CRUD management functaionality. If not need, don't add this functionality.
+                    - Each functionality should have independent task to do.
+                    - If feature description is not good for generating functionalities, please add more details in the feature description or even rewrite it.
 
                     ## Output format
 
@@ -134,7 +142,7 @@ namespace KnowledgeBase.ReportGenerator
                     {
                         "feature_description": "", // detailed description of the feature, in chinese
                         "feature_name": "", // name of the feature with less than 100 characters, in chinese
-                        "feature_functionalities": [], // list 1,2,or 3 functionalities of the feature, describing functionalities with details. at least more than 100 characters
+                        "feature_functionalities": [], // list 0, 2 or 3 functionalities of the feature, describing functionalities with details. at least more than 100 characters
                         "menu_item": "" // menu item code for the feature, in english, format:  xxx or xxx-xxx in lower case
                     }
 
@@ -163,6 +171,7 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{feature_description}###", f);
 
                 string result = await openaiChatService.CompleteChatAsync(prompt, true);
+                //string result = await antropicChatService.CompleteChatAsync(prompt, true);
                 var detail = JsonSerializer.Deserialize<FeatureFunctionalities>(result);
                
                 return detail;
@@ -192,13 +201,17 @@ namespace KnowledgeBase.ReportGenerator
 
                     Please define what the Software "###{title}###" should looks like. Define ###{feature_number}### features of the Software. Login should be included as the first feature without sub functionalities.
 
+                    Think for if system need features to manage (CRUD) users, devices, products and so on. If need, please add it as a feature or a functionality of a feature. If not, don't add this feature.
+
+                    Each feature should responsable for an independent work.
+
                     ## Output format
 
                     Return the result in json format without any other characters:
 
                     {
                         "service_description": "", // define what the SaaS "###{title}###" should looks like, in chinese
-                        "saas_features": [] // list from ###{feature_number}### features of the SaaS "###{title}###". at least more than 100 characters
+                        "saas_features": [] // list from ###{feature_number}### features of the SaaS "###{title}###".  more than 100 characters
                     }
 
                     ## Output Example
@@ -213,6 +226,8 @@ namespace KnowledgeBase.ReportGenerator
                     }
                     """;
             string prompt = rawPrompt.Replace("###{title}###", title).Replace("###{feature_number}###", featureNumbers.ToString());
+
+            //string result = await antropicChatService.CompleteChatAsync(prompt, true);
             string result = await openaiChatService.CompleteChatAsync(prompt, true);
 
             return JsonSerializer.Deserialize<Definition>(result);
