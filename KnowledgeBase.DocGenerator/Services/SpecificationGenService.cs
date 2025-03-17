@@ -7,11 +7,11 @@ namespace KnowledgeBase.ReportGenerator
 {
     public interface ISpecificationGenService
     {
-        Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features);
+        Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features, string requirement);
         Task<Specification> GetSpecificationByReportIdAsync(string id);
         Task<Feature?> GenerateFunctionalityDetailAsync(
-            string softwareTitle, string serviceDescription, Feature feature);
-        Task<Definition?> GenerateDefinitionAsync(string title);
+            string softwareTitle, string serviceDescription, Feature feature, string requirement);
+        Task<Definition?> GenerateDefinitionAsync(string title, string requirement);
     }
 
     public class SpecificationGenService(
@@ -26,7 +26,7 @@ namespace KnowledgeBase.ReportGenerator
         }
 
         public async Task<Feature> GenerateFunctionalityDetailAsync(
-            string softwareTitle, string serviceDescription, Feature feature)
+            string softwareTitle, string serviceDescription, Feature feature, string requirement)
         {
             string rawPrompt = """
                     ## Task
@@ -96,7 +96,7 @@ namespace KnowledgeBase.ReportGenerator
         }
 
 
-        public async Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features)
+        public async Task<List<Feature>> GenerateFeatureContentAsync(Specification spec, List<string> features, string requirement)
         {
             string rawPrompt = """
                     ## Task
@@ -126,6 +126,10 @@ namespace KnowledgeBase.ReportGenerator
                     - Detailed description of the feature.
                     - Functionality or modules of the feature.                    
                     - Menu item code for the feature.
+
+                    Here's my software requirement that you need to use to ajust your feature description. Means you shouldn't generate a feature which is out of the space of the requirement. Here's my requirement:
+                    
+                    ###{requirement}###
 
                     Note: 
                     
@@ -168,7 +172,8 @@ namespace KnowledgeBase.ReportGenerator
                     .Replace("###{title}###", spec.Title)
                     .Replace("###{service_description}###", spec.Definition)
                     .Replace("###{featurenumber}###", features.Count.ToString())
-                    .Replace("###{feature_description}###", f);
+                    .Replace("###{feature_description}###", f)
+                    .Replace("###{requirement}###", requirement);
 
                 string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 //string result = await antropicChatService.CompleteChatAsync(prompt, true);
@@ -193,7 +198,7 @@ namespace KnowledgeBase.ReportGenerator
             }).ToList();
         }
 
-        public async Task<Definition?> GenerateDefinitionAsync(string title)
+        public async Task<Definition?> GenerateDefinitionAsync(string title, string requirement)
         {
             int featureNumbers = new Random().Next(5, 7);
             string rawPrompt = """
@@ -204,6 +209,10 @@ namespace KnowledgeBase.ReportGenerator
                     Think for if system need features to manage (CRUD) users, devices, products and so on. If need, please add it as a feature or a functionality of a feature. If not, don't add this feature.
 
                     Each feature should responsable for an independent work.
+
+                    Here's my requirement fo the software "###{title}###" that you need to use for the definition:
+
+                    ###{requirement}###
 
                     ## Output format
 
@@ -225,7 +234,8 @@ namespace KnowledgeBase.ReportGenerator
                         ]
                     }
                     """;
-            string prompt = rawPrompt.Replace("###{title}###", title).Replace("###{feature_number}###", featureNumbers.ToString());
+            string prompt = rawPrompt.Replace("###{title}###", title).Replace("###{feature_number}###", featureNumbers.ToString())
+                .Replace("###{requirement}###", requirement);
 
             //string result = await antropicChatService.CompleteChatAsync(prompt, true);
             string result = await openaiChatService.CompleteChatAsync(prompt, true);
