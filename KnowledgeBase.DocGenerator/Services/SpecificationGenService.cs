@@ -146,7 +146,7 @@ namespace KnowledgeBase.ReportGenerator
                     {
                         "feature_description": "", // detailed description of the feature, in chinese
                         "feature_name": "", // name of the feature with less than 100 characters, in chinese
-                        "feature_functionalities": [], // list 0, 2 or 3 functionalities of the feature, describing functionalities with details. at least more than 100 characters
+                        "feature_functionalities": [], // list functionalities of the feature, describing functionalities with details. at least more than 100 characters
                         "menu_item": "" // menu item code for the feature, in english, format:  xxx or xxx-xxx in lower case
                     }
 

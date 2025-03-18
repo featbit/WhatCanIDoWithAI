@@ -22,6 +22,7 @@ namespace KnowledgeBase.Models
         public DbSet<KeywordVector> KeywordVectors { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportCode> ReportCodes { get; set; }
+        public DbSet<ReportCodeGuide> ReportCodeGuides { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -36,6 +37,7 @@ namespace KnowledgeBase.Models
         {
             modelBuilder.HasPostgresExtension("vector");
             modelBuilder.Entity<Document>().ToTable("documents");
+            modelBuilder.Entity<ReportCodeGuide>().ToTable("report_codes_guide");
             modelBuilder.Entity<QuestionVector>().ToTable("question_vectors");
             modelBuilder.Entity<KeywordVector>().ToTable("keyword_vectors");
 
