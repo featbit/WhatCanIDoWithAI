@@ -23,5 +23,9 @@ namespace KnowledgeBase.Models
         [Column("pages")]
         [JsonPropertyName("Pages")]
         public string Pages { get; set; }
+
+        [Column("menu_items")]
+        [JsonPropertyName("MenuItems")]
+        public string MenuItems { get; set; }
     }
 }

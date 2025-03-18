@@ -16,7 +16,7 @@ namespace KnowledgeBase.Server.Controllers
     {
         [HttpPost("project-models")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> ProjectModels([FromBody] ProjectModelsRequest request)
+        public async Task<IActionResult> ProjectModels([FromBody] CodeGuideRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
             {
@@ -29,7 +29,7 @@ namespace KnowledgeBase.Server.Controllers
 
         [HttpPost("pages")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> Pages([FromBody] PagesRequest request)
+        public async Task<IActionResult> Pages([FromBody] CodeGuideRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
             {
@@ -40,14 +40,23 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("menu-items")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> MenuItems([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideService.GenerateMenuItemsAsync(request.ReportId);
+            return Ok(result);
+        }
+
         
     }
 
-    public class ProjectModelsRequest
-    {
-        public string ReportId { get; set; }
-    }
-    public class PagesRequest
+    public class CodeGuideRequest
     {
         public string ReportId { get; set; }
     }
