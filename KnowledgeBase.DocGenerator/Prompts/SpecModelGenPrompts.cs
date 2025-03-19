@@ -1,4 +1,5 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
+﻿using KnowledgeBase.Models;
+using KnowledgeBase.Models.ReportGenerator;
 using KnowledgeBase.ReportGenerator.Models;
 using System;
 using System.Collections.Generic;
@@ -133,19 +134,76 @@ namespace KnowledgeBase.ReportGenerator.Prompts
             return prompt;
         }
 
-        public static string FakeData()
+        public static string V2(Specification spec, ReportCodeGuide rcg)
         {
             string rawPrompt = """
-                ## Task
+                ## Data Information
                 
-                Giving your context below and data structure below, please generate fake data.
+                We're design a software named "###{service_name}###". ###{service_desc}###.
 
-                ###{models}###
+                We have structured pages data which listed all the pages in the software. In this pages structures, it includes details like:
 
-                ## 
+                - The description of features and functionalities of each page.
+                - The successor and predecessor pages of each page.
+                - The page design description of each page.
+
+                We have also structured menu items data which listed all the menu items in the software. In this menu items structure, it includes details like:
+
+                - The pages that menu item and the page it links to.
+                - The sub-menu items of each menu item if it has any.
+                - The reason of why the menu item is added.
+                - The reason of why the sub-menu item is added.
+
+
+                ### Structured Pages Data
+
+                ###{struct_pages}###
+
+                ### Structured Menu Items Data
+
+                ###{struct_menuitems}###
+
+                ## Task 
+
+                Please generate model data structure based on the pages, features and functionalities:
+
+                - The model data structure should be designed based on the pages and features and functionalities of the software.
+                - Some model data structure can be used in multiple pages.
+                - Some model data structure can be used in only one page.
+                - The model data structure should be in JSON format.
+                - The model data structure should include the database schema of the model in PostgreSQL format.
+
+                ## Output Format
+
+                Output should return only the data structure in JSON format without any explaination, markdown symboles and other characters. 
+
+                {
+                    "models_across_pages": [
+                        {
+                            "model_id": "", // unique id of model
+                            "model_reason": "", // why design model like that
+                            "model_json": {}, // model data structure
+                            "model_database_schema": "", // database table schema script of this model - postgresql
+                            "used_by_pages": [] // ids of pages where this model is used.
+                        }
+                    ], // models can be used in multiple pages
+                    "models_in_single_page": [
+                        {
+                            "model_id": "1", // unique id of model
+                            "model_reason": "", // why design model like that
+                            "model_json": {}, // model data structure
+                            "model_database_schema": "", // database table schema script of this model - postgresql
+                            "used_by_pages": [] // ids of pages where this model is used.
+                        }
+                    ] // models in across pages shouldn't be repeated here.
+                }
 
                 """;
-            string prompt = rawPrompt;
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{struct_pages}###", rcg.Pages)
+                .Replace("###{struct_menuitems}###", rcg.MenuItems);
             return prompt;
         }
     }

@@ -40,7 +40,9 @@ namespace KnowledgeBase.ReportGenerator
         public async Task<string> GenerateDataModelsAsync(string reportId, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
-            string prompt = SpecModelGenPrompts.Models(spec);
+            var rcg = await rcgRepo.GetGuidAsync(reportId);
+            //string prompt = SpecModelGenPrompts.Models(spec);
+            string prompt = SpecModelGenPrompts.V2(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             await rcgRepo.UpsertGuideAsync(result, "", "", reportId);
