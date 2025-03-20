@@ -11,6 +11,7 @@ namespace KnowledgeBase.ReportGenerator
         Task<string> GenerateDataModelsAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateFakeDataBaseAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement");
+        Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement")
     }
 
     public class CodeGuideGenService(
@@ -101,6 +102,17 @@ namespace KnowledgeBase.ReportGenerator
             return result;
         }
 
+
+        public async Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetGuidAsync(reportId);
+            string prompt = GuideComponentGenPrompts.V1(spec, rcg, pageId, pageComponentName, apiCode, cssCode);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            return result;
+            
+        }
         
     }
 }

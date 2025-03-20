@@ -80,7 +80,20 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
-        
+
+        [HttpPost("component-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ApiCode([FromBody] CodeGuideComponentCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideService.GenerateComponentCodeAsync(
+                request.ReportId, request.PageId, request.PageComponentName, request.ApiCode, request.CssCode);
+            return Ok(result);
+        }
     }
 
     public class CodeGuideRequest
@@ -92,5 +105,14 @@ namespace KnowledgeBase.Server.Controllers
     {
         public string ReportId { get; set; }
         public string PageId { get; set; }
+    }
+
+    public class CodeGuideComponentCodeRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string PageComponentName { get; set; }
+        public string ApiCode { get; set; }
+        public string CssCode { get; set; }
     }
 }
