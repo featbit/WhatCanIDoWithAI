@@ -1,15 +1,15 @@
-﻿using KnowledgeBase.FeatureFlag;
-using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator;
-using KnowledgeBase.Server.ServiceHandlers;
+﻿using FeatGen.FeatureFlag;
+using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator;
+using FeatGen.Server.ServiceHandlers;
 using MediatR;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace KnowledgeBase.Server.Controllers
+namespace FeatGen.Server.Controllers
 {
     [Route("api/reportgen")]
     public class ReportGenController(

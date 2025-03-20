@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KnowledgeBase.Client\KnowledgeBase.Client.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.DocGenerator\KnowledgeBase.ReportGenerator.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.FeatureFlag\KnowledgeBase.FeatureFlag.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.OpenAI\KnowledgeBase.OpenAI.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.ServiceDefaults\KnowledgeBase.ServiceDefaults.csproj" />
     <PackageReference Include="FeatBit.ServerSdk" Version="1.2.2" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
@@ -27,6 +21,15 @@
 
   <ItemGroup>
     <Folder Include="FeatureFlag\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KnowledgeBase.Client\FeatGen.Client.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.DataModels\FeatGen.DataModels.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.DocGenerator\FeatGen.ReportGenerator.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.FeatureFlag\FeatGen.FeatureFlag.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.OpenAI\FeatGen.OpenAI.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.ServiceDefaults\FeatGen.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
-﻿using KnowledgeBase.Models;
+﻿using FeatGen.Models;
 
-namespace KnowledgeBase.DesktopApp.PreparedCode
+namespace FeatGen.DesktopApp.PreparedCode
 {
     public class IndexHtml
     {

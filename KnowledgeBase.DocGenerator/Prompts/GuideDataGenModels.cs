@@ -1,6 +1,6 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +8,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuideModelGenPrompts
+    public class GuideDataGenModels
     {
         public static string ModelsV1(Specification spec)
         {

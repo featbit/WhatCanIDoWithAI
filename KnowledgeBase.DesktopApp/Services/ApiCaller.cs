@@ -1,10 +1,10 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
 using Microsoft.VisualBasic;
 using System.Reflection;
 using System.Text.Json;
 
-namespace KnowledgeBase.CodingAgent
+namespace FeatGen.CodingAgent
 {
     public class ApiCaller
     {

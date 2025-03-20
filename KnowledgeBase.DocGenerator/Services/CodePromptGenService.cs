@@ -1,12 +1,12 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator.Models;
-using KnowledgeBase.ReportGenerator.Prompts;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator.Models;
+using FeatGen.ReportGenerator.Prompts;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using Functionality = KnowledgeBase.Models.ReportGenerator.Functionality;
+using Functionality = FeatGen.Models.ReportGenerator.Functionality;
 
-namespace KnowledgeBase.ReportGenerator
+namespace FeatGen.ReportGenerator
 {
     public interface ICodePromptGenService
     {

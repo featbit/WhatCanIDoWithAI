@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.CodingAgent
+namespace FeatGen.CodingAgent
 {
     public class FileAgent
     {

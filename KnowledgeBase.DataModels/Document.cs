@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KnowledgeBase.Models
+namespace FeatGen.Models
 {
 
     public class Document

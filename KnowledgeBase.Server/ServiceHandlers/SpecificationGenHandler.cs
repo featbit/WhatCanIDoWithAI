@@ -1,9 +1,9 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using MediatR;
 
-namespace KnowledgeBase.Server.ServiceHandlers
+namespace FeatGen.Server.ServiceHandlers
 {
     public class SpecGenRequest : IRequest<Specification>
     {

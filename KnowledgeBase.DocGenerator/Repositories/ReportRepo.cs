@@ -1,10 +1,10 @@
 ﻿using Dapper;
-using KnowledgeBase.Models;
+using FeatGen.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using KnowledgeBase.Models.ReportGenerator;
+using FeatGen.Models.ReportGenerator;
 
-namespace KnowledgeBase.ReportGenerator
+namespace FeatGen.ReportGenerator
 {
     public interface IReportRepo
     {

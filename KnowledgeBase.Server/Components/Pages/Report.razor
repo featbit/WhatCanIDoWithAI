@@ -1,7 +1,14 @@
 ﻿@page "/report"
 @page "/report/{reportId}"
-@using KnowledgeBase.Client.Components
-@using KnowledgeBase.Models.ReportGenerator
+@using FeatGen
+@using FeatGen.Client
+@using FeatGen.Client.Components
+@using FeatGen.FeatureFlag
+@using FeatGen.Models
+@using FeatGen.Models.ReportGenerator
+@using FeatGen.ReportGenerator
+@using FeatGen.Server
+@using FeatGen.Server.Components
 @inject ISpecificationGenService specGenService
 @inject NavigationManager Navigation
 

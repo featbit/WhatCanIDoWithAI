@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.ReportGenerator.Models.GuidePrompts
+namespace FeatGen.ReportGenerator.Models.GuidePrompts
 {
     public class GuidePageItemMappingFeature
     {

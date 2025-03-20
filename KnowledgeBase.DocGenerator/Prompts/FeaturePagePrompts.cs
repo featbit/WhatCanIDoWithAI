@@ -1,8 +1,8 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using System.Text.Json;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
     public class FeaturePagePrompts
     {

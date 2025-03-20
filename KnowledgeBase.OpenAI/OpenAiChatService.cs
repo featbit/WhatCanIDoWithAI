@@ -3,7 +3,7 @@ using OpenAI;
 using OpenAI.Chat;
 using System.ClientModel;
 
-namespace KnowledgeBase.OpenAI
+namespace FeatGen.OpenAI
 {
     public interface IOpenAiChatService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace KnowledgeBase.ReportGenerator.Models
+namespace FeatGen.ReportGenerator.Models
 {
     public class SaaSFeature
     {

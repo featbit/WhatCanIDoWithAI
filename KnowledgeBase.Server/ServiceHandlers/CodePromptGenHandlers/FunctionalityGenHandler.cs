@@ -1,10 +1,10 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.Models;
-using KnowledgeBase.ReportGenerator;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.Models;
+using FeatGen.ReportGenerator;
 using MediatR;
-using KnowledgeBase.ReportGenerator.Models;
+using FeatGen.ReportGenerator.Models;
 
-namespace KnowledgeBase.Server.ServiceHandlers
+namespace FeatGen.Server.ServiceHandlers
 {
     public class FunctionalityGenRequest : IRequest<string>
     {

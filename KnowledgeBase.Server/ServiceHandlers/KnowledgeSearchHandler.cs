@@ -1,7 +1,7 @@
-﻿using KnowledgeBase.Server.Services;
+﻿using FeatGen.Server.Services;
 using MediatR;
 
-namespace KnowledgeBase.Server.ServiceHandlers
+namespace FeatGen.Server.ServiceHandlers
 {
     public class KnowledgeSearchRequest : IRequest<string>
     {

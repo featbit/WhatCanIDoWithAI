@@ -1,14 +1,14 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using System.Text.Json;
-using KnowledgeBase.ReportGenerator.Models.GuidePrompts;
+using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Collections.Generic;
-using KnowledgeBase.OpenAI;
+using FeatGen.OpenAI;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuideComponentGenPrompts
+    public class GuideCodeGenPageComponent
     {
         public static string V1(Specification spec, ReportCodeGuide rcg, string pageId, string pageComponentName, string apiCode, string cssCode)
         {
@@ -31,7 +31,7 @@ namespace KnowledgeBase.ReportGenerator.Prompts
 
                 ###{page_features}###
 
-                Here's API endpoints, functions and the fake data that the page can use for data exchange. This API endpoints are coded in the file `src/app/api/intelligent-qa.js`:
+                Here's API endpoints, functions and the fake data that the page can use for data exchange. This API endpoints are coded in the file `/app/api/intelligent-qa.js`:
 
                 ```javascript
                 ###{api_endpoints}###
@@ -156,7 +156,7 @@ namespace KnowledgeBase.ReportGenerator.Prompts
                 }
                 ```
                 
-                Page to be generated is located at folder "src/app/intelligent-qa/page.js" . Existing code in the NextJs page file:
+                Page to be generated is located at folder "/app/intelligent-qa/page.js" . Existing code in the NextJs page file:
                 
                 ```javascript
                 export default function ###{page_component_name}###() {  

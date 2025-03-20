@@ -65,7 +65,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
+      <ProjectReference Include="..\KnowledgeBase.DataModels\FeatGen.DataModels.csproj" />
     </ItemGroup>
 
 </Project>

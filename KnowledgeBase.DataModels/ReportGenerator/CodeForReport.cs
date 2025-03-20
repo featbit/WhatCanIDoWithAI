@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace KnowledgeBase.Models.ReportGenerator
+namespace FeatGen.Models.ReportGenerator
 {
     public class CodeForReport
     {

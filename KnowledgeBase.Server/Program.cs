@@ -1,10 +1,10 @@
 using FeatBit.Sdk.Server;
-using KnowledgeBase.FeatureFlag;
-using KnowledgeBase.Models;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.Server.Components;
-using KnowledgeBase.Server.Services;
-using KnowledgeBase.ReportGenerator;
+using FeatGen.FeatureFlag;
+using FeatGen.Models;
+using FeatGen.OpenAI;
+using FeatGen.Server.Components;
+using FeatGen.Server.Services;
+using FeatGen.ReportGenerator;
 using Microsoft.EntityFrameworkCore;
 
 // Set the OpenAI.Experimental.EnableOpenTelemetry context switch
@@ -64,7 +64,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(KnowledgeBase.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(FeatGen.Client._Imports).Assembly);
 
 app.MapControllers();
 

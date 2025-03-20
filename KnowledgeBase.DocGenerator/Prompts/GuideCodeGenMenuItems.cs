@@ -1,14 +1,14 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using System.Text.Json;
-using KnowledgeBase.ReportGenerator.Models.GuidePrompts;
+using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Collections.Generic;
-using KnowledgeBase.OpenAI;
+using FeatGen.OpenAI;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuideApiGenPrompts
+    public class GuideCodeGenMenuItems
     {
         public static string V1(Specification spec, ReportCodeGuide rcg, string pageId)
         {

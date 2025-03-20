@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.DesktopApp
+namespace FeatGen.DesktopApp
 {
     public class Tempo
     {

@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace KnowledgeBase.DesktopApp;
+namespace FeatGen.DesktopApp;
 
 [Application]
 public class MainApplication : MauiApplication

@@ -1,8 +1,8 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator;
 using MediatR;
 
-namespace KnowledgeBase.Server.ServiceHandlers
+namespace FeatGen.Server.ServiceHandlers
 {
     public class FeatureGenRequest : IRequest<string>
     {

@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.DesktopApp
+﻿namespace FeatGen.DesktopApp
 {
     public partial class MainPage : ContentPage
     {

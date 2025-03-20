@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.FeatureFlag
+﻿namespace FeatGen.FeatureFlag
 {
     public class FeatureFlagKeys
     {

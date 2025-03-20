@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace KnowledgeBase.DesktopApp;
+namespace FeatGen.DesktopApp;
 
 public class Program
 {

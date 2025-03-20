@@ -1,9 +1,9 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator.Models;
 using System.Text.Json;
 
-namespace KnowledgeBase.ReportGenerator
+namespace FeatGen.ReportGenerator
 {
     public interface ISpecificationGenService
     {
@@ -72,7 +72,7 @@ namespace KnowledgeBase.ReportGenerator
                 //string result = await antropicChatService.CompleteChatAsync(prompt, true);
                 string result = await openaiChatService.CompleteChatAsync(prompt, true);
                 ModuleDetail detail = JsonSerializer.Deserialize<ModuleDetail>(result);
-                return new KnowledgeBase.Models.ReportGenerator.Functionality
+                return new FeatGen.Models.ReportGenerator.Functionality
                 {
                     DetailDescription = detail.DetailDescription,
                     Id = moduleId,
@@ -83,7 +83,7 @@ namespace KnowledgeBase.ReportGenerator
 
             var functionalities = (await Task.WhenAll(tasks)).ToList();
 
-            List<KnowledgeBase.Models.ReportGenerator.Functionality> distinctedFunctionalities = new();
+            List<FeatGen.Models.ReportGenerator.Functionality> distinctedFunctionalities = new();
             for (int i = 0; i < functionalities.Count; i++)
             {
                 if (distinctedFunctionalities.All(f => f.Name != functionalities[i].Name))
@@ -190,7 +190,7 @@ namespace KnowledgeBase.ReportGenerator
                 Description = ff.FeatureDescription,
                 Name = ff.FeatureName,
                 MenuItem = ff.MenuItem,
-                Modules = ff.Functionalities.Select(f => new KnowledgeBase.Models.ReportGenerator.Functionality
+                Modules = ff.Functionalities.Select(f => new FeatGen.Models.ReportGenerator.Functionality
                 {
                     ShortDescription = f,
                     Id = Guid.NewGuid().ToString(),

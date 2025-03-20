@@ -1,5 +1,5 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuidePageGenPrompts
+    public class GuideDataGenPages
     {
         public static string PagesV1(Specification spec, string requirement)
         {

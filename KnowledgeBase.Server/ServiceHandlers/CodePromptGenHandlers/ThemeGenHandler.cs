@@ -1,11 +1,11 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator;
+﻿using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator;
 using MediatR;
 using System.Text.Json;
 
-namespace KnowledgeBase.Server.ServiceHandlers
+namespace FeatGen.Server.ServiceHandlers
 {
     public class ThemeGenRequest : IRequest<string>
     {

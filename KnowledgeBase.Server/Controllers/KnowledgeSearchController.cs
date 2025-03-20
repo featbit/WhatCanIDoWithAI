@@ -1,9 +1,9 @@
 ﻿using FeatBit.Sdk.Server;
-using KnowledgeBase.Server.ServiceHandlers;
+using FeatGen.Server.ServiceHandlers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KnowledgeBase.Server.Controllers
+namespace FeatGen.Server.Controllers
 {
     [Route("api/knwoledge-search")]
     [ApiController]

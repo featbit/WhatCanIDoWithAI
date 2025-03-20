@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.OpenAI
+﻿namespace FeatGen.OpenAI
 {
     public static class ResultCleanerExtensions
     {

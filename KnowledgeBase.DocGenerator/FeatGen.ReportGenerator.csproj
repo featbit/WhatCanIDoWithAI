@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KnowledgeBase.DataModels\KnowledgeBase.DataModels.csproj" />
-    <ProjectReference Include="..\KnowledgeBase.OpenAI\KnowledgeBase.OpenAI.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.DataModels\FeatGen.DataModels.csproj" />
+    <ProjectReference Include="..\KnowledgeBase.OpenAI\FeatGen.OpenAI.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace KnowledgeBase.FeatureFlag
+namespace FeatGen.FeatureFlag
 {
     public static class DefaultServices
     {

@@ -1,7 +1,7 @@
-﻿using KnowledgeBase.DesktopApp.StateContainers;
+﻿using FeatGen.DesktopApp.StateContainers;
 using Microsoft.Extensions.Logging;
 
-namespace KnowledgeBase.DesktopApp;
+namespace FeatGen.DesktopApp;
 
 public static class MauiProgram
 {

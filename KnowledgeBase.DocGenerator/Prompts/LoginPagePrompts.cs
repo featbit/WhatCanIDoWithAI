@@ -1,6 +1,6 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
+﻿using FeatGen.Models.ReportGenerator;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
     public class LoginPagePrompts
     {

@@ -1,12 +1,12 @@
 ﻿using FeatBit.Sdk.Server;
-using KnowledgeBase.Models;
-using KnowledgeBase.Server.ServiceHandlers;
+using FeatGen.Models;
+using FeatGen.Server.ServiceHandlers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
-namespace KnowledgeBase.Server.Controllers
+namespace FeatGen.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

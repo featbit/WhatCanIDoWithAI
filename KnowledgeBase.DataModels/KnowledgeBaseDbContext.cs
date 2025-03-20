@@ -1,9 +1,9 @@
-using KnowledgeBase.Models.ReportGenerator;
+using FeatGen.Models.ReportGenerator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace KnowledgeBase.Models
+namespace FeatGen.Models
 {
     public class KnowledgeBaseDbContext : DbContext
     {

@@ -1,14 +1,14 @@
-﻿using KnowledgeBase.DesktopApp.Components.Components.CodeGen;
-using KnowledgeBase.Models;
-using KnowledgeBase.Models.ReportGenerator;
+﻿using FeatGen.DesktopApp.Components.Components.CodeGen;
+using FeatGen.Models;
+using FeatGen.Models.ReportGenerator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Specification = KnowledgeBase.Models.ReportGenerator.Specification;
+using Specification = FeatGen.Models.ReportGenerator.Specification;
 
-namespace KnowledgeBase.DesktopApp.StateContainers
+namespace FeatGen.DesktopApp.StateContainers
 {
     public class CodeGenStateContainer
     {

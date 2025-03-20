@@ -1,9 +1,9 @@
-﻿using KnowledgeBase.Models.ReportGenerator;
-using KnowledgeBase.ReportGenerator.Models;
+﻿using FeatGen.Models.ReportGenerator;
+using FeatGen.ReportGenerator.Models;
 using System.Text.Json;
-using Functionality = KnowledgeBase.Models.ReportGenerator.Functionality;
+using Functionality = FeatGen.Models.ReportGenerator.Functionality;
 
-namespace KnowledgeBase.ReportGenerator.Prompts
+namespace FeatGen.ReportGenerator.Prompts
 {
     public class FunctionalityPrompts
     {

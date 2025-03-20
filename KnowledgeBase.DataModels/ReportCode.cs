@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using KnowledgeBase.Models.ReportGenerator;
+using FeatGen.Models.ReportGenerator;
 using System.Text.Json.Serialization;
 
-namespace KnowledgeBase.Models
+namespace FeatGen.Models
 {
     public class ReportCode
     {

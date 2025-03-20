@@ -5,7 +5,7 @@ using System.ClientModel;
 using System.Net;
 using System.Reflection;
 
-namespace KnowledgeBase.OpenAI
+namespace FeatGen.OpenAI
 {
     public interface IAntropicChatService
     {

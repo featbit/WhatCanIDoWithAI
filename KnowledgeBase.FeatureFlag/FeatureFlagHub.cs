@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace KnowledgeBase.FeatureFlag
+namespace FeatGen.FeatureFlag
 {
     public class FeatureFlagHub() : Hub
     {

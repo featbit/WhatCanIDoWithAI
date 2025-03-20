@@ -1,11 +1,11 @@
-﻿using KnowledgeBase.FeatureFlag;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator;
+﻿using FeatGen.FeatureFlag;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator;
 using MediatR;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KnowledgeBase.Server.Controllers
+namespace FeatGen.Server.Controllers
 {
     [Route("api/codeguide")]
     public class CodeGuideGenController(

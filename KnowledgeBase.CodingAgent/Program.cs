@@ -1,6 +1,6 @@
 ﻿
-using KnowledgeBase.CodingAgent;
-using KnowledgeBase.Models.ReportGenerator;
+using FeatGen.CodingAgent;
+using FeatGen.Models.ReportGenerator;
 
 
 const string reportId = "7a11797a-4f40-4fb5-bd43-f31a7e957df4";

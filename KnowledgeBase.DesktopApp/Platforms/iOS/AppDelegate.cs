@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace KnowledgeBase.DesktopApp;
+namespace FeatGen.DesktopApp;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate

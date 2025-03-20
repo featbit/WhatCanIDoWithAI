@@ -1,8 +1,8 @@
-﻿using KnowledgeBase.Models;
-using KnowledgeBase.OpenAI;
-using KnowledgeBase.ReportGenerator.Prompts;
+﻿using FeatGen.Models;
+using FeatGen.OpenAI;
+using FeatGen.ReportGenerator.Prompts;
 
-namespace KnowledgeBase.ReportGenerator
+namespace FeatGen.ReportGenerator
 {
     public interface ICodeGuideGenService
     {
@@ -24,7 +24,7 @@ namespace KnowledgeBase.ReportGenerator
         public async Task<string> GeneratePagesAsync(string reportId, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
-            string prompt = GuidePageGenPrompts.PagesV1(spec, requirement);
+            string prompt = GuideDataGenPages.PagesV1(spec, requirement);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             string result = await antropicChatService.CompleteChatWithJsonAsync(prompt);
@@ -41,7 +41,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetGuidAsync(reportId);
-            string prompt = GuidePageGenPrompts.MenuItems(spec, rcg);
+            string prompt = GuideDataGenPages.MenuItems(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, true);
             string result = await antropicChatService.CompleteChatAsync(prompt, true);
             await rcgRepo.UpsertGuideAsync(
@@ -57,7 +57,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetGuidAsync(reportId);
-            string prompt = GuideModelGenPrompts.ModelsV2(spec, rcg);
+            string prompt = GuideDataGenModels.ModelsV2(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             await rcgRepo.UpsertGuideAsync(
@@ -73,7 +73,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetGuidAsync(reportId);
-            string prompt = GuideModelGenPrompts.FakeData(spec, rcg);
+            string prompt = GuideDataGenModels.FakeData(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             await rcgRepo.UpsertGuideAsync(
@@ -89,7 +89,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetGuidAsync(reportId);
-            string prompt = GuideApiGenPrompts.V1(spec, rcg, pageId);
+            string prompt = GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
@@ -107,7 +107,7 @@ namespace KnowledgeBase.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetGuidAsync(reportId);
-            string prompt = GuideComponentGenPrompts.V1(spec, rcg, pageId, pageComponentName, apiCode, cssCode);
+            string prompt = GuideCodeGenPageComponent.V1(spec, rcg, pageId, pageComponentName, apiCode, cssCode);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;

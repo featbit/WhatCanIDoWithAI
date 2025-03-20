@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace KnowledgeBase.Models.ReportGenerator
+namespace FeatGen.Models.ReportGenerator
 {
     public class Specification
     {

@@ -2,7 +2,7 @@
 using FeatBit.Sdk.Server.Model;
 using System.Diagnostics;
 
-namespace KnowledgeBase.FeatureFlag
+namespace FeatGen.FeatureFlag
 {
     public static class EvaluateExtensions
     {

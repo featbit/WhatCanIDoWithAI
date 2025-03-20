@@ -1,8 +1,8 @@
-﻿using KnowledgeBase.Models;
+﻿using FeatGen.Models;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
 
-namespace KnowledgeBase.Server.Services
+namespace FeatGen.Server.Services
 {
     public interface IKeywordVectorSearchService
     {

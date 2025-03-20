@@ -1,4 +1,4 @@
-﻿namespace KnowledgeBase.CodingAgent
+﻿namespace FeatGen.CodingAgent
 {
     public class FileAgent
     {
