@@ -21,5 +21,20 @@
                 result = result.Substring(0, result.Length - 3);
             return result;
         }
+        public static string CleanJsonCodeQuote(this string result)
+        {
+            result = result.Trim();
+            if (result.StartsWith("```json"))
+                result = result.Replace("```json", "");
+            if (result.EndsWith("```"))
+                result = result.Substring(0, result.Length - 3);
+            return result;
+        }
+
+        public static string RemoveDQBetweenDQ(this string result)
+        {
+            var element = result.IndexOf("\"");
+            return "";
+        }
     }
 }

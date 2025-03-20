@@ -27,5 +27,9 @@ namespace KnowledgeBase.Models
         [Column("menu_items")]
         [JsonPropertyName("MenuItems")]
         public string MenuItems { get; set; }
+
+        [Column("fake_data_base")]
+        [JsonPropertyName("FakeDataBase")]
+        public string FakeDataBase { get; set; }
     }
 }

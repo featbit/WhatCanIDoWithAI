@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.ReportGenerator.Prompts
 {
-    public class SpecModelGenPrompts
+    public class GuideModelGenPrompts
     {
-        public static string Models(Specification spec)
+        public static string ModelsV1(Specification spec)
         {
             string rawPrompt = """
 
@@ -134,7 +134,7 @@ namespace KnowledgeBase.ReportGenerator.Prompts
             return prompt;
         }
 
-        public static string V2(Specification spec, ReportCodeGuide rcg)
+        public static string ModelsV2(Specification spec, ReportCodeGuide rcg)
         {
             string rawPrompt = """
                 ## Data Information
@@ -204,6 +204,67 @@ namespace KnowledgeBase.ReportGenerator.Prompts
                 .Replace("###{service_desc}###", spec.Definition)
                 .Replace("###{struct_pages}###", rcg.Pages)
                 .Replace("###{struct_menuitems}###", rcg.MenuItems);
+            return prompt;
+        }
+
+        public static string FakeData(Specification spec, ReportCodeGuide rcg)
+        {
+            string rawPrompt = """
+
+                ## Preparation and Data
+
+                We're design a software named "###{service_name}###". ###{service_desc}###.
+                
+                We have structured pages data which listed all the pages in the software. In this pages structures, it includes details like:
+                
+                - The description of features and functionalities of each page.
+                - The successor and predecessor pages of each page.
+                - The page design description of each page.
+
+                ###{struct_pages}###
+
+                We have data structures that listed all the definition of the models in the software. In models data structures, it includes details like:
+
+                - Model data strucutre in json format. Key is the field name and value is the type of the field.
+                - Which pages will use a model data structure. This represents that data logical relationship between pages and models.
+                - The reason of why the model data structure is designed like that.
+                - Database table schema script of that model in PostgreSQL format.
+                
+                ###{data_structure}###
+
+                ## Task
+
+                For each model that cross pages, generate fake data for the model. The fake data should be in JSON format and should be based on the model data structure. The fake data should be generated based on the model data structure and should be in JSON format.
+
+                Note:
+
+                - models have relationship with other models, the fake data should consider the consistency of the data between fake data of the models.
+
+                ## Output Format
+
+                Output should return only the fake data in JSON format without any explaination, markdown symboles and other characters. 
+
+                [
+                    {
+                        model_id: "", // unique id of model
+                        used_by_pages: [], // pages (page_id) that uses the model
+                        fake_data_reason: "", // the reason for generating the fake data
+                        fake_data": [
+                            {
+                                field_1: "value_of_filed_1", // field name as key, filed value as value - string type
+                                field_2: 1, // field name as key, filed value as value - integer type
+                                field_3: {}, // field name as key, field value could be in any format
+                            } // fake data of one row of a model
+                        ] // if fake data only contains one element, just insert one item in the array. If not, insert as many as possible.
+                    }, 
+                ]
+
+                """;
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{struct_pages}###", rcg.Pages)
+                .Replace("###{data_structure}###", rcg.Models);
             return prompt;
         }
     }

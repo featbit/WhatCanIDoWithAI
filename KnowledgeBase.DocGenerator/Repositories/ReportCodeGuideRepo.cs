@@ -10,12 +10,12 @@ namespace KnowledgeBase.ReportGenerator
     public interface IReportCodeGuideRepo
     {
         Task<ReportCodeGuide> GetGuidAsync(string reportId);
-        Task UpsertGuideAsync(string models, string pages, string menuItems, string reportId);
+        Task UpsertGuideAsync(string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "");
     }
 
     public class ReportCodeGuideRepo(KnowledgeBaseDbContext dbContext) : IReportCodeGuideRepo
     {
-        public async Task UpsertGuideAsync(string models, string pages, string menuItems, string reportId)
+        public async Task UpsertGuideAsync(string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "")
         {
             var rcg = await dbContext.ReportCodeGuides.FirstOrDefaultAsync(p => p.ReportId == Guid.Parse(reportId));
             if(rcg == null)
@@ -26,6 +26,7 @@ namespace KnowledgeBase.ReportGenerator
                     Models = models ?? "",
                     Pages = pages ?? "",
                     MenuItems = menuItems ?? "",
+                    FakeDataBase = fake_data_base ?? "",
                     ReportId = Guid.Parse(reportId)
                 };
                 dbContext.ReportCodeGuides.Add(rcg);
@@ -38,6 +39,8 @@ namespace KnowledgeBase.ReportGenerator
                     rcg.Pages = pages;
                 if (!string.IsNullOrWhiteSpace(menuItems))
                     rcg.MenuItems = menuItems;
+                if (!string.IsNullOrWhiteSpace(fake_data_base))
+                    rcg.FakeDataBase = fake_data_base;
                 dbContext.ReportCodeGuides.Update(rcg);
             }
             await dbContext.SaveChangesAsync();

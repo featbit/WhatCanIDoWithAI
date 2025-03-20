@@ -14,18 +14,6 @@ namespace KnowledgeBase.Server.Controllers
         IAntropicChatService antropicChatService,
         ICodeGuideGenService codeGuideService) : ControllerBase
     {
-        [HttpPost("project-models")]
-        [RequestTimeout(600)]
-        public async Task<IActionResult> ProjectModels([FromBody] CodeGuideRequest request)
-        {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
-
-            var result = await codeGuideService.GenerateDataModelsAsync(request.ReportId);
-            return Ok(result);
-        }
 
         [HttpPost("pages")]
         [RequestTimeout(600)]
@@ -53,11 +41,56 @@ namespace KnowledgeBase.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("project-models")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ProjectModels([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideService.GenerateDataModelsAsync(request.ReportId);
+            return Ok(result);
+        }
+
+        [HttpPost("fake-data-base")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> FakeDataBase([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideService.GenerateFakeDataBaseAsync(request.ReportId);
+            return Ok(result);
+        }
+
+        [HttpPost("api-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ApiCode([FromBody] CodeGuideCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideService.GenerateApiCodeAsync(request.ReportId, request.PageId);
+            return Ok(result);
+        }
+
         
     }
 
     public class CodeGuideRequest
     {
         public string ReportId { get; set; }
+    }
+
+    public class CodeGuideCodeRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase.ReportGenerator.Prompts
 {
-    public class SpecPageGenPrompts
+    public class GuidePageGenPrompts
     {
         public static string PagesV1(Specification spec, string requirement)
         {
@@ -39,7 +39,8 @@ namespace KnowledgeBase.ReportGenerator.Prompts
 
                 ## Output format
                 
-                Output should return only the data structure in JSON format without any explaination, markdown symboles and other characters. 
+                - Output should return only the data structure in JSON format without any explaination, markdown symboles and other characters.
+                - In the json value, shouldn't contain double quote ('"') character 
 
                 [
                     {
@@ -49,11 +50,11 @@ namespace KnowledgeBase.ReportGenerator.Prompts
                         "mapping_features": [
                             {
                                 "feature_name": "", // name of feature
-                                "feature_desc": "", // description of feature, should contains more than  250 characters
+                                "feature_desc": "", // description of feature, should contains more than  250 characters; feature description shouldn't contain double quote ('"') character 
                                 "feature_id": "", // id of feature described above
                                 "functionalities": [
                                     
-                                ] // list of functionalities with detailed description. Each functionality should contains more than  250 characters
+                                ] // list of functionalities with detailed description. Each functionality should contains more than  250 characters; functionality description shouldn't contain double quote ('"') character 
                             }
                         ],
                         "related_pages": [
@@ -62,7 +63,7 @@ namespace KnowledgeBase.ReportGenerator.Prompts
                                 "direction": "", // forward or backward. forward means from this page to related page, backward means from related page to this page
                             }
                         ],
-                        "page_design": "" // description of page design: 1. what elements or components should be included in the page; 2. Where elements and components should be positioned where in the page; 3. What actions should be triggered by user interactions; more than 250 characters
+                        "page_design": "" // description of page design: 1. what elements or components should be included in the page; 2. Where elements and components should be positioned where in the page; 3. What actions should be triggered by user interactions; more than 250 characters; 4. page design shouldn't contain double quote ('"') character;
                     }
                 ]
 

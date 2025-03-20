@@ -2,12 +2,15 @@
 using OpenAI;
 using OpenAI.Chat;
 using System.ClientModel;
+using System.Net;
+using System.Reflection;
 
 namespace KnowledgeBase.OpenAI
 {
     public interface IAntropicChatService
     {
         Task<string> CompleteChatAsync(string message, bool enforceJson = false);
+        Task<string> CompleteChatWithJsonAsync(string message);
     }
 
     public class AntropicChatService : IAntropicChatService
@@ -39,7 +42,26 @@ namespace KnowledgeBase.OpenAI
 
             string response = completion.Content[0].Text;
 
-            return enforceJson ? response.CleanResult() : response;
+            return enforceJson ? response.CleanJsonCodeQuote() : response;
+        }
+
+        public async Task<string> CompleteChatWithJsonAsync(string message)
+        {
+            // Add a system message instructing the model to return JSON format
+            ChatCompletion completion = await _chatClient.CompleteChatAsync(
+            [
+                new SystemChatMessage("You are a helpful assistant that always responds in valid JSON format. " +
+                                      "Your output should be properly formatted JSON that can be parsed by a standard JSON parser."),
+                new UserChatMessage(message)
+            ], new ChatCompletionOptions
+            {
+                ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
+            });
+
+            string response = completion.Content[0].Text;
+            
+            // Clean JSON response to ensure it's valid
+            return response.CleanJsonCodeQuote();
         }
     }
 }
