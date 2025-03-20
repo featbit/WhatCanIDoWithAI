@@ -11,7 +11,7 @@ namespace KnowledgeBase.ReportGenerator
         Task<string> GenerateDataModelsAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateFakeDataBaseAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement");
-        Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement")
+        Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement");
     }
 
     public class CodeGuideGenService(

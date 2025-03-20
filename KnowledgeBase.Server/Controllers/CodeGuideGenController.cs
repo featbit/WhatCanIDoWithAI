@@ -83,7 +83,7 @@ namespace KnowledgeBase.Server.Controllers
 
         [HttpPost("component-code")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> ApiCode([FromBody] CodeGuideComponentCodeRequest request)
+        public async Task<IActionResult> ComponentCode([FromBody] CodeGuideComponentCodeRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
             {
