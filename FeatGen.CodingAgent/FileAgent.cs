@@ -24,6 +24,12 @@ namespace FeatGen.CodingAgent
             System.IO.File.WriteAllText(filePath, newText);
         }
 
+        public static void CreateFolder(string folderPath)
+        {
+            if (!System.IO.Directory.Exists(folderPath))
+                System.IO.Directory.CreateDirectory(folderPath);
+        }
+
         public static async Task CreateAndInitFileAsync(string filePath, string newText)
         {
             await System.IO.File.WriteAllTextAsync(filePath, newText);

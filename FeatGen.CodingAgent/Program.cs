@@ -30,8 +30,11 @@ Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
 List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
 List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId);
 
+FileAgent.CreateFolder(generatedFileRootPath + "/apis");
+FileAgent.CreateFolder(generatedFileRootPath + "/css");
+FileAgent.CreateFolder(generatedFileRootPath + "/pages");
 
-for(int i = 0; i < menuItems.Count; i++)
+for (int i = 0; i < menuItems.Count; i++)
 {
     if (menuItems[i].menu_item != "history-management")
         continue;
@@ -42,9 +45,9 @@ for(int i = 0; i < menuItems.Count; i++)
 
     // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
 
-    //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
+    var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
     var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
-    //FileAgent.RewriteFileContent(apiCodePath, apiCode);
+    FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
     var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
 
@@ -52,6 +55,9 @@ for(int i = 0; i < menuItems.Count; i++)
 
     var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
     var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
-    var pageComponentPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}/page.js";
-    FileAgent.CreateAndInitFile(pageComponentPath, pageComponent);
+
+    var pageComponentFolderPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}";
+    var pageComponentFilePath = generatedFileRootPath + $"/pages/{menuItem.menu_item}/page.js";
+    FileAgent.CreateFolder(pageComponentFolderPath);
+    FileAgent.CreateAndInitFile(pageComponentFilePath, pageComponent);
 }
