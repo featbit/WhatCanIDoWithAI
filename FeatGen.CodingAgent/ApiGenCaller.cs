@@ -3,6 +3,7 @@ using FeatGen.Models.ReportGenerator;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.Json;
 
 namespace FeatGen.CodingAgent
@@ -20,6 +21,7 @@ namespace FeatGen.CodingAgent
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
 
                     var requestData = new
                     {
@@ -51,10 +53,10 @@ namespace FeatGen.CodingAgent
             }
         }
 
-        public static async Task<string> GenerateFunctionalityCodeAsync(
-            string reportId, string featureId, string moduleId)
+        public static async Task<string> Step9_2_GenerateGuidePageComponent(
+            string reportId, string pageId, string pageComponentName, string apiCode, string cssCode)
         {
-            string endpoint = _baseUrl + $"/api/reportgen/code/functionality";
+            string endpoint = _baseUrl + $"/api/codeguide/component-code";
 
             try
             {
@@ -63,11 +65,13 @@ namespace FeatGen.CodingAgent
                     client.BaseAddress = new Uri(_baseUrl);
                     client.Timeout = TimeSpan.FromSeconds(600);
 
-                    dynamic requestData = new
+                    var requestData = new
                     {
                         ReportId = reportId,
-                        FeatureId = featureId,
-                        ModuleId = moduleId
+                        PageId = pageId,
+                        PageComponentName = pageComponentName,
+                        ApiCode = apiCode,
+                        CssCode = cssCode
                     };
 
                     var content = new StringContent(
@@ -76,7 +80,6 @@ namespace FeatGen.CodingAgent
                         "application/json");
 
                     HttpResponseMessage response = await client.PostAsync(endpoint, content);
-
                     if (response.IsSuccessStatusCode)
                     {
                         return await response.Content.ReadAsStringAsync();

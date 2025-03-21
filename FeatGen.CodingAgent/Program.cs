@@ -2,6 +2,7 @@
 using FeatGen.CodingAgent;
 using FeatGen.Models.ReportGenerator;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
+using System.Reflection.Emit;
 
 
 const string projectName = "极新问答服务智能体系统";
@@ -29,7 +30,6 @@ Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
 List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
 List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId);
 
-// 9.1 Generate Guide API Endpoints based on filtered 1 and 4
 
 for(int i = 0; i < menuItems.Count; i++)
 {
@@ -39,11 +39,19 @@ for(int i = 0; i < menuItems.Count; i++)
 
     var menuItem = menuItems[i];
     var page = pages.FirstOrDefault(p => p.page_id == menuItem.page_id);
-    
+
+    // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
+
     //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
     var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
     //FileAgent.RewriteFileContent(apiCodePath, apiCode);
 
     var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
-}
 
+    // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
+
+    var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
+    var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
+    var pageComponentPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}/page.js";
+    FileAgent.CreateAndInitFile(pageComponentPath, pageComponent);
+}
