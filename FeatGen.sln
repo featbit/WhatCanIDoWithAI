@@ -2,31 +2,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Server", "KnowledgeBase.Server\FeatGen.Server.csproj", "{238126A3-38B5-7292-9C4E-72611C38D361}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Server", "FeatGen.Server\FeatGen.Server.csproj", "{238126A3-38B5-7292-9C4E-72611C38D361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Client", "KnowledgeBase.Client\FeatGen.Client.csproj", "{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Client", "FeatGen.Client\FeatGen.Client.csproj", "{D3D5FBC0-F0C0-B4B9-1EF6-DBB9F08D2A69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.ReportGenerator", "KnowledgeBase.DocGenerator\FeatGen.ReportGenerator.csproj", "{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.ReportGenerator", "FeatGen.DocGenerator\FeatGen.ReportGenerator.csproj", "{F2B5C33C-D56B-47CD-8384-DB35F9641DBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.OpenAI", "KnowledgeBase.OpenAI\FeatGen.OpenAI.csproj", "{551BA1DF-717B-4352-AA85-7B7AB0DBA223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.OpenAI", "FeatGen.OpenAI\FeatGen.OpenAI.csproj", "{551BA1DF-717B-4352-AA85-7B7AB0DBA223}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Aspire", "KnowledgeBase.Aspire\FeatGen.Aspire.csproj", "{7EC454F3-7400-4F06-B462-28378CA6294B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.Aspire", "FeatGen.Aspire\FeatGen.Aspire.csproj", "{7EC454F3-7400-4F06-B462-28378CA6294B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{E2CFD8A6-EACA-4863-B205-F6494583FB7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.ServiceDefaults", "KnowledgeBase.ServiceDefaults\FeatGen.ServiceDefaults.csproj", "{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.ServiceDefaults", "FeatGen.ServiceDefaults\FeatGen.ServiceDefaults.csproj", "{B0429BF7-A9D0-4DAD-98F1-C07EC719CAA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.DataModels", "KnowledgeBase.DataModels\FeatGen.DataModels.csproj", "{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.DataModels", "FeatGen.DataModels\FeatGen.DataModels.csproj", "{DAE61BB6-0657-5B4B-65DC-2BAC28C243AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.FeatureFlag", "KnowledgeBase.FeatureFlag\FeatGen.FeatureFlag.csproj", "{06FAF74E-E9FF-4020-A86D-720F7F6555F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.FeatureFlag", "FeatGen.FeatureFlag\FeatGen.FeatureFlag.csproj", "{06FAF74E-E9FF-4020-A86D-720F7F6555F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agent", "Agent", "{85D22485-3CDC-4BA3-85D9-73742FB00A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.CodingAgent", "KnowledgeBase.CodingAgent\FeatGen.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.CodingAgent", "FeatGen.CodingAgent\FeatGen.CodingAgent.csproj", "{5D0D1902-DDEA-5C79-C9F5-C24CF9962921}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeBase.DesktopApp", "KnowledgeBase.DesktopApp\KnowledgeBase.DesktopApp.csproj", "{E4E8D1A9-91EF-463B-B34A-661AB6F78B92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatGen.DesktopApp", "FeatGen.DesktopApp\FeatGen.DesktopApp.csproj", "{E4E8D1A9-91EF-463B-B34A-661AB6F78B92}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Archive", "Archive", "{0FABEC1B-FABB-436B-A86E-E9D2CAB261AE}"
 EndProject
