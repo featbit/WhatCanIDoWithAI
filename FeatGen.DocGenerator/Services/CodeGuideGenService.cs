@@ -100,16 +100,11 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
-            //string result = await openaiChatService.CompleteChatAsync(prompt, false);
+            string prompt = pageId == "login" ?
+                GuideCodeGenPageComponentApi.V1Login(spec, rcg, pageId) :
+                GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
-            //await rcgRepo.UpsertGuideAsync(
-            //    reportId,
-            //    pages: "",
-            //    menuItems: "",
-            //    models: "",
-            //    fake_data_base: result);
             return result;
         }
 
@@ -118,7 +113,9 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageComponent.V1(spec, rcg, pageId, pageComponentName, apiCode, cssCode);
+            string prompt = pageId == "login" ?
+                GuideCodeGenPageComponent.V1Login(spec, rcg, pageId, apiCode, cssCode) :
+                GuideCodeGenPageComponent.V1(spec, rcg, pageId, pageComponentName, apiCode, cssCode);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;

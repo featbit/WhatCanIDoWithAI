@@ -46,5 +46,18 @@ namespace FeatGen.CodingAgent
         {
             return System.IO.File.ReadAllText(filePath);
         }
+
+
+        public static async Task CreateAndUpsertFolderAndFileAsync(string folderPath, string fileName, string newText, bool replaceOldText)
+        {
+            CreateFolder(folderPath);
+            string filePath = folderPath + "/" + fileName;
+            bool fileExisits = System.IO.File.Exists(filePath);
+            if (!fileExisits)
+                System.IO.File.Create(filePath);
+            if (fileExisits && replaceOldText == false)
+                return;
+            await System.IO.File.WriteAllTextAsync(filePath, newText);
+        }
     }
 }
