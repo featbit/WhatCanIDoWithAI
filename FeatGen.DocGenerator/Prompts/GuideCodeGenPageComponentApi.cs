@@ -115,10 +115,10 @@ namespace FeatGen.ReportGenerator.Prompts
                 };
 
                 """;
-            var menuItemsString = rcg.MenuItems.CleanJsCodeQuote().CleanJsonCodeQuote();
+            var menuItemsString = rcg.MenuItems;
             var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
-            var pagesString = rcg.Pages.CleanJsCodeQuote().CleanJsonCodeQuote();
+            var pagesString = rcg.Pages;
             var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);

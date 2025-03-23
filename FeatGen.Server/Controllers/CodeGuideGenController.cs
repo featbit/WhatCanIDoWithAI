@@ -12,7 +12,7 @@ namespace FeatGen.Server.Controllers
         IFeatureFlagService flagService,
         ISender mediator,
         IAntropicChatService antropicChatService,
-        ICodeGuideGenService codeGuideService,
+        ICodeGuideGenService codeGuideGenService,
         ICodeGuideFetchService codeGuideFetchService) : ControllerBase
     {
 
@@ -25,7 +25,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GeneratePagesAsync(request.ReportId);
+            var result = await codeGuideGenService.GeneratePagesAsync(request.ReportId);
             return Ok(result);
         }
 
@@ -51,7 +51,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateMenuItemsAsync(request.ReportId);
+            var result = await codeGuideGenService.GenerateMenuItemsAsync(request.ReportId);
             return Ok(result);
         }
 
@@ -64,7 +64,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateMenuItemsCodeAysnc(request.ReportId);
+            var result = await codeGuideGenService.GenerateMenuItemsCodeAysnc(request.ReportId);
             return Ok(result);
         }
 
@@ -90,7 +90,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateDataModelsAsync(request.ReportId);
+            var result = await codeGuideGenService.GenerateDataModelsAsync(request.ReportId);
             return Ok(result);
         }
 
@@ -103,7 +103,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateFakeDataBaseAsync(request.ReportId);
+            var result = await codeGuideGenService.GenerateFakeDataBaseAsync(request.ReportId);
             return Ok(result);
         }
 
@@ -116,7 +116,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateApiCodeAsync(request.ReportId, request.PageId);
+            var result = await codeGuideGenService.GenerateApiCodeAsync(request.ReportId, request.PageId);
             return Ok(result);
         }
 
@@ -130,10 +130,39 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
 
-            var result = await codeGuideService.GenerateComponentCodeAsync(
+            var result = await codeGuideGenService.GenerateComponentCodeAsync(
                 request.ReportId, request.PageId, request.PageComponentName, request.ApiCode, request.CssCode);
             return Ok(result);
         }
+
+        [HttpPost("user-manual-page")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> UserManualByPage([FromBody] CodeGuideUserManualRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideGenService.GenerateUserManualByPage(
+                request.ReportId, request.PageId, request.PageComponent);
+            return Ok(result);
+        }
+
+        [HttpPost("application-form")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ApplicationForm([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideGenService.GenerateApplicationForm(request.ReportId);
+            return Ok(result);
+        }
+
+        
     }
 
     public class CodeGuideRequest
@@ -154,5 +183,12 @@ namespace FeatGen.Server.Controllers
         public string PageComponentName { get; set; }
         public string ApiCode { get; set; }
         public string CssCode { get; set; }
+    }
+
+    public class CodeGuideUserManualRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string PageComponent { get; set; }
     }
 }

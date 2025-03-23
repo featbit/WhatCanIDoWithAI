@@ -48,6 +48,8 @@ namespace FeatGen.ReportGenerator.Prompts
                 Page to be generated is located at folder "/app/###{menu_item}###/page.js" . Existing code in the NextJs page file:
                 
                 ```javascript
+                "use client";
+                
                 import { 
                 } from '@/app/apis/###{page_component_name}###';
 

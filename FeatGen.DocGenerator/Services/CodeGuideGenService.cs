@@ -13,6 +13,8 @@ namespace FeatGen.ReportGenerator
         Task<string> GenerateFakeDataBaseAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement");
         Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement");
+        Task<string> GenerateUserManualByPage(string reportId, string pageId, string pageComponent, string requirement = "no additional requirement");
+        Task<string> GenerateApplicationForm(string reportId);
     }
 
     public class CodeGuideGenService(
@@ -119,8 +121,27 @@ namespace FeatGen.ReportGenerator
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
-            
+
         }
-        
+
+        public async Task<string> GenerateUserManualByPage(string reportId, string pageId, string pageComponent, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+            string prompt = GuideSpecGenHeading2.V1(spec, rcg, pageId, pageComponent);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanMarkdownCodeQuote();
+            return result;
+        }
+
+        public async Task<string> GenerateApplicationForm(string reportId)
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+            string prompt = GuideApplyFormGen.V1(spec, rcg);
+            string result = await openaiChatService.CompleteChatAsync(prompt, false);
+            return result;
+        }
+
     }
 }

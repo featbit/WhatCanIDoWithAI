@@ -17,7 +17,8 @@ namespace FeatGen.ReportGenerator
     public class SpecificationGenService(
         IOpenAiChatService openaiChatService,
         IAntropicChatService antropicChatService,
-        IReportRepo reportRepo) : ISpecificationGenService
+        IReportRepo reportRepo,
+        IReportCodeGuideRepo rcgRepo) : ISpecificationGenService
     {
         public async Task<Specification> GetSpecificationByReportIdAsync(string id)
         {
@@ -242,5 +243,6 @@ namespace FeatGen.ReportGenerator
 
             return JsonSerializer.Deserialize<Definition>(result);
         }
+    
     }
 }
