@@ -22,28 +22,34 @@ using System.Reflection.Emit;
 
 
 
-const string projectName = "极新会议服务机器人系统";
+const string projectName = "无人机寻向仪用户交互系统";
+int startStepAt = 9, stopStepAt = 9;
+
+if(startStepAt <= 0 && stopStepAt >= 0)
+{
+    await ApiGenCaller.Step0_SpecificationGen(projectName);
+}
 
 
-//await ApiGenCaller.Step0_SpecificationGen(projectName);
 
-//return;
-
-
-const string reportId = "b197a9ff-aec7-4cab-a9c6-a56a6ef678eb";
+const string reportId = "83c52629-c44b-4004-a26b-cbe37f042c8b";
 const string codingRootPath = @"C:/Code/featgen/featgen";
 const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
 const string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName +"/featgen/src/app";
 const string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
 
 
-// step 1
-//await ApiGenCaller.Step1_GuidePages(reportId);
+if (startStepAt <= 1 && stopStepAt >= 1)
+{
+    //step 1
+    await ApiGenCaller.Step1_GuidePages(reportId);
+}
 
-// step 4
-//await ApiGenCaller.Step4_GuideMenuItems(reportId);
-
-//return;
+if (startStepAt <= 4 && stopStepAt >= 4)
+{
+    //step 4
+    await ApiGenCaller.Step4_GuideMenuItems(reportId);
+}
 
 Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
 List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
@@ -56,27 +62,40 @@ FileAgent.CreateFolder(generatedFileRootPath + "/pages");
 
 var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
 
-// step 5
-//string guideMenuItemsCode = await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
-//FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
+if (startStepAt <= 5 && stopStepAt >= 5)
+{
+    // step 5
+    string guideMenuItemsCode = await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
+    FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
+}
 
-//return;
+if (startStepAt <= 6 && stopStepAt >= 6)
+{
+    // step 6
+    await ApiGenCaller.Step6_GenerateDataModel(reportId);
+}
 
-// step 6
-await ApiGenCaller.Step6_GenerateDataModel(reportId);
 
-// step 8 special menu item - login
-// await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+if (startStepAt <= 8 && stopStepAt >= 8)
+{
+    // step 8 special menu item - login
+    //await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+}
 
-// step 9
-await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode);
+
+if (startStepAt <= 9 && stopStepAt >= 9)
+{
+    // step 9
+    await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode);
+
+    await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
+
+}
+
+//string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
+//FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
 
 return;
-
-//await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
-
-string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
-FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
 
 async Task WriteCodeToNextJsProject(string folderPath, string fileName, string code)
 {
@@ -115,7 +134,7 @@ async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specific
         await writer.WriteLineAsync();
         await writer.WriteLineAsync();
 
-        for (int i = 0; i < menuItems.Count; i++)
+        for (int i = 2; i < menuItems.Count; i++)
         {
             var menuItem = menuItems[i];
 

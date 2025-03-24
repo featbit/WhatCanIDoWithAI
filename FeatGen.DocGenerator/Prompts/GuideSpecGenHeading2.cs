@@ -46,7 +46,8 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 Note:
 
-                - You should contains one heading 2 section and multiple heading 3 sections.
+                - You should generate only one heading 2 section
+                - If needed, you should generate multiple heading 3 sections. This is optional
                 - You should consider that each heading 3 section can have one or multiple screenshots of the software interface.
                 - You can write steps of using a feature in the software interface, but don't write too much details for the steps.
 
@@ -108,8 +109,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{service_desc}###", spec.Definition)
                 .Replace("###{main_page}###", mainPageString)
                 .Replace("###{sub_pages}###", subPageString)
-                .Replace("###{page_component}###", subPageString)
-                .Replace("###{api_endpoints}###", pageComponent)
+                .Replace("###{page_component}###", pageComponent)
                 .Replace("###{page_name}###", mainPage.page_name);
             
             return prompt;
@@ -119,38 +119,98 @@ namespace FeatGen.ReportGenerator.Prompts
         /// this is because of the V1 generated too much details, maybe we can randomly generate doc between 1 and 2
         /// v2 is just reused the structured page data to generate docs
         /// </summary>
-        public void V2UseGeneratedPageFeatureFunctionalityDescription(Specification spec, ReportCodeGuide rcg, string pageId)
+        public static string V2UseGeneratedPageFeatureFunctionalityDescription(Specification spec, ReportCodeGuide rcg, string pageId, string pageComponent)
         {
+            string rawPrompt = """
+
+                ## Context
+                
+                We have programmed a software named "###{service_name}###". ###{service_desc}###. 
+
+                We've already code for each feature and a speicification. We need to write a software User Manual based on structured page specification and the existing code. The objectif is to make the specification and code to be consistence in the User Manual.
+
+                We don't write them all together, we write User Manual page by page. 
+
+                ## Page Specification Data
+                
+                ###{pages_description}###
+
+                ## Existing code
+
+                Front-end code:
+
+                ```javascript
+                ###{page_component}###
+                ```
+
+                ## Task
+
+                You need to generate the content for chapter ###{page_name}### of  User Manual of ###{service_name}###
+
+                - Heading 2 title: ###{heading_2_title}###
+                - Heading 2 description: ###{heading_2_description}###
+
+                Note:
+
+                - You should contains one heading 2 with 0 to multiple heading 3 sections.
+                - You should consider that each heading 3 section can have one or multiple screenshots of the software interface.
+                - You can write steps of using a feature in the software interface, but don't write too much details for the steps.
+
+
+
+                ## Output format
+                
+                Return the pure document text only without any explaination, table and code. The text should be in Markdown format for headings.
+
+                ## Output example
+
+                ```md
+                ## ###{heading_2_title}###
+                
+                ###{heading_2_description}###
+                
+                ### 关于此章节的某个 Feature 的描述
+                
+                ###{heading_2_f1_description}###
+                
+                ```
+
+                """;
+
             var menuItemsString = rcg.MenuItems;
             var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var menuItem = menuItems.FirstOrDefault(p => p.page_id == pageId);
 
             var pagesString = rcg.Pages;
             var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
             mainPage.page_design = "";
-            string mainPageString = JsonSerializer.Serialize<GuidePageItem>(
-                mainPage, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
-
-            var subPages = allPages.Where(p =>
-                 mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
-                 menuItems.All(m => m.page_id != p.page_id)).ToList();
-            foreach (var item in subPages)
-            {
-                item.page_design = "";
-            }
-            string subPageString = (subPages != null && subPages.Count > 0) ?
-                JsonSerializer.Serialize<List<GuidePageItem>>(
-                subPages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) }) :
-                "";
-
+            var subPages = allPages.Where(p => 
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id))
+                .Select(p=> {
+                    p.page_design = "";
+                    return p;
+                 }).ToList();
             var pages = new List<GuidePageItem>() { mainPage };
             pages.AddRange(subPages);
-            //ToString do
 
-            //    在实现这个部分前，需要在 strucutured page 的 json 里为每一个 page 加一个总 description,要不然文档没法写啊。
+            string pagesDescription = JsonSerializer.Serialize<List<GuidePageItem>>(
+                pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
-            //在 api simulation 的部分，最好是动态生成数据，不要 hard code。且最好还是有一个统一的地方管理基础用户数据吧...
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{pages_description}###", pagesDescription)
+                .Replace("###{page_component}###", pageComponent)
+                .Replace("###{page_name}###", mainPage.page_name)
+                .Replace("###{heading_2_title}###", menuItem.menu_name)
+                .Replace("###{heading_2_description}###", mainPage.page_description)
+                .Replace("###{heading_2_f1_description}###", mainPage.mapping_features[0].feature_desc);
+
+            return prompt;
         }
 
     }

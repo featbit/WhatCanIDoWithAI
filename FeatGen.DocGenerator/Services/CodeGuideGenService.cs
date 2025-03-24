@@ -128,8 +128,10 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideSpecGenHeading2.V1(spec, rcg, pageId, pageComponent);
-            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string prompt = GuideSpecGenHeading2.V1(spec, rcg, pageId, pageComponent);
+            string prompt = GuideSpecGenHeading2.V2UseGeneratedPageFeatureFunctionalityDescription(spec, rcg, pageId, pageComponent);
+            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            string result = await openaiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanMarkdownCodeQuote();
             return result;
         }

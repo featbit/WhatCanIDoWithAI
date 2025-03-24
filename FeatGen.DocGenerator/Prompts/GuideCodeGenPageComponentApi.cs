@@ -50,6 +50,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - You can update existing models data structure by adding new fileds, but not removing or modifying existing fields.
                 - All code will be stored in the file /apis/###{page_id}###/page.js 
                 - This is an NextJs project. So the API endpoints functions needed to be abled to export that other components can call this function.
+                - Write data simulation program to generate dynamically fake and simulation data instead of hard code fake and simulation data.
 
                 ## Output Format
 
