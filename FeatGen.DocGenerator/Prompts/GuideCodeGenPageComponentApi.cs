@@ -122,12 +122,10 @@ namespace FeatGen.ReportGenerator.Prompts
             var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+
             var subPages = allPages.Where(p =>
-                    p.related_pages.Any(p => p.page_id == pageId) &&
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
                     menuItems.All(m => m.page_id != p.page_id)).ToList();
-            var otherMainPages = allPages.Where(p =>
-                    menuItems.Any(m => m.page_id == p.page_id) &&
-                    p.page_id != mainPage.page_id).ToList();
 
             var pages = new List<GuidePageItem>() { mainPage };
             pages.AddRange(subPages);

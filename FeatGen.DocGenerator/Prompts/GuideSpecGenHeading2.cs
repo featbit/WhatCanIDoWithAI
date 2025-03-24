@@ -119,13 +119,38 @@ namespace FeatGen.ReportGenerator.Prompts
         /// this is because of the V1 generated too much details, maybe we can randomly generate doc between 1 and 2
         /// v2 is just reused the structured page data to generate docs
         /// </summary>
-        public void V2UseGeneratedPageFeatureFunctionalityDescription()
+        public void V2UseGeneratedPageFeatureFunctionalityDescription(Specification spec, ReportCodeGuide rcg, string pageId)
         {
-            ToString do
+            var menuItemsString = rcg.MenuItems;
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
-                在实现这个部分前，需要在 strucutured page 的 json 里为每一个 page 加一个总 description,要不然文档没法写啊。
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
-            在 api simulation 的部分，最好是动态生成数据，不要 hard code。且最好还是有一个统一的地方管理基础用户数据吧...
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            mainPage.page_design = "";
+            string mainPageString = JsonSerializer.Serialize<GuidePageItem>(
+                mainPage, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var subPages = allPages.Where(p =>
+                 mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                 menuItems.All(m => m.page_id != p.page_id)).ToList();
+            foreach (var item in subPages)
+            {
+                item.page_design = "";
+            }
+            string subPageString = (subPages != null && subPages.Count > 0) ?
+                JsonSerializer.Serialize<List<GuidePageItem>>(
+                subPages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) }) :
+                "";
+
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+            //ToString do
+
+            //    在实现这个部分前，需要在 strucutured page 的 json 里为每一个 page 加一个总 description,要不然文档没法写啊。
+
+            //在 api simulation 的部分，最好是动态生成数据，不要 hard code。且最好还是有一个统一的地方管理基础用户数据吧...
         }
 
     }

@@ -67,6 +67,7 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 - You can replace the existing items in the existing code.
                 - Please don't change the name of exporting variable "export const menuItems".
+                - Svg Icon style should be consistence with "###{service_name}###"
 
                 ## Output format
 

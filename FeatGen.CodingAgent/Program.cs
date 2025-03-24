@@ -5,13 +5,6 @@ using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Reflection.Emit;
 
 
-const string projectName = "极新问答服务智能体系统";
-const string reportId = "27930335-8764-4921-af24-7a5af46ac9b1";
-const string codingRootPath = @"C:/Code/featgen/featgen";
-const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
-const string nextjsFileRootPath = @"C:/Code/featgen/featgen/src/app";
-const string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
-
 
 // z. check folders
 // 0. Generate Basic Specification
@@ -22,11 +15,35 @@ const string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectN
 // 5. Generate Menu Items Code based on 4 
 // 6. Generate Guide Data Models based on 1 
 // 7. Generate Guide Fake Data based on 1 & 4
-// 8. Generate Folder and Files for each page in menu items based on 4 & 1 (menu path and page id value are not equal, so we need to do something to match them)
+// 8. Generate login page
 // 9. For each page in menu items:
 // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-// 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3 
+// 9.2 Generate Page Component Code based on filtered 9.1, 6, filtered 1 and filtered 3 
 
+
+
+const string projectName = "极新会议服务机器人系统";
+
+
+//await ApiGenCaller.Step0_SpecificationGen(projectName);
+
+//return;
+
+
+const string reportId = "b197a9ff-aec7-4cab-a9c6-a56a6ef678eb";
+const string codingRootPath = @"C:/Code/featgen/featgen";
+const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
+const string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName +"/featgen/src/app";
+const string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
+
+
+// step 1
+//await ApiGenCaller.Step1_GuidePages(reportId);
+
+// step 4
+//await ApiGenCaller.Step4_GuideMenuItems(reportId);
+
+//return;
 
 Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
 List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
@@ -36,13 +53,25 @@ FileAgent.CreateFolder(generatedFileRootPath + "/apis");
 FileAgent.CreateFolder(generatedFileRootPath + "/css");
 FileAgent.CreateFolder(generatedFileRootPath + "/pages");
 
-//var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
 
-// special menu item - login
-//await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
 
-// menu items
-//await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems);
+// step 5
+//string guideMenuItemsCode = await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
+//FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
+
+//return;
+
+// step 6
+await ApiGenCaller.Step6_GenerateDataModel(reportId);
+
+// step 8 special menu item - login
+// await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+
+// step 9
+await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode);
+
+return;
 
 //await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
 
@@ -151,9 +180,9 @@ static async Task GenSpecialMenuItemLogin(string reportId, string generatedFileR
     FileAgent.CreateAndInitFile(loginPageComponentFolderPath + "/page.js", loginPageComponent);
 }
 
-async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems)
+async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string cssCode)
 {
-    for (int i = 3; i < menuItems.Count; i++)
+    for (int i = 0; i < menuItems.Count; i++)
     {
         var menuItem = menuItems[i];
 
@@ -162,18 +191,18 @@ async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath,
             var page = pages.FirstOrDefault(p => p.page_id == menuItem.page_id);
 
             // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-            //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
+            var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
             var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
-            //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+            FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
             var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
             await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{menuItem.menu_item}.js", savedApiCode);
 
             // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
-            //var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
+            var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
             var pageComponentFolderPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}";
-            //FileAgent.CreateFolder(pageComponentFolderPath);
-            //FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
+            FileAgent.CreateFolder(pageComponentFolderPath);
+            FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
 
             var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
             await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{menuItem.menu_item}", "page.js", savedPageComponent);
@@ -185,18 +214,18 @@ async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath,
             {
                 var subMenuItem = subMenuItems[j];
                 // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-                //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
+                var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
                 var apiCodePath = generatedFileRootPath + $"/apis/{subMenuItem.menu_item}.js";
-                //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+                FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
                 var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
                 await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{subMenuItem.menu_item}.js", savedApiCode);
 
                 // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
-                //var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, cssCode);
+                var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, cssCode);
                 var pageComponentFolderPath = generatedFileRootPath + $"/pages/{subMenuItem.menu_item}";
-                //FileAgent.CreateFolder(pageComponentFolderPath);
-                //FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
+                FileAgent.CreateFolder(pageComponentFolderPath);
+                FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
 
                 var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
                 await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{subMenuItem.menu_item}", "page.js", savedPageComponent);

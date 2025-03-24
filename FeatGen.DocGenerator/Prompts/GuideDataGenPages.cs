@@ -46,15 +46,15 @@ namespace FeatGen.ReportGenerator.Prompts
                     {
                         "page_id": "", // id of page
                         "page_name": "", // name of page
-                        "page_description": "", // name of menu item displayed in the menu bar
+                        "page_description": "", // description of the feature, could be a summary of all mapping features. Should contain more than 200 characters.
                         "mapping_features": [
                             {
                                 "feature_name": "", // name of feature
-                                "feature_desc": "", // description of feature, should contains more than  250 characters; feature description shouldn't contain double quote ('"') character 
+                                "feature_desc": "", // description of feature, should contain more than  200 characters; feature description shouldn't contain double quote ('"') character 
                                 "feature_id": "", // id of feature described above
                                 "functionalities": [
                                     
-                                ] // list of functionalities with detailed description. Each functionality should contains more than  250 characters; functionality description shouldn't contain double quote ('"') character 
+                                ] // list of functionalities with detailed description. Each functionality should contains more than  200 characters; functionality description shouldn't contain double quote ('"') character 
                             }
                         ],
                         "related_pages": [
@@ -73,7 +73,7 @@ namespace FeatGen.ReportGenerator.Prompts
                     {
                         "page_id": "history-management", 
                         "page_name": "Chat History",
-                        "page_description": "in a chatbot system, there should be a page to list all chat dialog history. by click on one row, should be navigated to that specific chat dialog to see existing dialog. this page should also be able to add new dialog to do chat with AI assistant", 
+                        "page_description": "in a chatbot system, there should be a page to list all chat dialog history. by click on one row, should be navigated to that specific chat dialog to see existing dialog. this page should also be able to add new dialog to do chat with AI assistant. if the text is not enough long, add more description", 
                         "mapping_features": [
                             {
                                 "feature_name": "历史记录管理模块",
@@ -97,7 +97,7 @@ namespace FeatGen.ReportGenerator.Prompts
                     {
                         "page_id": "intelligent-qa", 
                         "page_name": "Chat Dialog",
-                        "page_description": "the page to chat with AI for asking questions and get feedbacks. It should be multiple turn round talks. if this is a existing dialog, should load talk history", 
+                        "page_description": "the page to chat with AI for asking questions and get feedbacks. It should be multiple turn round talks. if this is a existing dialog, should load talk history. if the text is not enough long, add more description.", 
                         "mapping_features": [
                             {
                                 "feature_name": "智能问答",
