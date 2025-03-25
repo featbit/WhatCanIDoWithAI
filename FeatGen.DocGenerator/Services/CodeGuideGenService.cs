@@ -11,6 +11,7 @@ namespace FeatGen.ReportGenerator
         Task<string> GenerateMenuItemsCodeAysnc(string reportId);
         Task<string> GenerateDataModelsAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateFakeDataBaseAsync(string reportId, string requirement = "no additional requirement");
+        Task<string> ExtractImportantMemoryDBCodeAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement");
         Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement");
         Task<string> GenerateUserManualByPage(string reportId, string pageId, string pageComponent, string requirement = "no additional requirement");
@@ -36,7 +37,8 @@ namespace FeatGen.ReportGenerator
                 pages: result,
                 menuItems: "",
                 models: "",
-                fake_data_base: "");
+                fake_data_base: "",
+                extract_db_ds: "");
             return result;
         }
 
@@ -52,7 +54,8 @@ namespace FeatGen.ReportGenerator
                 pages: "",
                 menuItems: result.CleanJsCodeQuote(),
                 models: "",
-                fake_data_base: "");
+                fake_data_base: "",
+                extract_db_ds: "");
             return result;
         }
 
@@ -78,7 +81,8 @@ namespace FeatGen.ReportGenerator
                 pages: "",
                 menuItems: "",
                 models: result,
-                fake_data_base: "");
+                fake_data_base: "",
+                extract_db_ds: "");
             return result;
         }
 
@@ -86,17 +90,38 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideDataGenModels.FakeData(spec, rcg);
-            //string result = await openaiChatService.CompleteChatAsync(prompt, false);
+            //string prompt = GuideDataGenModels.FakeData(spec, rcg);
+            string prompt = GuideDataGenModels.MemoryDB(spec, rcg);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
                 pages: "", 
                 menuItems: "",
                 models: "",
-                fake_data_base: result);
+                fake_data_base: result,
+                extract_db_ds: "");
             return result;
         }
+
+        public async Task<string> ExtractImportantMemoryDBCodeAsync(string reportId, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+            string prompt = GuideDataGenModels.ExtractImportantMemoryDBCode(rcg);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            await rcgRepo.UpsertGuideAsync(
+                reportId,
+                pages: "",
+                menuItems: "",
+                models: "",
+                fake_data_base: "",
+                extract_db_ds: result);
+            return result;
+        }
+
+        
 
         public async Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement")
         {
@@ -104,7 +129,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = pageId == "login" ?
                 GuideCodeGenPageComponentApi.V1Login(spec, rcg, pageId) :
-                GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
+                GuideCodeGenPageComponentApi.V2WithMemoryDB(spec, rcg, pageId);
+                //GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
@@ -130,8 +156,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideSpecGenHeading2.V1(spec, rcg, pageId, pageComponent);
             string prompt = GuideSpecGenHeading2.V2UseGeneratedPageFeatureFunctionalityDescription(spec, rcg, pageId, pageComponent);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
-            string result = await openaiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanMarkdownCodeQuote();
             return result;
         }

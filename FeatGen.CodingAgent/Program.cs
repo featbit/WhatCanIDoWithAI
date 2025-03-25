@@ -19,20 +19,22 @@ using System.Reflection.Emit;
 // 9. For each page in menu items:
 // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
 // 9.2 Generate Page Component Code based on filtered 9.1, 6, filtered 1 and filtered 3 
+// 10. Generate New User Manual based on 1, 4, 9
+// 11. Generate Application Form based on 1, 4, 9
 
 
 
-const string projectName = "无人机寻向仪用户交互系统";
-int startStepAt = 9, stopStepAt = 9;
+const string projectName = "无人机红外图像识别系统";
+int startStepAt = 11, stopStepAt = 11;
 
 if(startStepAt <= 0 && stopStepAt >= 0)
 {
     await ApiGenCaller.Step0_SpecificationGen(projectName);
 }
 
+//return;
 
-
-const string reportId = "83c52629-c44b-4004-a26b-cbe37f042c8b";
+const string reportId = "cefe05e7-8b28-4414-a01a-032d0888cbf4";
 const string codingRootPath = @"C:/Code/featgen/featgen";
 const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
 const string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName +"/featgen/src/app";
@@ -75,6 +77,13 @@ if (startStepAt <= 6 && stopStepAt >= 6)
     await ApiGenCaller.Step6_GenerateDataModel(reportId);
 }
 
+if (startStepAt <= 7 && stopStepAt >= 7)
+{
+    // step 7
+    await ApiGenCaller.Step7_GenerateFakeDataBase(reportId);
+    await ApiGenCaller.Step7_ExtractFakeDataBase(reportId);
+}
+
 
 if (startStepAt <= 8 && stopStepAt >= 8)
 {
@@ -87,15 +96,21 @@ if (startStepAt <= 9 && stopStepAt >= 9)
 {
     // step 9
     await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode);
-
-    await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
-
 }
 
-//string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
-//FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
+if (startStepAt <= 10 && stopStepAt >= 10)
+{
+    // step 10
+    await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
+}
 
-return;
+if (startStepAt <= 11 && stopStepAt >= 11)
+{
+    // step 11
+    string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
+    FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
+}
+
 
 async Task WriteCodeToNextJsProject(string folderPath, string fileName, string code)
 {
@@ -134,9 +149,12 @@ async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specific
         await writer.WriteLineAsync();
         await writer.WriteLineAsync();
 
-        for (int i = 2; i < menuItems.Count; i++)
+        for (int i = 0; i < menuItems.Count; i++)
         {
             var menuItem = menuItems[i];
+
+            if (menuItem.menu_item != "target-recognition-alarm")
+                continue;
 
             if (menuItem.sub_menu_items != null && menuItem.sub_menu_items.Count > 0)
             {
@@ -159,6 +177,7 @@ async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specific
                     {
                         Console.WriteLine($"Error: PageId: {menuItem.page_id};");
                         Console.WriteLine(exp.Message);
+                        return;
                     }
                 }
             }
@@ -179,6 +198,7 @@ async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specific
                 {
                     Console.WriteLine($"Error: PageId: {menuItem.page_id};");
                     Console.WriteLine(exp.Message);
+                    break;
                 }
             }
         }
@@ -210,12 +230,12 @@ async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath,
             var page = pages.FirstOrDefault(p => p.page_id == menuItem.page_id);
 
             // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-            var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
+            //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
             var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
-            FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+            //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
             var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
-            await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{menuItem.menu_item}.js", savedApiCode);
+            //await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{menuItem.menu_item}.js", savedApiCode);
 
             // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
             var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
@@ -233,9 +253,9 @@ async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath,
             {
                 var subMenuItem = subMenuItems[j];
                 // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-                var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
+                //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
                 var apiCodePath = generatedFileRootPath + $"/apis/{subMenuItem.menu_item}.js";
-                FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+                //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
                 var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
                 await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{subMenuItem.menu_item}.js", savedApiCode);

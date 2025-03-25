@@ -31,5 +31,9 @@ namespace FeatGen.Models
         [Column("fake_data_base")]
         [JsonPropertyName("FakeDataBase")]
         public string FakeDataBase { get; set; }
+
+        [Column("extract_db_ds")]
+        [JsonPropertyName("ExtractDBDataStructure")]
+        public string ExtractDBDataStructure { get; set; }
     }
 }

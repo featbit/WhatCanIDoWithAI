@@ -107,6 +107,21 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("fake-data-base-extract")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ExtractImportantMemoryDBCode([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideGenService.ExtractImportantMemoryDBCodeAsync(request.ReportId);
+            return Ok(result);
+        }
+
+        
+
         [HttpPost("api-code")]
         [RequestTimeout(600)]
         public async Task<IActionResult> ApiCode([FromBody] CodeGuideCodeRequest request)

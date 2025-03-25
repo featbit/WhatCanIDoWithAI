@@ -10,12 +10,14 @@ namespace FeatGen.ReportGenerator
     public interface IReportCodeGuideRepo
     {
         Task<ReportCodeGuide> GetRCGAsync(string reportId);
-        Task UpsertGuideAsync(string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "");
+        Task UpsertGuideAsync(
+            string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "", string extract_db_ds = "");
     }
 
     public class ReportCodeGuideRepo(FeatGenDbContext dbContext) : IReportCodeGuideRepo
     {
-        public async Task UpsertGuideAsync(string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "")
+        public async Task UpsertGuideAsync(
+            string reportId, string pages = "", string menuItems = "", string models = "", string fake_data_base = "", string extract_db_ds = "")
         {
             var rcg = await dbContext.ReportCodeGuides.FirstOrDefaultAsync(p => p.ReportId == Guid.Parse(reportId));
             if(rcg == null)
@@ -27,6 +29,7 @@ namespace FeatGen.ReportGenerator
                     Pages = pages ?? "",
                     MenuItems = menuItems ?? "",
                     FakeDataBase = fake_data_base ?? "",
+                    ExtractDBDataStructure = extract_db_ds ?? "",
                     ReportId = Guid.Parse(reportId)
                 };
                 dbContext.ReportCodeGuides.Add(rcg);
@@ -41,6 +44,8 @@ namespace FeatGen.ReportGenerator
                     rcg.MenuItems = menuItems;
                 if (!string.IsNullOrWhiteSpace(fake_data_base))
                     rcg.FakeDataBase = fake_data_base;
+                if (!string.IsNullOrWhiteSpace(extract_db_ds))
+                    rcg.ExtractDBDataStructure = extract_db_ds;
                 dbContext.ReportCodeGuides.Update(rcg);
             }
             await dbContext.SaveChangesAsync();

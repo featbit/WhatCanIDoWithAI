@@ -182,6 +182,27 @@ namespace FeatGen.ReportGenerator.Prompts
 
             var menuItem = menuItems.FirstOrDefault(p => p.page_id == pageId);
 
+            if(menuItem == null)
+            {
+                var tmi = menuItems.FirstOrDefault(p => {
+                    if (p.sub_menu_items == null || p.sub_menu_items.Count == 0) 
+                        return false;
+                    var exist = p.sub_menu_items.Any(m => m.page_id == pageId);
+                    return exist;
+                });
+
+                var stmi = tmi?.sub_menu_items.FirstOrDefault(m => m.page_id == pageId);
+
+                menuItem = new GuideMenuItem
+                {
+                    menu_item = stmi.menu_item,
+                    menu_name = stmi.menu_name,
+                    page_id = stmi.page_id,
+                    reason = stmi.reason_for_sub_menu,
+                };
+
+            }
+
             var pagesString = rcg.Pages;
             var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 

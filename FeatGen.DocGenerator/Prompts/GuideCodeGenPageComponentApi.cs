@@ -395,6 +395,110 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{data_structure}###", rcg.Models);
             return prompt;
         }
+
+        public static string V2WithMemoryDB(Specification spec, ReportCodeGuide rcg, string pageId)
+        {
+            string rawPrompt = """
+
+                ## Context
+                
+                We're design a software named "###{service_name}###". ###{service_desc}###. For finishing the system, we need to design a backend api endpoints to be called by the frontend.
+                
+                In this task, we need to generate all api endpoints for one of main pages which includes sub-pages, features and functionlities.
+                
+                The APIs is mainly for CRUD operations. We have already design the data models, and also prepared some fake data for these data models. 
+                
+                ## Main Page Description
+                
+                Here is the description of the main page with its sub-pages, features and functionalities:
+                
+                ###{page_desc}###
+                
+                ## Data Models and DataBase 
+                
+                The file '../db/memoryDB' is a memory storage that encapsulates the database. The file export the memoryDB object which contains data models and fake data. You can use this memoryDB object to fetch and store data in memory.
+                
+                Here's an extraction of '../db/memoryDB' that contains the export object memoryDB and data models and structures:
+                
+                ###{data_structure}###
+                
+                
+                ## Task
+                
+                You need to generate API endpoints for the main page with its sub-pages, features and functionalities:
+          
+                
+                Note:
+                
+                - You can add new or update existing models data structure for better input and output of API endpoints.
+                - You can generate CURD code to interact with memoryDB.
+                - All code will be stored in the file /apis/###{page_id}###/page.js 
+                - These API endpoints should be called directly in NextJs components. So it's an APIs endpoints but exist in a function format.
+                
+                ## Output Format
+                
+                - Output should return only the backend code without any explaination, markdown symboles and other characters. 
+                
+                ## Output Example
+                
+                import { v4 as uuidv4 } from 'uuid';
+                import { memoryDB } from '../db/memoryDB';
+                
+                // QA Messages Operations
+                export const addMessageToSession = async (sessionId, userId, content, type = 'question') => {
+                  // some code...
+                
+                  const newMessage = {
+                    id: uuidv4(),
+                    session_id: sessionId,
+                    user_id: userId,
+                    content,
+                    type,
+                    created_at: now,
+                    status: type === 'question' ? 'pending' : 'delivered'
+                  };
+                
+                  memoryDB.qa_messages.push(newMessage);
+                
+                  // some code...
+                
+                  return newMessage;
+                };
+                
+                export const getSessionMessages = (sessionId) => {
+                  return memoryDB.qa_messages
+                    .filter(message => message.session_id === sessionId)
+                    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                };
+                """;
+
+            var menuItemsString = rcg.MenuItems;
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+
+            var subPages = allPages.Where(p =>
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id)).ToList();
+
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+
+            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{page_desc}###", pageDesc)
+                .Replace("###{page_id}###", mainPage.page_id)
+                .Replace("###{data_structure}###", rcg.ExtractDBDataStructure);
+            return prompt;
+        }
     }
 
 
