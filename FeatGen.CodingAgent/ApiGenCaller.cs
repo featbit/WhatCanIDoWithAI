@@ -12,7 +12,7 @@ namespace FeatGen.CodingAgent
     {
         private static string _baseUrl = "https://localhost:7009";
 
-        public static async Task Step0_SpecificationGen(string serviceName)
+        public static async Task<Specification> Step0_SpecificationGen(string serviceName)
         {
             string endpoint = _baseUrl + $"/api/reportgen/specification";
 
@@ -39,19 +39,21 @@ namespace FeatGen.CodingAgent
                     HttpResponseMessage response = await client.PostAsync(endpoint, content);
                     if (response.IsSuccessStatusCode)
                     {
-                        return;
+                        var sc = await response.Content.ReadAsStringAsync();
+                        var spec = JsonSerializer.Deserialize<Specification>(sc);
+                        return spec;
                     }
                     else
                     {
                         Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                        return;
+                        return null;
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception occurred: {ex.Message}");
-                return;
+                return null;
             }
         }
 
@@ -315,6 +317,49 @@ namespace FeatGen.CodingAgent
                     {
                         ReportId = reportId,
                         PageId = pageId
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static async Task<string> Step9_2_GenerateGuidePageComponentFiles(
+            string reportId, string pageId, string apiCode)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-component-files";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        ApiCode = apiCode
                     };
 
                     var content = new StringContent(

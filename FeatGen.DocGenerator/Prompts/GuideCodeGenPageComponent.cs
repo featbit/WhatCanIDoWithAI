@@ -11,14 +11,14 @@ namespace FeatGen.ReportGenerator.Prompts
     public class GuideCodeGenPageComponent
     {
         public static string V1(
-            Specification spec, ReportCodeGuide rcg, string pageId, 
+            Specification spec, ReportCodeGuide rcg, string pageId,
             string menuItem, string apiCode, string cssCode)
         {
             string rawPrompt = """
 
                 ## Context
 
-                We're design a software named "###{service_name}###". ###{service_desc}###. For finishing the system, we need to design a backend api endpoints to be called by the frontend.
+                We're design a software named "###{service_name}###". ###{service_desc}###. For finishing the system, we need to generate the next js page component code for frontend.
 
                 In this task, we need to generate the next js page component code based on the information:
 
@@ -69,6 +69,7 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 - You shouldn't change existing default export function name.
                 - You can add more code or functions if needed.
+                - You need to write all related components in one file instead write in other files and import it.
 
                 ## Output format
 
@@ -112,7 +113,7 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 ## Context
 
-                We're design a software named "###{service_name}###". ###{service_desc}###. For finishing the system, we need to design a backend api endpoints to be called by the frontend.
+                We're design a software named "###{service_name}###". ###{service_desc}###. For finishing the system, we need to generate the next js page component code for frontend.
 
                 In this task, we need to generate the next js page component code based on the information:
 
@@ -161,6 +162,7 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 - You shouldn't change existing default export function name.
                 - You can add more code or functions if needed.
+                - You need to write all related components in one file instead write in other files and import it.
 
                 ## Output format
 
@@ -191,6 +193,9 @@ namespace FeatGen.ReportGenerator.Prompts
             return prompt;
         }
     }
+
+
+    
 
 
     

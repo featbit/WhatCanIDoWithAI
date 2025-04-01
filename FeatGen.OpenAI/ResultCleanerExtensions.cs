@@ -40,6 +40,17 @@
             return result;
         }
 
+        public static string CleanJsonCodeQuoteV2(this string result)
+        {
+            result = result.Trim();
+            int pos = result.IndexOf("```json");
+            if (pos >= 0 && result.Contains("```json") && pos < 200)
+                result = result.Substring(pos+7);
+            if (result.EndsWith("```"))
+                result = result.Substring(0, result.Length - 3);
+            return result;
+        }
+
         public static string RemoveDQBetweenDQ(this string result)
         {
             var element = result.IndexOf("\"");

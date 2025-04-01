@@ -1,8 +1,9 @@
 ﻿
 using FeatGen.CodingAgent;
+using FeatGen.CodingAgent.Models;
 using FeatGen.Models.ReportGenerator;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
-using System.Reflection.Emit;
+using System.Text.Json;
 
 
 
@@ -24,17 +25,15 @@ using System.Reflection.Emit;
 
 
 
-const string projectName = "无人机红外图像识别系统";
-int startStepAt = 11, stopStepAt = 11;
+const string projectName = "鸿云物业管理系统 - 完成";
+int startStepAt = 9, stopStepAt = 9;
 
 if(startStepAt <= 0 && stopStepAt >= 0)
 {
     await ApiGenCaller.Step0_SpecificationGen(projectName);
 }
 
-//return;
-
-const string reportId = "cefe05e7-8b28-4414-a01a-032d0888cbf4";
+const string reportId = "e25fc8b3-eb37-4e8c-8238-5b9e050ceed1";
 const string codingRootPath = @"C:/Code/featgen/featgen";
 const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
 const string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName +"/featgen/src/app";
@@ -45,6 +44,14 @@ if (startStepAt <= 1 && stopStepAt >= 1)
 {
     //step 1
     await ApiGenCaller.Step1_GuidePages(reportId);
+}
+
+if (startStepAt <= 2 && stopStepAt >= 3)
+{
+    //step 2,3
+    //Currently work for it in vscode with prompt:
+    // 
+    //  Please update globals.css for the new theme of service "鸿云物业管理系统". Please update colors(primary, secondary, background, text), font size, font famaliy, and so on existing in the current css file
 }
 
 if (startStepAt <= 4 && stopStepAt >= 4)
@@ -62,7 +69,7 @@ FileAgent.CreateFolder(generatedFileRootPath + "/css");
 FileAgent.CreateFolder(generatedFileRootPath + "/pages");
 
 
-var cssCode = FileAgent.ReadFileContent(generatedFileRootPath + "/css/global.css");
+var cssCode = FileAgent.ReadFileContent(nextjsFileRootPath + "/globals.css");
 
 if (startStepAt <= 5 && stopStepAt >= 5)
 {
@@ -88,7 +95,7 @@ if (startStepAt <= 7 && stopStepAt >= 7)
 if (startStepAt <= 8 && stopStepAt >= 8)
 {
     // step 8 special menu item - login
-    //await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+    await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
 }
 
 
@@ -153,8 +160,8 @@ async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specific
         {
             var menuItem = menuItems[i];
 
-            if (menuItem.menu_item != "target-recognition-alarm")
-                continue;
+            //if (menuItem.menu_item != "target-recognition-alarm")
+            //    continue;
 
             if (menuItem.sub_menu_items != null && menuItem.sub_menu_items.Count > 0)
             {
@@ -212,6 +219,7 @@ static async Task GenSpecialMenuItemLogin(string reportId, string generatedFileR
     var loginPageApiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, loginPageId);
     var loginPageApiCodePath = generatedFileRootPath + $"/apis/{loginPageId}.js";
     FileAgent.CreateAndInitFile(loginPageApiCodePath, loginPageApiCode);
+    //var loginPageApiCode = FileAgent.ReadFileContent(loginPageApiCodePath);
 
     var loginPageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, loginPageId, loginPageId, loginPageApiCode, cssCode);
     var loginPageComponentFolderPath = generatedFileRootPath + $"/pages/{loginPageId}";
@@ -227,48 +235,68 @@ async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath,
 
         if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
         {
-            var page = pages.FirstOrDefault(p => p.page_id == menuItem.page_id);
+            //var page = pages.FirstOrDefault(p => p.page_id == menuItem.page_id);
 
-            // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
+            //// 9.1 Generate Guide API Endpoints based on filtered 1 and 4
             //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
-            var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
+            //var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
             //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
-            var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
+            //var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
             //await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{menuItem.menu_item}.js", savedApiCode);
 
-            // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
-            var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
-            var pageComponentFolderPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}";
-            FileAgent.CreateFolder(pageComponentFolderPath);
-            FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
+            // 9.2 
+            var savedApiCode = FileAgent.ReadFileContent(generatedFileRootPath + $"/apis/{menuItem.menu_item}.js");
+            var pcFiles = await ApiGenCaller.Step9_2_GenerateGuidePageComponentFiles(reportId, menuItem.page_id, savedApiCode);
+            var pcFsCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}_files.json";
+            FileAgent.CreateAndInitFile(pcFsCodePath, pcFiles);
+            var savedPCFsCode = FileAgent.ReadFileContent(pcFsCodePath);
+            var pcfo = JsonSerializer.Deserialize<PageComponentFilesObject>(savedPCFsCode);
 
-            var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
-            await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{menuItem.menu_item}", "page.js", savedPageComponent);
+            //// 9.3 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
+            //var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, cssCode);
+            //var pageComponentFolderPath = generatedFileRootPath + $"/pages/{menuItem.menu_item}";
+            //FileAgent.CreateFolder(pageComponentFolderPath);
+            //FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
+
+            //var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
+            //await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{menuItem.menu_item}", "page.js", savedPageComponent);
         }
         else
         {
-            var subMenuItems = menuItem.sub_menu_items;
-            for (int j = 0; j < subMenuItems.Count; j++)
-            {
-                var subMenuItem = subMenuItems[j];
-                // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
-                //var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
-                var apiCodePath = generatedFileRootPath + $"/apis/{subMenuItem.menu_item}.js";
-                //FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+            //var subMenuItems = menuItem.sub_menu_items;
+            //for (int j = 0; j < subMenuItems.Count; j++)
+            //{
+            //    var subMenuItem = subMenuItems[j];
+            //    // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
+            //    var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
+            //    var apiCodePath = generatedFileRootPath + $"/apis/{subMenuItem.menu_item}.js";
+            //    FileAgent.CreateAndInitFile(apiCodePath, apiCode);
 
-                var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
-                await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{subMenuItem.menu_item}.js", savedApiCode);
+            //    var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
+            //    await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{subMenuItem.menu_item}.js", savedApiCode);
 
-                // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
-                var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, cssCode);
-                var pageComponentFolderPath = generatedFileRootPath + $"/pages/{subMenuItem.menu_item}";
-                FileAgent.CreateFolder(pageComponentFolderPath);
-                FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
+            //    // 9.2 Generate Page Component Code based on filtered 9.1, filtered 1 and filtered 3
+            //    var pageComponent = await ApiGenCaller.Step9_2_GenerateGuidePageComponent(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, cssCode);
+            //    var pageComponentFolderPath = generatedFileRootPath + $"/pages/{subMenuItem.menu_item}";
+            //    FileAgent.CreateFolder(pageComponentFolderPath);
+            //    FileAgent.CreateAndInitFile(pageComponentFolderPath + "/page.js", pageComponent);
 
-                var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
-                await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{subMenuItem.menu_item}", "page.js", savedPageComponent);
-            }
+            //    var savedPageComponent = FileAgent.ReadFileContent(pageComponentFolderPath + "/page.js");
+            //    await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{subMenuItem.menu_item}", "page.js", savedPageComponent);
+            //}
         }
     }
+}
+
+void AnalysePageComponentFilesObject(PageComponentFilesObject pcfo)
+{
+    foreach(var item in pcfo.main_page_description.behaviors_direction)
+    {
+        if(item.direction == "forward")
+        {
+            var component = pcfo.components.FirstOrDefault(p => p.component_id == item.component_id);
+        }
+    }
+    
 }

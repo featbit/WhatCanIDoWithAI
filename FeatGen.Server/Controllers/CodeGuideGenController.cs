@@ -135,6 +135,19 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("page-component-files")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> PageComponentFiles([FromBody] CodeGuideComponentCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideGenService.GeneratePageComponentFilesAsync(
+                request.ReportId, request.PageId, request.ApiCode);
+            return Ok(result);
+        }
 
         [HttpPost("component-code")]
         [RequestTimeout(600)]

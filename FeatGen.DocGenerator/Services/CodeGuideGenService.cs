@@ -13,6 +13,7 @@ namespace FeatGen.ReportGenerator
         Task<string> GenerateFakeDataBaseAsync(string reportId, string requirement = "no additional requirement");
         Task<string> ExtractImportantMemoryDBCodeAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement");
+        Task<string> GeneratePageComponentFilesAsync(string reportId, string pageId, string apiCode, string requirement = "no additional requirement");
         Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement");
         Task<string> GenerateUserManualByPage(string reportId, string pageId, string pageComponent, string requirement = "no additional requirement");
         Task<string> GenerateApplicationForm(string reportId);
@@ -136,7 +137,17 @@ namespace FeatGen.ReportGenerator
             return result;
         }
 
+        public async Task<string> GeneratePageComponentFilesAsync(string reportId, string pageId, string apiCode, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+            string prompt = GuideCodeGenPageComponentsFiles.V1(spec, rcg, pageId, apiCode);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsonCodeQuoteV2();
+            return result;
+        }
 
+        
         public async Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
