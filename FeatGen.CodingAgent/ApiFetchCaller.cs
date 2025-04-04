@@ -94,5 +94,33 @@ namespace FeatGen.CodingAgent
                 return null;
             }
         }
+
+        public static async Task<string> GetReportIdByTitleAsync(string title)
+        {
+            string endpoint = $"/api/utils/reportid-by-title/{title}";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    HttpResponseMessage response = await client.GetAsync(endpoint);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseContent = await response.Content.ReadAsStringAsync();
+                        return responseContent;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"GetReportIdByTitleAsync Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"GetReportIdByTitleAsync: Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

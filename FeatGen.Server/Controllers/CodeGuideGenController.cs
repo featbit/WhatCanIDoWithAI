@@ -12,6 +12,7 @@ namespace FeatGen.Server.Controllers
         IFeatureFlagService flagService,
         ISender mediator,
         IAntropicChatService antropicChatService,
+        IGeminiChatService geminiChatService,
         ICodeGuideGenService codeGuideGenService,
         ICodeGuideFetchService codeGuideFetchService) : ControllerBase
     {
@@ -160,6 +161,19 @@ namespace FeatGen.Server.Controllers
 
             var result = await codeGuideGenService.GenerateComponentCodeAsync(
                 request.ReportId, request.PageId, request.PageComponentName, request.ApiCode, request.CssCode);
+            return Ok(result);
+        }
+
+        [HttpPost("component-code-gemini")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ComponentCodeGemini()
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await geminiChatService.CompleteChatAsync("hello");
             return Ok(result);
         }
 

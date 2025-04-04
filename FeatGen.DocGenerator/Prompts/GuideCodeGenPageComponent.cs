@@ -5,6 +5,8 @@ using System.Text.Json;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Collections.Generic;
 using FeatGen.OpenAI;
+using FeatGen.CodingAgent.Models;
+using Newtonsoft.Json;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
@@ -78,10 +80,10 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 """;
             var menuItemsString = rcg.MenuItems.CleanJsCodeQuote().CleanJsonCodeQuote();
-            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var menuItems = System.Text.Json.JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var pagesString = rcg.Pages.CleanJsonCodeQuote();
-            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var allPages = System.Text.Json.JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
             var subPages = allPages.Where(p =>
@@ -91,7 +93,7 @@ namespace FeatGen.ReportGenerator.Prompts
             var pages = new List<GuidePageItem>() { mainPage };
             pages.AddRange(subPages);
 
-            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+            string pageDesc = System.Text.Json.JsonSerializer.Serialize<List<GuidePageItem>>(
                             pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             string pageComponentName = menuItem.Replace("-", "").Replace("_", "").Replace(" ", "").ToUpperInvariant();
@@ -172,13 +174,13 @@ namespace FeatGen.ReportGenerator.Prompts
                 """;
 
             var pagesString = rcg.Pages.CleanJsonCodeQuote();
-            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var allPages = System.Text.Json.JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
 
             var pages = new List<GuidePageItem>() { mainPage };
 
-            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+            string pageDesc = System.Text.Json.JsonSerializer.Serialize<List<GuidePageItem>>(
                             pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
             string pageComponentName = pageId.ToUpperInvariant();
@@ -192,6 +194,53 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{page_component_name}###", pageComponentName);
             return prompt;
         }
+    
+        /// <summary>
+        /// version that for seperated components of one page
+        /// </summary>
+        /// <returns></returns>
+        public static string V2(Specification spec, ReportCodeGuide rcg, string pageId, string menuItem, string apiCode, string cssCode, PageComponentFilesObject pcfo, string componentId)
+        {
+            string rawPrompt = """
+                
+                Here's the description of whole page logic and behavior relationship between the page main content and file independant components:
+
+                ###{page_file_logic}###
+
+                This is in a nextjs project
+
+                """;
+
+            if(pcfo.main_page_description.id == componentId)
+            {
+
+            }
+            else
+            {
+                var component = pcfo.components.FirstOrDefault(p => p.component_id == componentId);
+
+            }
+
+
+
+                var pagesString = rcg.Pages.CleanJsonCodeQuote();
+            var allPages = System.Text.Json.JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            var pages = new List<GuidePageItem>() { mainPage };
+
+            string pageDesc = System.Text.Json.JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{page_file_logic}###", JsonConvert.SerializeObject(pcfo))
+                .Replace("###{api_code}###", apiCode)
+                .Replace("###{css_code}###", cssCode);
+
+            return "";
+        }
+
     }
 
 

@@ -11,6 +11,7 @@ namespace FeatGen.ReportGenerator
         Task AddReportAsync(Specification spec);
         Task<Specification?> GetSpecificationByReportIdAsync(string reportId);
         Task<Report?> GetReportByIdAsync(string id);
+        Task<string> GetReportIdByTitleAsync(string title);
     }
 
     public class ReportRepo(FeatGenDbContext dbContext) : IReportRepo
@@ -53,6 +54,12 @@ namespace FeatGen.ReportGenerator
 
             Report? report = await dbContext.Reports.FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
             return report;
+        }
+
+        public async Task<string> GetReportIdByTitleAsync(string title)
+        {
+            var report = await dbContext.Reports.FirstOrDefaultAsync(p => p.Specification.Title == title);
+            return report.Id.ToString();
         }
     }
 }

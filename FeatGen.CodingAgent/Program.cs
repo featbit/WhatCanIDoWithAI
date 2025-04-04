@@ -5,6 +5,7 @@ using FeatGen.Models.ReportGenerator;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Text.Json;
 
+Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 
 // z. check folders
@@ -25,99 +26,161 @@ using System.Text.Json;
 
 
 
-const string projectName = "鸿云物业管理系统 - 完成";
-int startStepAt = 9, stopStepAt = 9;
 
-if(startStepAt <= 0 && stopStepAt >= 0)
+var task1 = Task.Run(() => RunGen(
+    projectName: "秒级风功率预测系统",
+    //reportId: "e5558281-1258-4b59-a621-26b1b2eaeac6",
+    startStepAt: 9,
+    stopStepAt: 9
+));
+
+//var task2 = Task.Run(() => RunGen(
+//    projectName: "光伏出力秒级临近预报系统",
+//    //reportId: "",
+//    startStepAt: 6,
+//    stopStepAt: 7
+//));
+
+try
 {
-    await ApiGenCaller.Step0_SpecificationGen(projectName);
+    await Task.WhenAll(task1);
+    //await Task.WhenAll(task1, task2);
+    Console.WriteLine("All generation tasks completed successfully.");
 }
-
-const string reportId = "e25fc8b3-eb37-4e8c-8238-5b9e050ceed1";
-const string codingRootPath = @"C:/Code/featgen/featgen";
-const string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
-const string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName +"/featgen/src/app";
-const string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
-
-
-if (startStepAt <= 1 && stopStepAt >= 1)
+catch (Exception ex)
 {
-    //step 1
-    await ApiGenCaller.Step1_GuidePages(reportId);
-}
-
-if (startStepAt <= 2 && stopStepAt >= 3)
-{
-    //step 2,3
-    //Currently work for it in vscode with prompt:
-    // 
-    //  Please update globals.css for the new theme of service "鸿云物业管理系统". Please update colors(primary, secondary, background, text), font size, font famaliy, and so on existing in the current css file
-}
-
-if (startStepAt <= 4 && stopStepAt >= 4)
-{
-    //step 4
-    await ApiGenCaller.Step4_GuideMenuItems(reportId);
-}
-
-Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
-List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
-List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId);
-
-FileAgent.CreateFolder(generatedFileRootPath + "/apis");
-FileAgent.CreateFolder(generatedFileRootPath + "/css");
-FileAgent.CreateFolder(generatedFileRootPath + "/pages");
-
-
-var cssCode = FileAgent.ReadFileContent(nextjsFileRootPath + "/globals.css");
-
-if (startStepAt <= 5 && stopStepAt >= 5)
-{
-    // step 5
-    string guideMenuItemsCode = await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
-    FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
-}
-
-if (startStepAt <= 6 && stopStepAt >= 6)
-{
-    // step 6
-    await ApiGenCaller.Step6_GenerateDataModel(reportId);
-}
-
-if (startStepAt <= 7 && stopStepAt >= 7)
-{
-    // step 7
-    await ApiGenCaller.Step7_GenerateFakeDataBase(reportId);
-    await ApiGenCaller.Step7_ExtractFakeDataBase(reportId);
+    Console.WriteLine($"Error running parallel generation tasks: {ex.Message}");
 }
 
 
-if (startStepAt <= 8 && stopStepAt >= 8)
+async Task RunGen(string projectName, int startStepAt, int stopStepAt)
 {
-    // step 8 special menu item - login
-    await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+    string codingRootPath = @"C:/Code/featgen/featgen";
+    string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
+    string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName + "/featgen/src/app";
+    string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
+
+    try
+    {
+        if (startStepAt <= 2 && stopStepAt >= 3)
+        {
+            //step 2,3
+            //Currently work for it in vscode with prompt:
+            // 
+            // Please update globals.css for the new theme of service "伏出力秒级临近预报系统". Please update colors(primary, secondary, background, text), font size, font famaliy, and so on existing in the current css file
+            // For me "伏出力秒级临近预报系统" should be with color of electric and green energy theme
+        }
+
+        if (startStepAt <= 0 && stopStepAt >= 0)
+        {
+            Console.WriteLine($"{projectName} - Step 0: Generating specification...");
+            await ApiGenCaller.Step0_SpecificationGen(projectName);
+            Console.WriteLine($"Generated");
+        }
+
+        string reportId = await ApiFetchCaller.GetReportIdByTitleAsync(projectName);
+
+        if (startStepAt <= 1 && stopStepAt >= 1)
+        {
+            //step 1
+            Console.WriteLine($"{projectName} - Step 1: Generating guide pages...");
+            await ApiGenCaller.Step1_GuidePages(reportId);
+            Console.WriteLine($"Generated");
+        }
+
+        if (startStepAt <= 4 && stopStepAt >= 4)
+        {
+            //step 4
+            Console.WriteLine($"{projectName} - Step 4: Generating guide menu items...");
+            await ApiGenCaller.Step4_GuideMenuItems(reportId);
+            Console.WriteLine($"Generated");
+        }
+
+        Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
+        List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
+        List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId);
+
+        FileAgent.CreateFolder(generatedFileRootPath + "/apis");
+        FileAgent.CreateFolder(generatedFileRootPath + "/css");
+        FileAgent.CreateFolder(generatedFileRootPath + "/pages");
+
+
+        var cssCode = FileAgent.ReadFileContent(nextjsFileRootPath + "/globals.css");
+
+        if (startStepAt <= 5 && stopStepAt >= 5)
+        {
+            // step 5
+            Console.WriteLine($"{projectName} - Step 5: Generating guide menu items code for...");
+            string guideMenuItemsCode = "export const PATH_PREFIX = '/pages';\r\n" + await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
+
+            FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
+            FileAgent.RewriteFileContent(nextjsFileRootPath + "/components/MenuItems.js", guideMenuItemsCode);
+            Console.WriteLine($"Generated");
+        }
+
+        if (startStepAt <= 6 && stopStepAt >= 6)
+        {
+            // step 6
+            Console.WriteLine($"{projectName} - Step 6: Generating guide data models for...");
+            await ApiGenCaller.Step6_GenerateDataModel(reportId);
+            Console.WriteLine($"Generated");
+        }
+
+        if (startStepAt <= 7 && stopStepAt >= 7)
+        {
+            // step 7.1
+            Console.WriteLine($"{projectName} - Step 7.1: Generating guide fake database...");
+            await ApiGenCaller.Step7_GenerateFakeDataBase(reportId);
+            Console.WriteLine($"Generated");
+            // step 7.2
+            Console.WriteLine($"{projectName} - Step 7.2: Extracting fake database...");
+            await ApiGenCaller.Step7_ExtractFakeDataBase(reportId);
+            Console.WriteLine($"Extracted");
+        }
+
+
+        if (startStepAt <= 8 && stopStepAt >= 8)
+        {
+            // step 8 special menu item - login
+            await GenSpecialMenuItemLogin(reportId, generatedFileRootPath, pages, cssCode);
+        }
+
+
+        if (startStepAt <= 9 && stopStepAt >= 9)
+        {
+            // step 9
+            await GenAPIsForMainPages(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId);
+            //await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId);
+        }
+
+        if (startStepAt <= 10 && stopStepAt >= 10)
+        {
+            // step 10
+            await UpdateUserManual(userManualFilePath, reportId, nextjsFileRootPath, spec, menuItems);
+        }
+
+        if (startStepAt <= 11 && stopStepAt >= 11)
+        {
+            // step 11
+            string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
+            FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
+        }
+    }
+
+    catch(AggregateException aggEx)
+    {
+        foreach (var ex in aggEx.InnerExceptions)
+        {
+            Console.WriteLine($"Error in RunGen {projectName}: {ex.Message}");
+        }
+        return;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error in RunGen {projectName}: {ex.Message}");
+        return;
+    }
 }
-
-
-if (startStepAt <= 9 && stopStepAt >= 9)
-{
-    // step 9
-    await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode);
-}
-
-if (startStepAt <= 10 && stopStepAt >= 10)
-{
-    // step 10
-    await UpdateUserManual(userManualFilePath, nextjsFileRootPath, spec);
-}
-
-if (startStepAt <= 11 && stopStepAt >= 11)
-{
-    // step 11
-    string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
-    FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
-}
-
 
 async Task WriteCodeToNextJsProject(string folderPath, string fileName, string code)
 {
@@ -128,7 +191,7 @@ async Task WriteCodeToNextJsProject(string folderPath, string fileName, string c
         replaceOldText: true);
 }
 
-async Task UpdateUserManual(string filePath, string nextjsFileRootPath, Specification spec)
+async Task UpdateUserManual(string filePath, string reportId, string nextjsFileRootPath, Specification spec, List<GuideMenuItem> menuItems)
 {
     using (var writer = new StreamWriter(filePath, append: true))
     {
@@ -227,7 +290,42 @@ static async Task GenSpecialMenuItemLogin(string reportId, string generatedFileR
     FileAgent.CreateAndInitFile(loginPageComponentFolderPath + "/page.js", loginPageComponent);
 }
 
-async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string cssCode)
+async Task GenAPIsForMainPages(string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string cssCode, string reportId)
+{
+    for (int i = 0; i < menuItems.Count; i++)
+    {
+        var menuItem = menuItems[i];
+
+        if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
+        {
+            // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
+            var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, menuItem.page_id);
+            var apiCodePath = generatedFileRootPath + $"/apis/{menuItem.menu_item}.js";
+            FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+
+            var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
+            await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{menuItem.menu_item}.js", savedApiCode);
+        }
+        else
+        {
+            var subMenuItems = menuItem.sub_menu_items;
+            for (int j = 0; j < subMenuItems.Count; j++)
+            {
+                var subMenuItem = subMenuItems[j];
+
+                // 9.1 Generate Guide API Endpoints based on filtered 1 and 4
+                var apiCode = await ApiGenCaller.Step9_1_GenerateGuideAPIEndpoints(reportId, subMenuItem.page_id);
+                var apiCodePath = generatedFileRootPath + $"/apis/{subMenuItem.menu_item}.js";
+                FileAgent.CreateAndInitFile(apiCodePath, apiCode);
+
+                var savedApiCode = FileAgent.ReadFileContent(apiCodePath);
+                await WriteCodeToNextJsProject(nextjsFileRootPath + "/apis", $"{subMenuItem.menu_item}.js", savedApiCode);
+            }
+        }
+    }
+}
+
+async Task GenMenuItems(string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string cssCode, string reportId)
 {
     for (int i = 0; i < menuItems.Count; i++)
     {

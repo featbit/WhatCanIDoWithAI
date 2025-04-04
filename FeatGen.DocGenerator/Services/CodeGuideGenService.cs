@@ -23,7 +23,8 @@ namespace FeatGen.ReportGenerator
         IReportRepo reportRepo,
         IReportCodeGuideRepo rcgRepo,
         IOpenAiChatService openaiChatService,
-        IAntropicChatService antropicChatService) : ICodeGuideGenService
+        IAntropicChatService antropicChatService,
+        IGeminiChatService geminiChatService) : ICodeGuideGenService
     {
 
         public async Task<string> GeneratePagesAsync(string reportId, string requirement = "no additional requirement")
@@ -131,9 +132,14 @@ namespace FeatGen.ReportGenerator
             string prompt = pageId == "login" ?
                 GuideCodeGenPageComponentApi.V1Login(spec, rcg, pageId) :
                 GuideCodeGenPageComponentApi.V2WithMemoryDB(spec, rcg, pageId);
-                //GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
-            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
+            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //GeminiResponse result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //return result.Message;
+            string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
+            if (result.Contains("../../db/memoryDB"))
+                result = result.Replace("../../db/memoryDB", "../db/MemoryDB");
             return result;
         }
 

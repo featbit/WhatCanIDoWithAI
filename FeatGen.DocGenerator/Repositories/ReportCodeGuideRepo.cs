@@ -39,7 +39,13 @@ namespace FeatGen.ReportGenerator
                 if (!string.IsNullOrWhiteSpace(models))
                     rcg.Models = models;
                 if (!string.IsNullOrWhiteSpace(pages))
+                {
+                    if(pages.Contains("\"page_id\": \"login-page\","))
+                    {
+                        pages = pages.Replace("\"page_id\": \"login-page\",", "\"page_id\": \"login\",");
+                    }
                     rcg.Pages = pages;
+                }
                 if (!string.IsNullOrWhiteSpace(menuItems))
                     rcg.MenuItems = menuItems;
                 if (!string.IsNullOrWhiteSpace(fake_data_base))
