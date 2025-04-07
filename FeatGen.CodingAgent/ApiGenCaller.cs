@@ -386,7 +386,7 @@ namespace FeatGen.CodingAgent
             }
         }
 
-        public static async Task<string> Step9_2_GenerateGuidePageComponent(
+        public static async Task<string> Step9_3_GenerateGuidePageComponent(
             string reportId, string pageId, string pageComponentName, string apiCode, string cssCode)
         {
             string endpoint = _baseUrl + $"/api/codeguide/component-code";
@@ -405,6 +405,52 @@ namespace FeatGen.CodingAgent
                         PageComponentName = pageComponentName,
                         ApiCode = apiCode,
                         CssCode = cssCode
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static async Task<string> Step9_4_GenerateApiDbInterfaces(
+            string reportId, string pageId, string menuItem, string apiCode, string memoryDbCode)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-api-db-interfaces";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        MenuItem = menuItem,
+                        ApiCode = apiCode,
+                        MemoryDbCode = memoryDbCode,
+                        PageCode = ""
                     };
 
                     var content = new StringContent(

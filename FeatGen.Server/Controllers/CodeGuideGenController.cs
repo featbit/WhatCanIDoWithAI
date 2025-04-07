@@ -4,6 +4,8 @@ using FeatGen.ReportGenerator;
 using MediatR;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Reflection.Emit;
 
 namespace FeatGen.Server.Controllers
 {
@@ -164,6 +166,17 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("page-api-db-interfaces")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideInterfacesRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+            var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.MemoryDbCode, request.PageCode);
+            return Ok(result);
+        }
         [HttpPost("component-code-gemini")]
         [RequestTimeout(600)]
         public async Task<IActionResult> ComponentCodeGemini()
@@ -225,6 +238,16 @@ namespace FeatGen.Server.Controllers
         public string PageComponentName { get; set; }
         public string ApiCode { get; set; }
         public string CssCode { get; set; }
+    }
+
+    public class CodeGuideInterfacesRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string ApiCode { get; set; }
+        public string MemoryDbCode { get; set; }
+        public string PageCode { get; set; }
     }
 
     public class CodeGuideUserManualRequest

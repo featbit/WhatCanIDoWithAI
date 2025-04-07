@@ -35,7 +35,10 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 If the features described in the Software information are missed, you can also add related new features.
 
-                NOTE: Don't consider the backend services, only think about how the front-end should be designed.
+                NOTE: 
+                
+                - Don't consider the backend services, only think about how the front-end should be designed.
+                - Don't generate login and registration pages.
 
                 ## Output format
                 
