@@ -33,8 +33,8 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 var task1 = Task.Run(() => RunGen(
     projectName: "基于光纤传感的公路基础灾害损毁感知原型系统",
-    startStepAt: 9.4,
-    stopStepAt: 9.4,
+    startStepAt: 10,
+    stopStepAt: 11,
     failedMenuItems: null
 ));
 
@@ -62,6 +62,10 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
     string generatedFileRootPath = @"C:/Code/featgen/generated-files/" + projectName;
     string nextjsFileRootPath = @"C:/Code/featgen/generated-files/" + projectName + "/featgen/src/app";
     string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
+
+    string themeIconPrompt = "use lucide-react (e.g. `import { xxx } from 'lucide-react';`) for icon render";
+    string themeChartPrompt = "use chart.js (e.g. `import Chart from 'chart.js';`) for chart render";
+    string basicComponentPrompt = "use antd for basic component render, e.g. table, button, selector";
 
     try
     {
@@ -155,25 +159,42 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
             // step 9.1
             await GenAPIsForMainPages(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId);
         }
-
         if (startStepAt <= 9.2 && stopStepAt >= 9.2)
         {
             // step 9.2
             //await GenMenuItems(generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId);
         }
-
         if (startStepAt <= 9.3 && stopStepAt >= 9.3)
         {
             // step 9.3
             await GenCodeForMainPages(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId, failedMenuItems);
         }
-
         if (startStepAt <= 9.4 && stopStepAt >= 9.4)
         {
             // step 9.4 - redefine dedicated memorydb file, define interface between dedicated memorydb and api code
             await GenPageApiDbInterface(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, reportId, failedMenuItems);
         }
-
+        if (startStepAt <= 9.5 && stopStepAt >= 9.5)
+        {
+            // step 9.5 - generate models and data schema for dedicated memorydb file
+            await GenPageApiDbModels(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, reportId, failedMenuItems);
+        }
+        if (startStepAt <= 9.6 && stopStepAt >= 9.6)
+        {
+            // step 9.6 - generate dedicated db file code
+            await GenPageApiDbCode(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, reportId, failedMenuItems);
+        }
+        if (startStepAt <= 9.7 && stopStepAt >= 9.7)
+        {
+            // step 9.7 - update API Code 
+            await GenPageApiCodeUpdate(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, reportId, failedMenuItems);
+        }
+        if (startStepAt <= 9.8 && stopStepAt >= 9.8)
+        {
+            // step 9.8 - update Page Code 
+            await GenPageCodeUpdate(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, reportId, cssCode, themeIconPrompt, themeChartPrompt, failedMenuItems);
+        }
+        
 
         if (startStepAt <= 10 && stopStepAt >= 10)
         {
@@ -444,6 +465,208 @@ async Task GenPageApiDbInterface(string projectName, string generatedFileRootPat
                 var interfaces = await ApiGenCaller.Step9_4_GenerateApiDbInterfaces(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, sharedMemoryDbCode);
                 Console.WriteLine($"Generated ");
                 await WriteCodeToNextJsProject(nextjsFileRootPath + $"/interfaces", $"{subMenuItem.menu_item}.js", interfaces);
+                Console.WriteLine($"File Saved ");
+            }
+        }
+    }
+}
+
+async Task GenPageApiDbModels(string projectName, string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string reportId, List<string> failedMenuItems = null)
+{
+    var sharedMemoryDbCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/memoryDB.js");
+    for (int i = 0; i < menuItems.Count; i++)
+    {
+        var menuItem = menuItems[i];
+
+        if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
+        {
+            if (failedMenuItems != null && failedMenuItems.Count > 0)
+            {
+                if (failedMenuItems.All(p => p != menuItem.menu_item))
+                    continue;
+            }
+
+            // 9.5 
+            Console.WriteLine($"{projectName} - {menuItem.menu_item} - Step 9.5: Generating Dedicated DB file models ");
+            var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{menuItem.menu_item}.js");
+            var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{menuItem.menu_item}.js");
+            var interfaces = await ApiGenCaller.Step9_5_GenerateApiDbModels(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, savedInterfaceDefinition);
+            Console.WriteLine($"Generated ");
+            await WriteCodeToNextJsProject(nextjsFileRootPath + $"/db/definitions/", $"{menuItem.menu_item}.js", interfaces);
+            Console.WriteLine($"File Saved ");
+        }
+        else
+        {
+            var subMenuItems = menuItem.sub_menu_items;
+            for (int j = 0; j < subMenuItems.Count; j++)
+            {
+                var subMenuItem = subMenuItems[j];
+                if (failedMenuItems != null && failedMenuItems.Count > 0)
+                {
+                    if (failedMenuItems.All(p => p != subMenuItem.menu_item))
+                        continue;
+                }
+
+                // 9.5
+                Console.WriteLine($"{projectName} - {subMenuItem.menu_item} - Step 9.5: Generating Dedicated DB file models ");
+                var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{subMenuItem.menu_item}.js");
+                var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{subMenuItem.menu_item}.js");
+                var interfaces = await ApiGenCaller.Step9_5_GenerateApiDbModels(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, savedInterfaceDefinition);
+                Console.WriteLine($"Generated ");
+                await WriteCodeToNextJsProject(nextjsFileRootPath + $"/db/definitions/", $"{subMenuItem.menu_item}.js", interfaces);
+                Console.WriteLine($"File Saved ");
+            }
+        }
+    }
+}
+
+async Task GenPageApiDbCode(string projectName, string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string reportId, List<string> failedMenuItems = null)
+{
+    for (int i = 0; i < menuItems.Count; i++)
+    {
+        var menuItem = menuItems[i];
+
+        if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
+        {
+            if (failedMenuItems != null && failedMenuItems.Count > 0)
+            {
+                if (failedMenuItems.All(p => p != menuItem.menu_item))
+                    continue;
+            }
+
+            // 9.6 Generate dedicated db file code 
+            Console.WriteLine($"{projectName} - {menuItem.menu_item} - Step 9.6 Generate dedicated db file code  ");
+            var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{menuItem.menu_item}.js");
+            var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{menuItem.menu_item}.js");
+            var savedDbModels = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/definitions/{menuItem.menu_item}.js");
+            var code = await ApiGenCaller.Step9_6_GenerateApiDbCode(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, savedInterfaceDefinition, savedDbModels);
+            Console.WriteLine($"Generated ");
+            await WriteCodeToNextJsProject(nextjsFileRootPath + $"/db/", $"db-{menuItem.menu_item.Replace("_", "-").Trim().ToLower()}.js", code);
+            Console.WriteLine($"File Saved ");
+        }
+        else
+        {
+            var subMenuItems = menuItem.sub_menu_items;
+            for (int j = 0; j < subMenuItems.Count; j++)
+            {
+                var subMenuItem = subMenuItems[j];
+                if (failedMenuItems != null && failedMenuItems.Count > 0)
+                {
+                    if (failedMenuItems.All(p => p != subMenuItem.menu_item))
+                        continue;
+                }
+
+                // 9.6 Generate dedicated db file code 
+                Console.WriteLine($"{projectName} - {subMenuItem.menu_item} - Step 9.6 Generate dedicated db file code  ");
+                var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{subMenuItem.menu_item}.js");
+                var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{subMenuItem.menu_item}.js");
+                var savedDbModels = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/definitions/{subMenuItem.menu_item}.js");
+                var code = await ApiGenCaller.Step9_6_GenerateApiDbCode(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, savedInterfaceDefinition, savedDbModels);
+                Console.WriteLine($"Generated ");
+                await WriteCodeToNextJsProject(nextjsFileRootPath + $"/db/", $"db-{subMenuItem.menu_item.Replace("_", "-").Trim().ToLower()}.js", code);
+                Console.WriteLine($"File Saved ");
+            }
+        }
+    }
+}
+
+async Task GenPageApiCodeUpdate(string projectName, string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string reportId, List<string> failedMenuItems = null)
+{
+    for (int i = 0; i < menuItems.Count; i++)
+    {
+        var menuItem = menuItems[i];
+
+        if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
+        {
+            if (failedMenuItems != null && failedMenuItems.Count > 0)
+            {
+                if (failedMenuItems.All(p => p != menuItem.menu_item))
+                    continue;
+            }
+
+            // 9.7 Update API Code 
+            Console.WriteLine($"{projectName} - {menuItem.menu_item} - Step 9.7 Update API Code   ");
+            var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{menuItem.menu_item}.js");
+            var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{menuItem.menu_item}.js");
+            var savedDbCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/db-{menuItem.menu_item}.js");
+            var code = await ApiGenCaller.Step9_7_GenerateApiDbCode(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, savedInterfaceDefinition, savedDbCode);
+            Console.WriteLine($"Generated ");
+            await WriteCodeToNextJsProject(nextjsFileRootPath + $"/apis/", $"{menuItem.menu_item.Replace("_", "-").Trim().ToLower()}.js", code);
+            Console.WriteLine($"File Saved ");
+        }
+        else
+        {
+            var subMenuItems = menuItem.sub_menu_items;
+            for (int j = 0; j < subMenuItems.Count; j++)
+            {
+                var subMenuItem = subMenuItems[j];
+                if (failedMenuItems != null && failedMenuItems.Count > 0)
+                {
+                    if (failedMenuItems.All(p => p != subMenuItem.menu_item))
+                        continue;
+                }
+
+                // 9.7 Update API Code 
+                Console.WriteLine($"{projectName} - {subMenuItem.menu_item} - Step 9.7 Update API Code   ");
+                var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{subMenuItem.menu_item}.js");
+                var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{subMenuItem.menu_item}.js");
+                var savedDbCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/db-{subMenuItem.menu_item}.js");
+                var code = await ApiGenCaller.Step9_7_GenerateApiDbCode(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, savedInterfaceDefinition, savedDbCode);
+                Console.WriteLine($"Generated ");
+                await WriteCodeToNextJsProject(nextjsFileRootPath + $"/apis/", $"{subMenuItem.menu_item.Replace("_", "-").Trim().ToLower()}.js", code);
+                Console.WriteLine($"File Saved ");
+            }
+        }
+    }
+}
+
+async Task GenPageCodeUpdate(string projectName, string generatedFileRootPath, string nextjsFileRootPath, List<GuidePageItem> pages, List<GuideMenuItem> menuItems, string reportId, string cssCode, string themeIconPrompt, string themeChartPrompt, List<string> failedMenuItems = null)
+{
+    for (int i = 0; i < menuItems.Count; i++)
+    {
+        var menuItem = menuItems[i];
+
+        if (menuItem.sub_menu_items == null || menuItem.sub_menu_items.Count == 0)
+        {
+            if (failedMenuItems != null && failedMenuItems.Count > 0)
+            {
+                if (failedMenuItems.All(p => p != menuItem.menu_item))
+                    continue;
+            }
+
+            // 9.8 Update Page Code 
+            Console.WriteLine($"{projectName} - {menuItem.menu_item} - Step 9.8 Update Page Code");
+            var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{menuItem.menu_item}.js");
+            var savedInterfaceDefinition = FileAgent.ReadFileContent(nextjsFileRootPath + $"/interfaces/{menuItem.menu_item}.js");
+            var savedDbCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/db-{menuItem.menu_item}.js");
+            var savedDbModels = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/definitions/{menuItem.menu_item}.js");
+
+            var code = await ApiGenCaller.Step9_8_UpdatePageCode(reportId, menuItem.page_id, menuItem.menu_item, savedApiCode, savedDbCode, cssCode, savedDbModels, themeIconPrompt, themeChartPrompt);
+            Console.WriteLine($"Generated ");
+            await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{menuItem.menu_item}", "page.js", code);
+            Console.WriteLine($"File Saved ");
+        }
+        else
+        {
+            var subMenuItems = menuItem.sub_menu_items;
+            for (int j = 0; j < subMenuItems.Count; j++)
+            {
+                var subMenuItem = subMenuItems[j];
+                if (failedMenuItems != null && failedMenuItems.Count > 0)
+                {
+                    if (failedMenuItems.All(p => p != subMenuItem.menu_item))
+                        continue;
+                }
+
+                // 9.8 Update Page Code 
+                Console.WriteLine($"{projectName} - {subMenuItem.menu_item} - Step 9.8 Update Page Code");
+                var savedApiCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/apis/{subMenuItem.menu_item}.js");
+                var savedDbCode = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/db-{subMenuItem.menu_item}.js");
+                var savedDbModels = FileAgent.ReadFileContent(nextjsFileRootPath + $"/db/definitions/{subMenuItem.menu_item}.js");
+
+                var code = await ApiGenCaller.Step9_8_UpdatePageCode(reportId, subMenuItem.page_id, subMenuItem.menu_item, savedApiCode, savedDbCode, cssCode, savedDbModels, themeIconPrompt, themeChartPrompt);
+                Console.WriteLine($"Generated ");
+                await WriteCodeToNextJsProject(nextjsFileRootPath + $"/pages/{subMenuItem.menu_item}", "page.js", code);
                 Console.WriteLine($"File Saved ");
             }
         }

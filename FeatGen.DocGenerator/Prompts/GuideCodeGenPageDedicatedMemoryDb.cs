@@ -6,6 +6,7 @@ using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Collections.Generic;
 using FeatGen.OpenAI;
 using System;
+using System.Reflection.Emit;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
@@ -128,14 +129,222 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{page_desc}###", pageDesc)
                 .Replace("###{api_file_path_n_name}###", $"@/app/apis/{menuItem.Replace("_", "-").Trim().ToLower()}.js")
                 .Replace("###{db_shared_file_path_n_name}###", "@/app/db/memoryDB.js")
-                .Replace("###{db_file_path_n_name}###", $"@/app/db/db_{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{db_file_path_n_name}###", $"@/app/db/db-{menuItem.Replace("_", "-").Trim().ToLower()}.js")
                 .Replace("###{frontend_file_name}###", $"@/app/pages/{menuItem.Replace("_", "-").Trim().ToLower()}/page.js")
                 .Replace("###{api_code}###", apiCode)
-                .Replace("###{memorydb_code}###", memoryDBCode)
+                .Replace("###{memorydb_code}###", sharedMemoryDBCode)
                 .Replace("###{page_code}###", pageCode);
 
             return prompt;
         }
 
+        public static string DefineDedicatedMemoryDbModel(Specification spec, ReportCodeGuide rcg, string pageId, string menuItem, string apiCode, string interfaceDefinition)
+        {
+            string rawPrompt = """
+
+                ## Context
+                
+                We're developing a software named "###{service_name}###" - ###{service_desc}###.
+                
+                We're now developing a page:
+                
+                ###{page_desc}###.
+                
+                We have resources below:
+                
+                - an api file named "###{api_file_path_n_name}###" to handle the API requests and responses, the apis interact with the database.
+                - the definition of exportable functions and variables (interface) for creating a new dedicated database file "###{db_file_path_n_name}" that "###{api_file_path_n_name}###" will communicate with.
+
+                ## Content and Code of Files
+                
+                - "###{api_file_path_n_name}###" file:
+                
+                ```javascript
+                ###{api_code}###
+                ```
+                
+                - definition of interface "###{db_file_path_n_name}###" file:
+                
+                ```json
+                ###{interface_definition}###
+                ```
+
+                ## Task
+
+                We need to use the information above to generate the models and models's data structure for the new dedicated database file "###{db_file_path_n_name}###".
+
+                NOTE:
+
+                - For model that has nested data structure, you should also generate the code for the nested data structure.
+                - You need to generate a model in json data structure, then the sql schema as a table for the model.
+                - 
+
+                ## Output Format
+
+                Return the pure code only without any explaination, markdown symboles and other characters based on the existing code.
+
+                ## Output Example
+          
+                // roles data structure
+                const roles = [
+                  {
+                    id: "uuid",
+                    name: "string",
+                    description: "string",
+                    permissions: "JSON string",
+                    created_at: "ISO date string",
+                    updated_at: "ISO date string"
+                  }
+                ];
+
+                // sql schema for roles
+                "CREATE TABLE roles (\n  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n  name VARCHAR(50) NOT NULL UNIQUE,\n  description TEXT,\n  permissions JSONB NOT NULL DEFAULT '{}',\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);"
+
+                // units data structure
+                const units = [
+                  {
+                    id: "uuid",
+                    unit_number: "string",
+                    building: "string",
+                    floor: "number",
+                    room: "number",
+                    area: "number",
+                    created_at: "ISO date string",
+                    updated_at: "ISO date string"
+                  }
+                ];
+
+                // users data structure
+                const users = [
+                  {
+                    id: "uuid",
+                    username: "string",
+                    password: "string (hashed)",
+                    name: "string",
+                    phone: "string",
+                    email: "string",
+                    address: "string",
+                    role_id: "uuid",
+                    status: "string (active, inactive, locked)",
+                    unit_id: "uuid or null",
+                    last_login_time: "ISO date string or null",
+                    login_fail_count: "number",
+                    created_at: "ISO date string",
+                    updated_at: "ISO date string"
+                  }
+                ];
+                
+                // sql schema for users
+                "CREATE TABLE users (\n  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),\n  username VARCHAR(50) NOT NULL UNIQUE,\n  password VARCHAR(255) NOT NULL,\n  name VARCHAR(100) NOT NULL,\n  phone VARCHAR(20),\n  email VARCHAR(100),\n  address TEXT,\n  role_id UUID REFERENCES roles(id),\n  status VARCHAR(20) NOT NULL DEFAULT 'active',\n  unit_id UUID REFERENCES units(id),\n  last_login_time TIMESTAMP,\n  login_fail_count INTEGER DEFAULT 0,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);"
+                """;
+            var menuItemsString = rcg.MenuItems;
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            var subPages = allPages.Where(p =>
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id)).ToList();
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{page_desc}###", pageDesc)
+                .Replace("###{api_file_path_n_name}###", $"@/app/apis/{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{db_file_path_n_name}###", $"@/app/db/db-{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{api_code}###", apiCode)
+                .Replace("###{interface_definition}###", interfaceDefinition);
+
+            return prompt;
+        }
+
+        public static string GenerateDedicatedMemoryDBCode(Specification spec, ReportCodeGuide rcg, string pageId, string menuItem, string apiCode, string interfacesDefinition, string dedicatedDbModels)
+        {
+            string rawPrompt = """
+
+                ## Context
+
+                We're developing a software named "###{service_name}###" - ###{service_desc}###.
+
+                We're now developing a page:
+                
+                ###{page_desc}###.
+
+                We also have resources below:
+
+                - Interfaces definition of exportable functions and variables for creating a new dedicated database file "###{db_file_path_n_name}" that "###{api_file_path_n_name}###" will communicate with.
+                - Data models that will be used in dedicated database file "###{db_file_path_n_name}" and file "###{api_file_path_n_name}".
+                - Existing code in "###{api_file_path_n_name}###" file, which is the API file that handles the API requests and responses, the apis interact with the database file. "###{api_file_path_n_name}###" will also be updated based on the code generated indedicated database file "###{db_file_path_n_name}"
+
+                Frontend code calls the APIs in "###{api_file_path_n_name}###" file to create, read, update and delete the data from the database and render it on the page. All data is stored (or is generated) in the database file "###{db_file_path_n_name}###" and the APIs are used to interact with the data.
+
+                ## Content and Code of Files
+
+                - "###{api_file_path_n_name}###" file:
+
+                ```javascript
+                ###{api_code}###
+                ```
+
+                - The definition of the functions and variables interface that "###{api_file_path_n_name}###" file will call from "###{db_file_path_n_name}###" file:
+
+                ```json
+                ###{interfaces_definition}###
+                ```
+                
+                - Data models that will be used in dedicated database file "###{db_file_path_n_name}"
+              
+                ```json
+                ###{db_models}###
+                ```
+                
+                ## Task 
+
+                Based on the requirement, specification, api code, interfaces definition and Data models provided above, please generate the code for "###{db_file_path_n_name}###" file.
+
+                Note:
+
+                - This "###{db_file_path_n_name}###" file should be a new file, and it should not be the same as the "###{db_shared_file_path_n_name}###" file.
+                - The "###{api_file_path_n_name}###" file will also update the code to call the exportable functions that will be generated in new "###{db_file_path_n_name}###" file. but not in this task.
+                - In the "###{db_file_path_n_name}###" file, we suggest to generate fake data or simulate data dynamically. It means using program to generate data and avoid hard code data.
+
+                ## Output Format
+                
+                Return the pure code only without any explaination, markdown symboles and other characters.
+
+                """;
+            var menuItemsString = rcg.MenuItems;
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            var subPages = allPages.Where(p =>
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id)).ToList();
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{page_desc}###", pageDesc)
+                .Replace("###{api_file_path_n_name}###", $"@/app/apis/{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{db_file_path_n_name}###", $"@/app/db/db-{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{interfaces_definition}###", interfacesDefinition)
+                .Replace("###{api_code}###", apiCode)
+                .Replace("###{db_models}###", dedicatedDbModels);
+
+            return prompt;
+        }
     }    
 }

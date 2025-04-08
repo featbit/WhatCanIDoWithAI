@@ -4,6 +4,7 @@ using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using System.Text.Json;
 
 namespace FeatGen.CodingAgent
@@ -476,6 +477,189 @@ namespace FeatGen.CodingAgent
                 return null;
             }
         }
+        public static async Task<string> Step9_5_GenerateApiDbModels(
+            string reportId, string pageId, string menuItem, string apiCode, string interfacesDefinition)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-api-db-models";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        MenuItem = menuItem,
+                        ApiCode = apiCode,
+                        InterfaceDefinition = interfacesDefinition,
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+        public static async Task<string> Step9_6_GenerateApiDbCode(
+            string reportId, string pageId, string menuItem, string apiCode, string interfacesDefinition, string dbModels)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-api-db-code";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        MenuItem = menuItem,
+                        ApiCode = apiCode,
+                        InterfaceDefinition = interfacesDefinition,
+                        DbModels = dbModels
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+        public static async Task<string> Step9_7_GenerateApiDbCode(
+            string reportId, string pageId, string menuItem, string apiCode, string interfacesDefinition, string dbCode)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-api-code-update";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        MenuItem = menuItem,
+                        ApiCode = apiCode,
+                        InterfaceDefinition = interfacesDefinition,
+                        DbCode = dbCode
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+        public static async Task<string> Step9_8_UpdatePageCode(
+            string reportId, string pageId, string menuItem, string apiCode, string dbCode, string cssCode, string dbModels, string themeIconPrompt, string themeChartPrompt)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/page-code-update";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId,
+                        PageId = pageId,
+                        MenuItem = menuItem,
+                        ApiCode = apiCode,
+                        CssCode = cssCode,
+                        DbCode = dbCode,
+                        DbModels = dbModels,
+                        ThemeIconPrompt = themeIconPrompt,
+                        ThemeChartPrompt = themeChartPrompt
+                    };
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
 
         public static async Task<string> GenerateGuideUserManualByPage(
             string reportId, string pageId, string pageComponent)

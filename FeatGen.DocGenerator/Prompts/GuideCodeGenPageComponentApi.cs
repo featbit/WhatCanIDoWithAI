@@ -5,6 +5,7 @@ using System.Text.Json;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
 using System.Collections.Generic;
 using FeatGen.OpenAI;
+using System.Reflection.Emit;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
@@ -497,6 +498,91 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{page_desc}###", pageDesc)
                 .Replace("###{page_id}###", mainPage.page_id)
                 .Replace("###{data_structure}###", rcg.ExtractDBDataStructure);
+            return prompt;
+        }
+    
+        public static string V3UpdateWithDedicatedDB(Specification spec, ReportCodeGuide rcg, string pageId, string menuItem, string existingApiCode, string interfacesDefinition, string dedicatedDBCode)
+        {
+            string rawPrompt = """
+
+                ## Context
+
+                We're developing a software named "###{service_name}###" - ###{service_desc}###.
+
+                We're now developing a page:
+                
+                ###{page_desc}###.
+
+                We also have resources below:
+
+                - Existing code of file "###{db_file_path_n_name}" that "###{api_file_path_n_name}###" will communicate with.
+                - Existing code of file "###{api_file_path_n_name}###".
+                - Interfaces definition between "###{api_file_path_n_name}###" and "###{db_file_path_n_name}###" file.
+
+                Frontend code calls the APIs in "###{api_file_path_n_name}###" file to create, read, update and delete the data from the database and render it on the page. All data is stored (or is generated) in the database file "###{db_file_path_n_name}###" and the APIs are used to interact with the data.
+
+                ## Content and Code of Files
+
+                - "###{api_file_path_n_name}###" file:
+
+                ```javascript
+                ###{api_code}###
+                ```
+
+                - "###{db_file_path_n_name}###" file:
+
+                ```json
+                ###{db_file_code}###
+                ```
+                
+                - Interfaces definition
+              
+                ```json
+                ###{interfaces_definition}###
+                ```
+                
+                ## Task 
+
+                Based on the requirement, specification, existing api code, db code, interfaces definition, please update file "###{api_file_path_n_name}###" that use the new code in file "###{db_file_path_n_name}###" to call the exportable functions to provide the correct api services.
+
+                Note:
+
+                - This "###{api_file_path_n_name}###" file should import db file from "###{db_file_path}###" that is where the db file located;
+                - If "###{db_file_path}###" lack of interfaces or data to provide correct service, "###{api_file_path_n_name}###" can add code to simulate it.
+                - Try to keep the name of functions to be exported in existing file "###{api_file_path_n_name}###".
+                - Please remove import from existing shared db file like `import { memoryDB } from '@/app/db/memoryDB';` Delete it and update the code by using functions in "###{db_file_path_n_name}###".
+
+                ## Output Format
+                
+                Return the pure code only without any explaination, markdown symboles and other characters.
+
+                """;
+            var menuItemsString = rcg.MenuItems;
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(menuItemsString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            var subPages = allPages.Where(p =>
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id)).ToList();
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+
+            string prompt = rawPrompt
+                .Replace("###{service_name}###", spec.Title)
+                .Replace("###{service_desc}###", spec.Definition)
+                .Replace("###{page_desc}###", pageDesc)
+                .Replace("###{api_file_path_n_name}###", $"@/app/apis/{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{db_file_path_n_name}###", $"@/app/db/db-{menuItem.Replace("_", "-").Trim().ToLower()}.js")
+                .Replace("###{db_file_path}###", $"@/app/db/db-{menuItem.Replace("_", "-").Trim().ToLower()}")
+                .Replace("###{interfaces_definition}###", interfacesDefinition)
+                .Replace("###{api_code}###", existingApiCode)
+                .Replace("###{db_file_code}###", dedicatedDBCode);
+
             return prompt;
         }
     }

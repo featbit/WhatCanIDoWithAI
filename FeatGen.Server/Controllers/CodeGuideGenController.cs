@@ -177,6 +177,53 @@ namespace FeatGen.Server.Controllers
             var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.MemoryDbCode, request.PageCode);
             return Ok(result);
         }
+        [HttpPost("page-api-db-models")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideDbModelsRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+            var result = await codeGuideGenService.DefineDedicatedMemoryDbModel(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition);
+            return Ok(result);
+        }
+        [HttpPost("page-api-db-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> PageApiDbCode([FromBody] CodeGuideDbCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+            var result = await codeGuideGenService.GenerateDedicatedMemoryDBCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbModels);
+            return Ok(result);
+        }
+        [HttpPost("page-api-code-update")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> PageApiCodeUpdate([FromBody] CodeGuideApiCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+            var result = await codeGuideGenService.UpdateExistingApiCodeWithNewDbCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbCode);
+            return Ok(result);
+        }
+        [HttpPost("page-code-update")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> UpdateExistingPageCodeWithNewApiCode([FromBody] CodeGuideNewPageCodeRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+            var result = await codeGuideGenService.UpdateExistingPageCodeWithNewApiCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.CssCode, request.DbCode, request.DbModels, request.ThemeIconPrompt, request.ThemeChartPrompt);
+            return Ok(result);
+        }
+        
+
+
         [HttpPost("component-code-gemini")]
         [RequestTimeout(600)]
         public async Task<IActionResult> ComponentCodeGemini()
@@ -248,6 +295,45 @@ namespace FeatGen.Server.Controllers
         public string ApiCode { get; set; }
         public string MemoryDbCode { get; set; }
         public string PageCode { get; set; }
+    }
+
+    public class CodeGuideDbModelsRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string ApiCode { get; set; }
+        public string InterfaceDefinition { get; set; }
+    }
+    public class CodeGuideDbCodeRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string ApiCode { get; set; }
+        public string InterfaceDefinition { get; set; }
+        public string DbModels { get; set; }
+    }
+    public class CodeGuideApiCodeRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string ApiCode { get; set; }
+        public string InterfaceDefinition { get; set; }
+        public string DbCode { get; set; }
+    }
+    public class CodeGuideNewPageCodeRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string ApiCode { get; set; }
+        public string CssCode { get; set; }
+        public string DbCode { get; set; }
+        public string DbModels { get; set; }
+        public string ThemeIconPrompt { get; set; }
+        public string ThemeChartPrompt { get; set; }
     }
 
     public class CodeGuideUserManualRequest
