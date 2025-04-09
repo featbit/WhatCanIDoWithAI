@@ -301,6 +301,8 @@ namespace FeatGen.ReportGenerator.Prompts
                 - Please use className defined in the Globals.css file to style the page for background, text color, font size and family.
                 - ###{theme_icon_prompt}###
                 - ###{theme_chart_prompt}###
+                - We're using React19
+                - The primary language is Chinese
 
                 Existing front-end page code:
 

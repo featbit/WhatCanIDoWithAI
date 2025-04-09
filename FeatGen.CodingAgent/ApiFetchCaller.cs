@@ -11,7 +11,7 @@ namespace FeatGen.CodingAgent
     {
         private static string _baseUrl = "https://localhost:7009";
 
-        public static async Task<Specification> GetSpecificationAsync(string reportId)
+        public static async Task<Specification> GetSpecificationAsync(string reportId, string projectName)
         {
             string endpoint = $"/api/reportgen/db/specification/{reportId}";
             try
@@ -27,19 +27,19 @@ namespace FeatGen.CodingAgent
                     }
                     else
                     {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        Console.WriteLine($"{projectName} Error: {response.StatusCode} - {response.ReasonPhrase}");
                         return null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                Console.WriteLine($"{projectName} Exception occurred: {ex.Message}");
                 return null;
             }
         }
 
-        public static async Task<List<GuidePageItem>> GetGuideGeneratedPagesAsync(string reportId)
+        public static async Task<List<GuidePageItem>> GetGuideGeneratedPagesAsync(string reportId, string projectName)
         {
             string endpoint = $"/api/codeguide/generated-pages/{reportId}";
             try
@@ -55,19 +55,19 @@ namespace FeatGen.CodingAgent
                     }
                     else
                     {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        Console.WriteLine($"{projectName} Error: {response.StatusCode} - {response.ReasonPhrase}");
                         return null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                Console.WriteLine($"{projectName} Exception occurred: {ex.Message}");
                 return null;
             }
         }
 
-        public static async Task<List<GuideMenuItem>> GetGuideGeneratedMenuItemsAsync(string reportId)
+        public static async Task<List<GuideMenuItem>> GetGuideGeneratedMenuItemsAsync(string reportId, string projectName)
         {
             string endpoint = $"/api/codeguide/generated-menu-items/{reportId}";
             try
@@ -83,14 +83,14 @@ namespace FeatGen.CodingAgent
                     }
                     else
                     {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        Console.WriteLine($"{projectName} Error: {response.StatusCode} - {response.ReasonPhrase}");
                         return null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                Console.WriteLine($"{projectName} Exception occurred: {ex.Message}");
                 return null;
             }
         }

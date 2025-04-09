@@ -45,6 +45,19 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("css-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> GenerateCssCode([FromBody] CodeGuideRequest request)
+        {
+            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            {
+                return NotFound();
+            }
+
+            var result = await codeGuideGenService.GenerateCssCodeAsync(request.ReportId);
+            return Ok(result);
+        }
+
         [HttpPost("menu-items")]
         [RequestTimeout(600)]
         public async Task<IActionResult> MenuItems([FromBody] CodeGuideRequest request)

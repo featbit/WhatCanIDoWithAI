@@ -58,7 +58,7 @@ namespace FeatGen.CodingAgent
             }
         }
 
-        public static async Task<string> Step1_GuidePages(string reportId)
+        public static async Task<string> Step1_GuidePages(string reportId, string projectName)
         {
             string endpoint = _baseUrl + $"/api/codeguide/pages";
 
@@ -87,14 +87,55 @@ namespace FeatGen.CodingAgent
                     }
                     else
                     {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        Console.WriteLine($"{projectName} Error: {response.StatusCode} - {response.ReasonPhrase}");
                         return null;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                Console.WriteLine($"{projectName} Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        public static async Task<string> Step2_CssCode(string reportId, string projectName)
+        {
+            string endpoint = _baseUrl + $"/api/codeguide/css-code";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(_baseUrl);
+                    client.Timeout = TimeSpan.FromSeconds(600);
+
+                    var requestData = new
+                    {
+                        ReportId = reportId
+                    }
+                ;
+
+                    var content = new StringContent(
+                        JsonSerializer.Serialize(requestData),
+                        System.Text.Encoding.UTF8,
+                        "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync(endpoint, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{projectName} Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{projectName} Exception occurred: {ex.Message}");
                 return null;
             }
         }

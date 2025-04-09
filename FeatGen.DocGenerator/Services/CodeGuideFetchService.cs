@@ -2,6 +2,7 @@
 using FeatGen.OpenAI;
 using FeatGen.ReportGenerator.Models.GuidePrompts;
 using FeatGen.ReportGenerator.Prompts;
+using Newtonsoft.Json;
 using System.Text.Json;
 
 namespace FeatGen.ReportGenerator
@@ -21,15 +22,24 @@ namespace FeatGen.ReportGenerator
 
         public async Task<List<GuidePageItem>> GetGeneratedPagesAsync(string reportId)
         {
-            var rcg = await rcgRepo.GetRCGAsync(reportId);
-            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(rcg.Pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
-            return allPages;
+            try
+            {
+                var rcg = await rcgRepo.GetRCGAsync(reportId);
+                var allPages = JsonConvert.DeserializeObject<List<GuidePageItem>>(rcg.Pages);
+                //var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(rcg.Pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+                return allPages;
+            }
+            catch(Exception exp)
+            {
+                throw exp;
+            }
         }
 
         public async Task<List<GuideMenuItem>> GetGeneratedMenuItemsAsync(string reportId)
         {
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(rcg.MenuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            //var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(rcg.MenuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var menuItems = JsonConvert.DeserializeObject<List<GuideMenuItem>>(rcg.MenuItems);
             return menuItems;
         }
     }

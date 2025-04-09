@@ -7,6 +7,7 @@ namespace FeatGen.ReportGenerator
     public interface ICodeGuideGenService
     {
         Task<string> GeneratePagesAsync(string reportId, string requirement = "no additional requirement");
+        Task<string> GenerateCssCodeAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateMenuItemsAsync(string reportId, string requirement = "no additional requirement");
         Task<string> GenerateMenuItemsCodeAysnc(string reportId);
         Task<string> GenerateDataModelsAsync(string reportId, string requirement = "no additional requirement");
@@ -37,9 +38,9 @@ namespace FeatGen.ReportGenerator
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             string prompt = GuideDataGenPages.PagesV1(spec, requirement);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
             //string result = await antropicChatService.CompleteChatWithJsonAsync(prompt);
-            string result = await geminiChatService.CompleteChatAsync(prompt);
+            //string result = await geminiChatService.CompleteChatAsync(prompt);
             result = result.CleanJsonCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -48,6 +49,15 @@ namespace FeatGen.ReportGenerator
                 models: "",
                 fake_data_base: "",
                 extract_db_ds: "");
+            return result;
+        }
+
+        public async Task<string> GenerateCssCodeAsync(string reportId, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            string prompt = GuideCodeGenThemeCssCode.V1(spec);
+            string result = await geminiChatService.CompleteChatAsync(prompt);
+            result = result.CleanCssCodeQuote();
             return result;
         }
 

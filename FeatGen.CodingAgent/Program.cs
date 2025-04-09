@@ -32,23 +32,32 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 
 var task1 = Task.Run(() => RunGen(
-    projectName: "基于光纤传感的公路基础灾害损毁感知原型系统",
-    startStepAt: 10,
-    stopStepAt: 11,
+    projectName: "智慧医保公共服务平台",
+    startStepAt: 9.8,
+    stopStepAt: 9.8,
+    //failedMenuItems: new List<string> { "profile-management" }
     failedMenuItems: null
 ));
 
-//var task2 = Task.Run(() => RunGen(
-//    projectName: "光伏出力秒级临近预报系统",
-//    startStepAt: 10,
-//    stopStepAt: 11,
+var task2 = Task.Run(() => RunGen(
+    projectName: "智慧医保平台统一门户系统",
+    startStepAt: 9.8,
+    stopStepAt: 9.8,
+    //failedMenuItems: new List<string> { "data-reports" }
+    failedMenuItems: null
+));
+
+//var task3 = Task.Run(() => RunGen(
+//    projectName: "医保数据治理服务系统",
+//    startStepAt: 0,
+//    stopStepAt: 0,
 //    failedMenuItems: null
 //));
 
 try
 {
-    await Task.WhenAll(task1);
-    //await Task.WhenAll(task1, task2);
+    //await Task.WhenAll(task1);
+    await Task.WhenAll(task1, task2);
     Console.WriteLine("All generation tasks completed successfully.");
 }
 catch (Exception ex)
@@ -64,20 +73,11 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
     string userManualFilePath = @"C:/Code/featgen/generated-files/" + projectName + "/user-manual.md";
 
     string themeIconPrompt = "use lucide-react (e.g. `import { xxx } from 'lucide-react';`) for icon render";
-    string themeChartPrompt = "use chart.js (e.g. `import Chart from 'chart.js';`) for chart render";
+    string themeChartPrompt = "use react-chartjs-2 as chart component library only; use shadcn/ui as basic component library;";
     string basicComponentPrompt = "use antd for basic component render, e.g. table, button, selector";
 
     try
     {
-        if (startStepAt <= 2 && stopStepAt >= 3)
-        {
-            //step 2,3
-            //Currently work for it in vscode with prompt:
-            // 
-            // Please update globals.css for the new theme of service "伏出力秒级临近预报系统". Please update colors(primary, secondary, background, text), font size, font famaliy, and so on existing in the current css file
-            // For me "伏出力秒级临近预报系统" should be with color of electric and green energy theme
-        }
-
         if (startStepAt <= 0 && stopStepAt >= 0)
         {
             Console.WriteLine($"{projectName} - Step 0: Generating specification...");
@@ -91,8 +91,17 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
         {
             //step 1
             Console.WriteLine($"{projectName} - Step 1: Generating guide pages...");
-            await ApiGenCaller.Step1_GuidePages(reportId);
-            Console.WriteLine($"Generated");
+            await ApiGenCaller.Step1_GuidePages(reportId, projectName);
+            Console.WriteLine($"{projectName} - Step 1:Generated");
+        }
+
+        if (startStepAt <= 2 && stopStepAt >= 3)
+        {
+            //step 2,3
+            Console.WriteLine($"{projectName} - Step 2,3: Generating theme and gloabls css...");
+            var themeCssCode = await ApiGenCaller.Step2_CssCode(reportId, projectName);
+            FileAgent.RewriteFileContent(nextjsFileRootPath + "/globals.css", themeCssCode);
+            Console.WriteLine($"{projectName} - Step 2,3:Generated");
         }
 
         if (startStepAt <= 4 && stopStepAt >= 4)
@@ -100,12 +109,15 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
             //step 4
             Console.WriteLine($"{projectName} - Step 4: Generating guide menu items...");
             await ApiGenCaller.Step4_GuideMenuItems(reportId);
-            Console.WriteLine($"Generated");
+            Console.WriteLine($"{projectName} - Step 4:Generated");
         }
 
-        Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId);
-        List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId);
-        List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId);
+        Console.WriteLine($"{projectName}: Geting Generated Specification...");
+        Specification spec = await ApiFetchCaller.GetSpecificationAsync(reportId, projectName);
+        Console.WriteLine($"{projectName}: Geting Generated Pages...");
+        List<GuidePageItem> pages = await ApiFetchCaller.GetGuideGeneratedPagesAsync(reportId, projectName);
+        Console.WriteLine($"{projectName}: Geting Generated Menu Items...");
+        List<GuideMenuItem> menuItems = await ApiFetchCaller.GetGuideGeneratedMenuItemsAsync(reportId, projectName);
 
         FileAgent.CreateFolder(generatedFileRootPath + "/apis");
         FileAgent.CreateFolder(generatedFileRootPath + "/css");
@@ -121,7 +133,7 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
             string guideMenuItemsCode = "export const PATH_PREFIX = '/pages';\r\n" + await ApiGenCaller.Step5_GuideMenuItemsCode(reportId);
 
             FileAgent.RewriteFileContent(generatedFileRootPath + "/menuitems/code.js", guideMenuItemsCode);
-            FileAgent.RewriteFileContent(nextjsFileRootPath + "/components/MenuItems.js", guideMenuItemsCode);
+            FileAgent.RewriteFileContent(nextjsFileRootPath + "/shared/MenuItems.js", guideMenuItemsCode);
             Console.WriteLine($"Generated");
         }
 
@@ -167,7 +179,7 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
         if (startStepAt <= 9.3 && stopStepAt >= 9.3)
         {
             // step 9.3
-            await GenCodeForMainPages(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId, failedMenuItems);
+            //await GenCodeForMainPages(projectName, generatedFileRootPath, nextjsFileRootPath, pages, menuItems, cssCode, reportId, failedMenuItems);
         }
         if (startStepAt <= 9.4 && stopStepAt >= 9.4)
         {
