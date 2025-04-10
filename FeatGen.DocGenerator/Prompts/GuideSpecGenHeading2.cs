@@ -221,6 +221,9 @@ namespace FeatGen.ReportGenerator.Prompts
             string pagesDescription = JsonSerializer.Serialize<List<GuidePageItem>>(
                 pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
 
+            string heading_2_f1_description = (mainPage.mapping_features != null &&
+                mainPage.mapping_features.Count > 0) ?
+                mainPage.mapping_features[0].feature_desc : "功能描述案例 - 个人信息更新功能是智慧医保平台统一门户系统参保信息管理模块中的一个重要功能，旨在让用户能够便捷地修改个人基本信息，确保其信息的准确性和时效性。用户可以通过该功能修改与医保相关的个人基本信息，如联系电话、家庭住址、电子邮箱等。该功能帮助用户随时更新信息，避免因信息错误或过时而影响医保服务的准确性。用户登录后进入‘参保信息管理’模块的个人信息更新选项进行操作。";
             string prompt = rawPrompt
                 .Replace("###{service_name}###", spec.Title)
                 .Replace("###{service_desc}###", spec.Definition)
@@ -229,7 +232,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 .Replace("###{page_name}###", mainPage.page_name)
                 .Replace("###{heading_2_title}###", menuItem.menu_name)
                 .Replace("###{heading_2_description}###", mainPage.page_description)
-                .Replace("###{heading_2_f1_description}###", mainPage.mapping_features[0].feature_desc);
+                .Replace("###{heading_2_f1_description}###", heading_2_f1_description);
 
             return prompt;
         }

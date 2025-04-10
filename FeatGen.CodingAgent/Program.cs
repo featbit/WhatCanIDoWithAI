@@ -34,16 +34,16 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 //var task1 = Task.Run(() => RunGen(
 //    projectName: "智慧医保公共服务平台",
-//    startStepAt: 9.8,
-//    stopStepAt: 9.8,
+//    startStepAt: 10,
+//    stopStepAt: 11,
 //    //failedMenuItems: new List<string> { "profile-management" }
 //    failedMenuItems: null
 //));
 
 var task2 = Task.Run(() => RunGen(
     projectName: "智慧医保平台统一门户系统",
-    startStepAt: 9.4,
-    stopStepAt: 9.8,
+    startStepAt: 11,
+    stopStepAt: 11,
     //failedMenuItems: new List<string> { "data-reports" }
     failedMenuItems: null
 ));
@@ -207,14 +207,18 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
         if (startStepAt <= 10 && stopStepAt >= 10)
         {
             // step 10
+            Console.WriteLine($"{projectName} - Step 10 Update User Manual");
             await UpdateUserManual(userManualFilePath, reportId, nextjsFileRootPath, spec, guideMenuItems);
+            Console.WriteLine($"{projectName} - Step 10 Finished");
         }
 
         if (startStepAt <= 11 && stopStepAt >= 11)
         {
             // step 11
+            Console.WriteLine($"{projectName} - Step 11 Generate App Form");
             string formString = await ApiGenCaller.GenerateApplicationForm(reportId);
             FileAgent.CreateAndInitFile(generatedFileRootPath + "/application-form.txt", formString);
+            Console.WriteLine($"{projectName} - Step 11 Finished");
         }
     }
 

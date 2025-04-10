@@ -76,15 +76,38 @@ namespace FeatGen.ReportGenerator.Prompts
             for (int i = 0; i < menuItems.Count; i++)
             {
                 var menuItem = menuItems[i];
-                var page = allPages.FirstOrDefault(p => p.page_id == menuItem.page_id);
 
-                var features = "";
-                for(int j=0; j< page.mapping_features.Count; j++)
+                if(menuItem.sub_menu_items != null && menuItem.sub_menu_items.Count > 0)
                 {
-                    features += "- " + page.mapping_features[j].feature_desc + "\n";
-                }
+                    var features = "";
+                    var subMenuItems = menuItem.sub_menu_items;
+                    foreach(var smi in subMenuItems)
+                    {
+                        var page = allPages.FirstOrDefault(p => p.page_id == smi.page_id);
+                        if(page == null)
+                        {
+                            continue;
+                        }
+                        for (int j = 0; j < page.mapping_features.Count; j++)
+                        {
+                            features += "- " + page.mapping_features[j].feature_desc + "\n";
+                        }
+                        pageDescription += $"## {menuItem.menu_name} \nFeatures: \n {features}";
+                    }
 
-                pageDescription += $"## {menuItem.menu_name} \nFeatures: \n {features}";
+                }
+                else
+                {
+                    var page = allPages.FirstOrDefault(p => p.page_id == menuItem.page_id);
+
+                    var features = "";
+                    for (int j = 0; j < page.mapping_features.Count; j++)
+                    {
+                        features += "- " + page.mapping_features[j].feature_desc + "\n";
+                    }
+
+                    pageDescription += $"## {menuItem.menu_name} \nFeatures: \n {features}";
+                }
             }
 
             string prompt = rawPrompt
