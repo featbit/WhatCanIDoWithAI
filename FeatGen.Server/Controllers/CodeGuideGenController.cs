@@ -220,7 +220,9 @@ namespace FeatGen.Server.Controllers
             {
                 return NotFound();
             }
-            var result = await codeGuideGenService.UpdateExistingApiCodeWithNewDbCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbCode);
+            //var result = await codeGuideGenService.UpdateExistingApiCodeWithNewDbCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbCode);
+            var result = await codeGuideGenService.GenerateApiCodeWithDedicatedDbCodeAsync(request.ReportId, request.PageId, request.MenuItem, request.InterfaceDefinition, request.DbCode);
+            
             return Ok(result);
         }
         [HttpPost("page-code-update")]

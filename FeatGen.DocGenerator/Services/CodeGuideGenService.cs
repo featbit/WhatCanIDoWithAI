@@ -20,6 +20,7 @@ namespace FeatGen.ReportGenerator
         Task<string> DefineDedicatedMemoryDbModel(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string requirement = "no additional requirement");
         Task<string> GenerateDedicatedMemoryDBCode(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string dedicatedDbModels, string requirement = "no additional requirement");
         Task<string> UpdateExistingApiCodeWithNewDbCode(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string dedicatedDbCode, string requirement = "no additional requirement");
+        Task<string> GenerateApiCodeWithDedicatedDbCodeAsync(string reportId, string pageId, string menuItem, string interfaceDefinition, string dedicatedDbCode, string requirement = "no additional requirement");
         Task<string> UpdateExistingPageCodeWithNewApiCode(string reportId, string pageId, string menuItem, string apiCode, string cssCode, string dbCode, string dbModels, string themeIconPrompt, string themeChartPrompt, string requirement = "no additional requirement");
         Task<string> GenerateUserManualByPage(string reportId, string pageId, string pageComponent, string requirement = "no additional requirement");
         Task<string> GenerateApplicationForm(string reportId);
@@ -155,14 +156,14 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = pageId == "login" ?
                 GuideCodeGenPageComponentApi.V1Login(spec, rcg, pageId) :
-                GuideCodeGenPageComponentApi.V2WithMemoryDB(spec, rcg, pageId);
+                GuideCodeGenPageComponentApi.WithMemoryDB(spec, rcg, pageId);
             //GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             //GeminiResponse result = await geminiChatService.CompleteChatAsync(prompt, false);
             //return result.Message;
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
-            if (result.ToLower().Contains("../../db/memoryDB"))
+            if (result.ToLower().Contains("../../db/memorydb"))
                 result = result.Replace("../../db/memoryDB", "@/app/db/memoryDB").Replace("../../db/MemoryDB", "@/app/db/memoryDB"); ;
             return result;
         }
@@ -195,7 +196,8 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateInterfaces(spec, rcg, pageId, menuItem, apiCode, memoryDBCode, pageCode);
+            //string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateInterfaces(spec, rcg, pageId, menuItem, apiCode, memoryDBCode, pageCode);
+            string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateInterfacesV2(spec, rcg, pageId, menuItem, memoryDBCode);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsonCodeQuote();
@@ -206,7 +208,8 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModel(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition);
+            //string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModel(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition);
+            string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModelV2(spec, rcg, pageId, menuItem, interfaceDefinition);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
@@ -216,7 +219,8 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCode(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbModels);
+            //string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCode(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbModels);
+            string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCodeV2(spec, rcg, pageId, menuItem, interfaceDefinition, dedicatedDbModels);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
@@ -226,7 +230,17 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            string prompt = GuideCodeGenPageComponentApi.V3UpdateWithDedicatedDB(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbCode);
+            string prompt = GuideCodeGenPageComponentApi.UpdateWithDedicatedDB(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbCode);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            return result;
+        }
+
+        public async Task<string> GenerateApiCodeWithDedicatedDbCodeAsync(string reportId, string pageId, string menuItem, string interfaceDefinition, string dedicatedDbCode, string requirement = "no additional requirement")
+        {
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+            string prompt = GuideCodeGenPageComponentApi.WithMemoryDBV2(spec, rcg, pageId, menuItem, interfaceDefinition, dedicatedDbCode);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;

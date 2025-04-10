@@ -73,6 +73,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - You shouldn't change existing default export function name.
                 - You can add more code or functions if needed.
                 - You need to write all related components in one file instead write in other files and import it.
+                - Write Javascript Code, not write Typescript Code.
 
                 ## Output format
 
