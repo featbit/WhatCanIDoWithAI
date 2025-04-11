@@ -663,6 +663,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - You can add new functions in API file to simulate data or functions that doesn't exist in database file.
                 - These API endpoints should be called directly in NextJs components. So it's an APIs endpoints but exist in a function format.
                 - Write Javascript code, not typescript code.
+                - Generate Chinese for data, not English.
                 
                 ## Output Format
                 

@@ -41,11 +41,10 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 //));
 
 var task2 = Task.Run(() => RunGen(
-    projectName: "智慧医保平台统一门户系统",
-    startStepAt: 11,
+    projectName: "医保数据治理服务系统",
+    startStepAt: 10,
     stopStepAt: 11,
-    //failedMenuItems: new List<string> { "data-reports" }
-    failedMenuItems: null
+    failedMenuItems: new List<string> { "data-compliance-check" }
 ));
 
 //var task3 = Task.Run(() => RunGen(
@@ -184,8 +183,10 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
         string themeChartPrompt = "use react-chartjs-2 as chart component library only; use shadcn/ui as basic component library;";
         for (int i = 0; i < menuItems.Count; i++)
         {
-            if (menuItems[i].menu_item != "settlement-status")
+            if(failedMenuItems.All(p => p != menuItems[i].menu_item))
+            {
                 continue;
+            }
 
             await GenStep9ForSingleMenuItem(
                 startStepAt: startStepAt,

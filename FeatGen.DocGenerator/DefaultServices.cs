@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FeatGen.ReportGenerator.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace FeatGen.ReportGenerator
@@ -15,7 +16,7 @@ namespace FeatGen.ReportGenerator
             builder.Services.AddScoped<ICodeGuideFetchService, CodeGuideFetchService>();
             builder.Services.AddScoped<ICodePromptGenService, CodePromptGenService>();
             builder.Services.AddScoped<ICodeUtilsService, CodeUtilsService>();
-            
+            builder.Services.AddScoped<ICodeFixService, CodeFixService>();
 
             return builder;
         }

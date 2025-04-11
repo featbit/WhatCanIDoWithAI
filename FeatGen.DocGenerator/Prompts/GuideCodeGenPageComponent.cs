@@ -315,7 +315,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 
                 export default function ###{page_component_name}###() {  
                   return (
-                    <div className="py-6 flex h-[calc(100vh-74px)]">
+                    <div className="">
                     </div>
                   );
                 }

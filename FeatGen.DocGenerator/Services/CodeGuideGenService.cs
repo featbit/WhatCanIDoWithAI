@@ -57,7 +57,8 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             string prompt = GuideCodeGenThemeCssCode.V1(spec);
-            string result = await geminiChatService.CompleteChatAsync(prompt);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt);
             result = result.CleanCssCodeQuote();
             return result;
         }
@@ -68,8 +69,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideDataGenPages.MenuItems(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, true);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-            string result = await geminiChatService.CompleteChatAsync(prompt);
+            string result = await antropicChatService.CompleteChatAsync(prompt, true);
+            //string result = await geminiChatService.CompleteChatAsync(prompt);
             result = result.CleanJsonCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -86,8 +87,8 @@ namespace FeatGen.ReportGenerator
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideCodeGenMenuItems.V1(rcg, spec.Title);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-            string result = await geminiChatService.CompleteChatAsync(prompt);
+            string result = await antropicChatService.CompleteChatAsync(prompt, true);
+            //string result = await geminiChatService.CompleteChatAsync(prompt);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -98,8 +99,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideDataGenModels.ModelsV2(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsonCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -117,8 +118,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideDataGenModels.FakeData(spec, rcg);
             string prompt = GuideDataGenModels.MemoryDB(spec, rcg);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -148,8 +149,6 @@ namespace FeatGen.ReportGenerator
             return result;
         }
 
-        
-
         public async Task<string> GenerateApiCodeAsync(string reportId, string pageId, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
@@ -159,8 +158,6 @@ namespace FeatGen.ReportGenerator
                 GuideCodeGenPageComponentApi.WithMemoryDB(spec, rcg, pageId);
             //GuideCodeGenPageComponentApi.V1(spec, rcg, pageId);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
-            //GeminiResponse result = await geminiChatService.CompleteChatAsync(prompt, false);
-            //return result.Message;
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             if (result.ToLower().Contains("../../db/memorydb"))
@@ -198,8 +195,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateInterfaces(spec, rcg, pageId, menuItem, apiCode, memoryDBCode, pageCode);
             string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateInterfacesV2(spec, rcg, pageId, menuItem, memoryDBCode);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsonCodeQuote();
             return result;
         }
@@ -210,7 +207,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModel(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition);
             string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModelV2(spec, rcg, pageId, menuItem, interfaceDefinition);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -221,7 +219,8 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCode(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbModels);
             string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCodeV2(spec, rcg, pageId, menuItem, interfaceDefinition, dedicatedDbModels);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -231,7 +230,8 @@ namespace FeatGen.ReportGenerator
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideCodeGenPageComponentApi.UpdateWithDedicatedDB(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbCode);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -241,7 +241,8 @@ namespace FeatGen.ReportGenerator
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideCodeGenPageComponentApi.WithMemoryDBV2(spec, rcg, pageId, menuItem, interfaceDefinition, dedicatedDbCode);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -252,6 +253,7 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = GuideCodeGenPageComponent.V3GenerateWithNewAPI(spec, rcg, pageId, menuItem, apiCode, cssCode, dbCode, dbModels, themeIconPrompt, themeChartPrompt);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }
@@ -265,9 +267,9 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             //string prompt = GuideSpecGenHeading2.V1(spec, rcg, pageId, pageComponent);
             string prompt = GuideSpecGenHeading2.V2UseGeneratedPageFeatureFunctionalityDescription(spec, rcg, pageId, pageComponent);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            string result = await antropicChatService.CompleteChatAsync(prompt, false);
             //string result = await openaiChatService.CompleteChatAsync(prompt, false);
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            //string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanMarkdownCodeQuote();
             return result;
         }

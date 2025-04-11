@@ -611,6 +611,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - This "###{db_file_path_n_name}###" file should be a new file, and it should not be the same as the "###{db_shared_file_path_n_name}###" file.
                 - The "###{api_file_path_n_name}###" file will also update the code to call the exportable functions that will be generated in new "###{db_file_path_n_name}###" file. but not in this task.
                 - In the "###{db_file_path_n_name}###" file, we suggest to generate fake data or simulate data dynamically. It means using program to generate data and avoid hard code data.
+                - Generate Chinese for data, not English.
 
                 ## Output Format
                 
