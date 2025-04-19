@@ -41,10 +41,10 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 //));
 
 var task2 = Task.Run(() => RunGen(
-    projectName: "医保数据治理服务系统",
+    projectName: "中小企业创新赋能管理平台",
     startStepAt: 10,
     stopStepAt: 11,
-    failedMenuItems: new List<string> { "data-compliance-check" }
+    failedMenuItems: null
 ));
 
 //var task3 = Task.Run(() => RunGen(
@@ -183,7 +183,7 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
         string themeChartPrompt = "use react-chartjs-2 as chart component library only; use shadcn/ui as basic component library;";
         for (int i = 0; i < menuItems.Count; i++)
         {
-            if(failedMenuItems.All(p => p != menuItems[i].menu_item))
+            if(failedMenuItems != null && failedMenuItems.All(p => p != menuItems[i].menu_item))
             {
                 continue;
             }

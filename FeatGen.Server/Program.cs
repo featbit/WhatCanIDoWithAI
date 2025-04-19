@@ -13,7 +13,6 @@ AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
 //Environment.SetEnvironmentVariable("OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY", "true");
 //Environment.SetEnvironmentVariable("OTEL_LOG_LEVEL", "debug");
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,11 +24,12 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<FeatGenDbContext>(options =>
     options
-        .UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"), op =>op.UseVector())
+        .UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"), op => op.UseVector())
         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 );
 
-builder.Services.AddMediatR(cfg => {
+builder.Services.AddMediatR(cfg =>
+{
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
 
@@ -40,7 +40,16 @@ builder.AddOpenAIServices();
 builder.AddSpecificationGenServices();
 builder.AddFeatureFlagServices();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", policyBuilder =>
+    {
+        policyBuilder.WithOrigins("http://localhost:3000");
+        //policyBuilder.WithOrigins("*");
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -60,15 +69,20 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
+// Change this line to use the specific policy
+app.UseCors("AllowSpecificOrigin");
+
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(FeatGen.Client._Imports).Assembly);
 
-app.MapControllers();
+// Make controllers respect the CORS policy
+app.MapControllers().RequireCors("AllowSpecificOrigin");
 
-app.MapGet("/fbclienttest", (IFbClient fbClient) => {
+app.MapGet("/fbclienttest", (IFbClient fbClient) =>
+{
     var fbUser = FeatBit.Sdk.Server.Model.FbUser.Builder("123").Build();
 
     var customReportFlag = fbClient.BoolVariation("custom-report", fbUser, defaultValue: false);

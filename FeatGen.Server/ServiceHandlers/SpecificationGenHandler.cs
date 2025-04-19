@@ -10,6 +10,7 @@ namespace FeatGen.Server.ServiceHandlers
         public string Query { get; set; }
         public string? Step { get; set; }
         public string Requirement { get; set; }
+        public string? Id { get; set; }
     }
 
     public class SpecificationGenHandler(
@@ -38,7 +39,7 @@ namespace FeatGen.Server.ServiceHandlers
                 spec.Features[i] = f;
             }
 
-            await reportRepo.AddReportAsync(spec);
+            await reportRepo.AddReportAsync(spec, request.Id ?? "");
 
             return spec;
         }

@@ -8,7 +8,7 @@ namespace FeatGen.ReportGenerator
 {
     public interface IReportRepo
     {
-        Task AddReportAsync(Specification spec);
+        Task AddReportAsync(Specification spec, string id = null);
         Task<Specification?> GetSpecificationByReportIdAsync(string reportId);
         Task<Report?> GetReportByIdAsync(string id);
         Task<string> GetReportIdByTitleAsync(string title);
@@ -16,11 +16,11 @@ namespace FeatGen.ReportGenerator
 
     public class ReportRepo(FeatGenDbContext dbContext) : IReportRepo
     {
-        public async Task AddReportAsync(Specification spec)
+        public async Task AddReportAsync(Specification spec, string id = null)
         {
             Report report = new()
             {
-                Id = Guid.NewGuid(),
+                Id = string.IsNullOrWhiteSpace(id) ? Guid.NewGuid() : new Guid(id),
                 Specification = spec,
                 CreatedAt = DateTime.UtcNow,
             };
