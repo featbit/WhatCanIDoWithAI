@@ -17,9 +17,9 @@ namespace FeatGen.ReportGenerator
         Task<string> GeneratePageComponentFilesAsync(string reportId, string pageId, string apiCode, string requirement = "no additional requirement");
         Task<string> GenerateComponentCodeAsync(string reportId, string pageId, string pageComponentName, string apiCode, string cssCode, string requirement = "no additional requirement");
         //Task<string> GeneratePageApiDbInterfacesAsync(string reportId, string pageId, string menuItem, string apiCode, string memoryDBCode, string pageCode, string requirement = "no additional requirement");
-        Task<string> GeneratePageApiDbInterfacesAsync(string reportId, string pageId, string menuItem, string apiCode, string requirement = "no additional requirement")
-        Task<string> DefineDedicatedMemoryDbModel(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string requirement = "no additional requirement");
-        Task<string> GenerateDedicatedMemoryDBCode(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string dedicatedDbModels, string requirement = "no additional requirement");
+        Task<string> GeneratePageApiDbInterfacesAsync(string reportId, string pageId, string menuItem, string requirement = "no additional requirement");
+        Task<string> DefineDedicatedMemoryDbModel(string reportId, string pageId, string menuItem, string interfaceDefinition, string requirement = "no additional requirement");
+        Task<string> GenerateDedicatedMemoryDBCode(string reportId, string pageId, string menuItem, string interfaceDefinition, string dedicatedDbModels, string requirement = "no additional requirement");
         Task<string> UpdateExistingApiCodeWithNewDbCode(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string dedicatedDbCode, string requirement = "no additional requirement");
         Task<string> GenerateApiCodeWithDedicatedDbCodeAsync(string reportId, string pageId, string menuItem, string interfaceDefinition, string dedicatedDbCode, string requirement = "no additional requirement");
         Task<string> UpdateExistingPageCodeWithNewApiCode(string reportId, string pageId, string menuItem, string apiCode, string cssCode, string dbCode, string dbModels, string themeIconPrompt, string themeChartPrompt, string requirement = "no additional requirement");
@@ -203,7 +203,7 @@ namespace FeatGen.ReportGenerator
         //    return result;
         //}
 
-        public async Task<string> GeneratePageApiDbInterfacesAsync(string reportId, string pageId, string menuItem, string apiCode, string requirement = "no additional requirement")
+        public async Task<string> GeneratePageApiDbInterfacesAsync(string reportId, string pageId, string menuItem, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
@@ -214,11 +214,10 @@ namespace FeatGen.ReportGenerator
             return result;
         }
 
-        public async Task<string> DefineDedicatedMemoryDbModel(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string requirement = "no additional requirement")
+        public async Task<string> DefineDedicatedMemoryDbModel(string reportId, string pageId, string menuItem, string interfaceDefinition, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            //string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModel(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition);
             string prompt = GuideCodeGenPageDedicatedMemoryDb.DefineDedicatedMemoryDbModelV2(spec, rcg, pageId, menuItem, interfaceDefinition);
             string result = await antropicChatService.CompleteChatAsync(prompt, false);
             //string result = await geminiChatService.CompleteChatAsync(prompt, false);
@@ -226,11 +225,10 @@ namespace FeatGen.ReportGenerator
             return result;
         }
 
-        public async Task<string> GenerateDedicatedMemoryDBCode(string reportId, string pageId, string menuItem, string apiCode, string interfaceDefinition, string dedicatedDbModels, string requirement = "no additional requirement")
+        public async Task<string> GenerateDedicatedMemoryDBCode(string reportId, string pageId, string menuItem, string interfaceDefinition, string dedicatedDbModels, string requirement = "no additional requirement")
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             var rcg = await rcgRepo.GetRCGAsync(reportId);
-            //string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCode(spec, rcg, pageId, menuItem, apiCode, interfaceDefinition, dedicatedDbModels);
             string prompt = GuideCodeGenPageDedicatedMemoryDb.GenerateDedicatedMemoryDBCodeV2(spec, rcg, pageId, menuItem, interfaceDefinition, dedicatedDbModels);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);

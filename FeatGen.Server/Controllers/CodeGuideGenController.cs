@@ -188,7 +188,7 @@ namespace FeatGen.Server.Controllers
                 return NotFound();
             }
             //var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.MemoryDbCode, request.PageCode);
-            var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode);
+            var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem);
             return Ok(result);
         }
         [HttpPost("page-api-db-models")]
@@ -210,7 +210,7 @@ namespace FeatGen.Server.Controllers
             {
                 return NotFound();
             }
-            var result = await codeGuideGenService.GenerateDedicatedMemoryDBCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbModels);
+            var result = await codeGuideGenService.GenerateDedicatedMemoryDBCode(request.ReportId, request.PageId, request.MenuItem, request.InterfaceDefinition, request.DbModels);
             return Ok(result);
         }
         [HttpPost("page-api-code-update")]
@@ -221,7 +221,6 @@ namespace FeatGen.Server.Controllers
             {
                 return NotFound();
             }
-            //var result = await codeGuideGenService.UpdateExistingApiCodeWithNewDbCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition, request.DbCode);
             var result = await codeGuideGenService.GenerateApiCodeWithDedicatedDbCodeAsync(request.ReportId, request.PageId, request.MenuItem, request.InterfaceDefinition, request.DbCode);
             
             return Ok(result);
@@ -264,6 +263,18 @@ namespace FeatGen.Server.Controllers
 
             var result = await codeGuideGenService.GenerateUserManualByPage(
                 request.ReportId, request.PageId, request.PageComponent);
+            result = result
+                .Replace("**：", "：")
+                .Replace("*   **", "- ")
+                .Replace("1.  **", "1. ")
+                .Replace("2.  **", "2. ")
+                .Replace("3.  **", "3. ")
+                .Replace("4.  **", "4. ")
+                .Replace("5.  **", "5. ")
+                .Replace("    *   ", "    - ")
+                .Replace("*   ", "- ")
+                .Replace("1.  **", "1. ")
+                .Replace(":**", ":");
             return Ok(result);
         }
 

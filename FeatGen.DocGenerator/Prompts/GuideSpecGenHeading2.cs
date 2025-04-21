@@ -155,12 +155,11 @@ namespace FeatGen.ReportGenerator.Prompts
                 - You should contains one heading 2 with 0 to multiple heading 3 sections.
                 - You should consider that each heading 3 section can have one or multiple screenshots of the software interface.
                 - You can write steps of using a feature in the software interface, but don't write too much details for the steps.
-
-
+                - You should generate in Chinese.
 
                 ## Output format
                 
-                Return the pure document text only without any explaination, table and code. The text should be in Markdown format for headings.
+                Return the pure document text only without any explaination, table and code. The text should be in Markdown format for headings. The text should be in Chinese.
 
                 ## Output example
 

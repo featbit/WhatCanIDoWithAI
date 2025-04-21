@@ -32,20 +32,20 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 
 
-//var task1 = Task.Run(() => RunGen(
-//    projectName: "智慧医保公共服务平台",
-//    startStepAt: 10,
-//    stopStepAt: 11,
-//    //failedMenuItems: new List<string> { "profile-management" }
-//    failedMenuItems: null
-//));
-
-var task2 = Task.Run(() => RunGen(
-    projectName: "中小企业创新赋能管理平台",
+var task1 = Task.Run(() => RunGen(
+    projectName: "无人机光电检测背景误报消除算法软件",
     startStepAt: 10,
-    stopStepAt: 11,
+    stopStepAt: 10,
+    //failedMenuItems: new List<string> { "data-analysis" }
     failedMenuItems: null
 ));
+
+//var task2 = Task.Run(() => RunGen(
+//    projectName: "无人机RID网关软件",
+//    startStepAt: 10,
+//    stopStepAt: 11,
+//    failedMenuItems: new List<string> { "product-management" }
+//));
 
 //var task3 = Task.Run(() => RunGen(
 //    projectName: "医保数据治理服务系统",
@@ -56,7 +56,7 @@ var task2 = Task.Run(() => RunGen(
 
 try
 {
-    await Task.WhenAll(task2);
+    await Task.WhenAll(task1);
     //await Task.WhenAll(task1, task2);
     Console.WriteLine("All generation tasks completed successfully.");
 }

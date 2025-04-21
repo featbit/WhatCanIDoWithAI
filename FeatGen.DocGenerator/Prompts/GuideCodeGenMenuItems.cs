@@ -69,6 +69,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - Please don't change the name of exporting variable "export const menuItems".
                 - Svg Icon style should be consistence with "###{service_name}###"
                 - The path value should be the value of menu_item with prefix symbol /. For example, if menu_item equals to 
+                - Menu_name should be in Chinese
 
                 ## Output format
 
