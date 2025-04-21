@@ -8,6 +8,10 @@ namespace FeatGen.ReportGenerator
 {
     public interface IReportRepo
     {
+        // Updated comment to clarify the upsert functionality
+        /// <summary>
+        /// Adds a new report or updates an existing one if the ID already exists
+        /// </summary>
         Task AddReportAsync(Specification spec, string id = null);
         Task<Specification?> GetSpecificationByReportIdAsync(string reportId);
         Task<Report?> GetReportByIdAsync(string id);
@@ -26,9 +30,14 @@ namespace FeatGen.ReportGenerator
             };
 
             var connection = dbContext.Database.GetDbConnection();
+            
+            // Modified SQL to use upsert (INSERT ... ON CONFLICT ... DO UPDATE)
             const string sql = """
-                           insert into reports (id, created_at, specification) 
-                           values (@id, @created_at, @specification::jsonb)
+                           INSERT INTO reports (id, created_at, specification) 
+                           VALUES (@id, @created_at, @specification::jsonb)
+                           ON CONFLICT (id)
+                           DO UPDATE SET specification = @specification::jsonb 
+                           WHERE reports.id = @id;
                            """;
 
             object reportObj = new

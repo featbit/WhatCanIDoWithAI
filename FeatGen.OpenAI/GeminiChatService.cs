@@ -13,7 +13,7 @@ namespace FeatGen.OpenAI
 {
     public interface IGeminiChatService
     {
-        Task<string> CompleteChatAsync(string message, bool enforceJson = false);
+        Task<string> CompleteChatAsync(string message, bool enforceJson = false, string customEndpoint = "gemini-25-pro-exp-03-25");
     }
 
     public class GeminiChatService : IGeminiChatService
@@ -28,7 +28,7 @@ namespace FeatGen.OpenAI
             _httpClient.Timeout = TimeSpan.FromSeconds(600 * 1000);
         }
 
-        public async Task<string> CompleteChatAsync(string message, bool enforceJson = false)
+        public async Task<string> CompleteChatAsync(string message, bool enforceJson = false, string customEndpoint = "gemini-25-pro-exp-03-25")
         {
             var requestData = new
             {
@@ -47,7 +47,8 @@ namespace FeatGen.OpenAI
 
             try
             {
-                var response = await _httpClient.PostAsync(_configuration["Gemini:EndpointUrl"], content);
+                string endpoint = $"{_configuration["Gemini:EndpointUrl"]}/{customEndpoint}";
+                var response = await _httpClient.PostAsync(endpoint, content);
                 //var requestTimeout = TimeSpan.FromSeconds(600); // 10 minute timeout
                 //using var cts = new CancellationTokenSource(requestTimeout);
                 //var response = await _httpClient.PostAsync(_configuration["Gemini:EndpointUrl"], content, cts.Token);

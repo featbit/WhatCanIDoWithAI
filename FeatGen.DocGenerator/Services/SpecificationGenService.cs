@@ -17,6 +17,7 @@ namespace FeatGen.ReportGenerator
     public class SpecificationGenService(
         IOpenAiChatService openaiChatService,
         IAntropicChatService antropicChatService,
+        IGeminiChatService geminiChatService,
         IReportRepo reportRepo,
         IReportCodeGuideRepo rcgRepo) : ISpecificationGenService
     {
@@ -53,8 +54,8 @@ namespace FeatGen.ReportGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "module_detail_description": "", // detailed description of the functionality; add steps of how to use this functionalities if needed ; in chinese
-                        "module_name": "" // name of the functionality with less than 50 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
+                        "module_detail_description": string, // detailed description of the functionality; add steps of how to use this functionalities if needed ; in chinese
+                        "module_name": string // name of the functionality with less than 50 characters, in chinese. should not equal to the feature name; should be generated based on Functionality short description
                     }
 
                     """;
@@ -71,7 +72,9 @@ namespace FeatGen.ReportGenerator
                     .Replace("###{functionality_desc}###", functionality.ShortDescription);
 
                 //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-                string result = await openaiChatService.CompleteChatAsync(prompt, true);
+                //string result = await openaiChatService.CompleteChatAsync(prompt, true);
+                string result = await geminiChatService.CompleteChatAsync(prompt, false, "spec-functionality-gen");
+                result = result.CleanResult();
                 ModuleDetail detail = JsonSerializer.Deserialize<ModuleDetail>(result);
                 return new FeatGen.Models.ReportGenerator.Functionality
                 {
@@ -147,7 +150,7 @@ namespace FeatGen.ReportGenerator
                     {
                         "feature_description": "", // detailed description of the feature, in chinese
                         "feature_name": "", // name of the feature with less than 100 characters, in chinese
-                        "feature_functionalities": [], // list functionalities of the feature, describing functionalities with details. at least more than 100 characters
+                        "feature_functionalities": [], // list functionalities of the feature, describing functionalities with details; minItems: 1; maxItems: 5; at least more than 100 characters; should not be empty;
                         "menu_item": "" // menu item code for the feature, in english, format:  xxx or xxx-xxx in lower case
                     }
 
@@ -169,18 +172,28 @@ namespace FeatGen.ReportGenerator
             // Create tasks for each subfeature
             var tasks = features.Select(async f =>
             {
-                string prompt = rawPrompt
+                try
+                {
+                    string prompt = rawPrompt
                     .Replace("###{title}###", spec.Title)
                     .Replace("###{service_description}###", spec.Definition)
                     .Replace("###{featurenumber}###", features.Count.ToString())
                     .Replace("###{feature_description}###", f)
                     .Replace("###{requirement}###", requirement);
 
-                string result = await openaiChatService.CompleteChatAsync(prompt, true);
-                //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-                var detail = JsonSerializer.Deserialize<FeatureFunctionalities>(result);
-               
-                return detail;
+                    //string result = await openaiChatService.CompleteChatAsync(prompt, true);
+                    //string result = await antropicChatService.CompleteChatAsync(prompt, true);
+                    string result = await geminiChatService.CompleteChatAsync(prompt, false, "spec-features-gen");
+                    result = result.CleanResult(); var detail = JsonSerializer.Deserialize<FeatureFunctionalities>(result);
+
+                    return detail;
+                }
+                catch(Exception exp)
+                {
+                    return null;
+                }
+
+
             });
 
             List<FeatureFunctionalities> ffs = (await Task.WhenAll(tasks)).ToList();
@@ -220,8 +233,10 @@ namespace FeatGen.ReportGenerator
                     Return the result in json format without any other characters:
 
                     {
-                        "service_description": "", // define what the SaaS "###{title}###" should looks like, in chinese
-                        "saas_features": [] // list from ###{feature_number}### features of the SaaS "###{title}###".  more than 100 characters
+                        "service_description": string, // define what the SaaS "###{title}###" should looks like, in chinese
+                        "saas_features": [
+                            string
+                        ] // list from ###{feature_number}### features of the SaaS "###{title}###".  more than 100 characters
                     }
 
                     ## Output Example
@@ -239,7 +254,9 @@ namespace FeatGen.ReportGenerator
                 .Replace("###{requirement}###", requirement);
 
             //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-            string result = await openaiChatService.CompleteChatAsync(prompt, true);
+            //string result = await openaiChatService.CompleteChatAsync(prompt, true);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false, "spec-definition-gen");
+            result = result.CleanResult();
 
             return JsonSerializer.Deserialize<Definition>(result);
         }
