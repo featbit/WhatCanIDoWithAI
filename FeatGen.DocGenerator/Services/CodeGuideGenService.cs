@@ -39,10 +39,10 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             string prompt = GuideDataGenPages.PagesV1(spec, requirement);
-            string result = await openaiChatService.CompleteChatAsync(prompt, false);
+            //string result = await openaiChatService.CompleteChatAsync(prompt, false);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             //string result = await antropicChatService.CompleteChatWithJsonAsync(prompt);
-            //string result = await geminiChatService.CompleteChatAsync(prompt);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false, "pages-gen");
             result = result.CleanJsonCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -71,7 +71,7 @@ namespace FeatGen.ReportGenerator
             string prompt = GuideDataGenPages.MenuItems(spec, rcg);
             //string result = await openaiChatService.CompleteChatAsync(prompt, true);
             //string result = await antropicChatService.CompleteChatAsync(prompt, true);
-            string result = await geminiChatService.CompleteChatAsync(prompt);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false, "menu-items-guid-gen");
             result = result.CleanJsonCodeQuote();
             await rcgRepo.UpsertGuideAsync(
                 reportId,
@@ -79,7 +79,7 @@ namespace FeatGen.ReportGenerator
                 menuItems: result.CleanJsCodeQuote(),
                 models: "",
                 fake_data_base: "",
-                extract_db_ds: "");
+                extract_db_ds: ""); 
             return result;
         }
 

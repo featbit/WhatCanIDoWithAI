@@ -49,15 +49,15 @@ namespace FeatGen.ReportGenerator.Prompts
                     {
                         "page_id": "", // id of page
                         "page_name": "", // name of page
-                        "page_description": "", // description of the feature, could be a summary of all mapping features. Should contain more than 200 characters.
+                        "page_description": "", // description of the feature, could be a summary of all mapping features. Should contain more than 200 characters. in Chinese.
                         "mapping_features": [
                             {
                                 "feature_name": "", // name of feature
-                                "feature_desc": "", // description of feature, should contain more than  200 characters; feature description shouldn't contain double quote ('"') character 
+                                "feature_desc": "", // description of feature, should contain more than  200 characters; feature description shouldn't contain double quote ('"') character.  in Chinese.
                                 "feature_id": "", // id of feature described above
                                 "functionalities": [
                                     
-                                ] // list of functionalities with detailed description. Each functionality should contains more than  200 characters; functionality description shouldn't contain double quote ('"') character 
+                                ] // list of functionalities with detailed description. Each functionality should contains more than  200 characters; functionality description shouldn't contain double quote ('"') character; in Chinese.
                             }
                         ],
                         "related_pages": [
@@ -163,15 +163,15 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 [
                     {
-                        "reason": "", // reason of adding this menu item
+                        "reason": "", // reason of adding this menu item, in chinese
                         "menu_item": "", // url path of the menu item
-                        "menu_name": "", // name will be displayed in the menu bar 
+                        "menu_name": "", // name will be displayed in the menu bar, in chinese
                         "page_id": "", // the page id that this menu item will navigate to
-                        "reason_for_sub_menu": "", // reason of adding sub menu items, or why sub_menu_items is empty
+                        "reason_for_sub_menu": "", // reason of adding sub menu items, or why sub_menu_items is empty, in chinese
                         "sub_menu_items": [
                             {
                                 "menu_item": "", // url path of the sub menu item
-                                "menu_name": "", // name will be displayed in the sub menu bar
+                                "menu_name": "", // name will be displayed in the sub menu bar, in chinese
                                 "page_id": "", // the page id that this sub menu item will navigate to
                             }
                         ], // sub menu items could be empty

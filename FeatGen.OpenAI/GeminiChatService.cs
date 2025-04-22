@@ -7,7 +7,8 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace FeatGen.OpenAI
 {
@@ -20,55 +21,63 @@ namespace FeatGen.OpenAI
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<GeminiChatService> _logger;
 
-        public GeminiChatService(IConfiguration configuration, HttpClient httpClient)
+        public GeminiChatService(IConfiguration configuration, HttpClient httpClient, ILogger<GeminiChatService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
             _httpClient = httpClient;
             _httpClient.Timeout = TimeSpan.FromSeconds(600 * 1000);
         }
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false, string customEndpoint = "gemini-25-pro-exp-03-25")
         {
-            var requestData = new
+            int retryNumber = 0;
+
+            while(retryNumber < 3)
             {
-                messages = new List<dynamic>() {
-                    new {
-                        role = "user",
-                        content = message
+                var requestData = new
+                {
+                    messages = new List<dynamic>() {
+                        new {
+                            role = "user",
+                            content = message
+                        }
+                    }
+                };
+
+                var content = new StringContent(
+                    System.Text.Json.JsonSerializer.Serialize(requestData),
+                    System.Text.Encoding.UTF8,
+                    "application/json");
+
+                try
+                {
+                    string endpoint = $"{_configuration["Gemini:EndpointUrl"]}/{customEndpoint}";
+                    var response = await _httpClient.PostAsync(endpoint, content);
+                    //var requestTimeout = TimeSpan.FromSeconds(600); // 10 minute timeout
+                    //using var cts = new CancellationTokenSource(requestTimeout);
+                    //var response = await _httpClient.PostAsync(_configuration["Gemini:EndpointUrl"], content, cts.Token);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        return responseContent;
+                    }
+                    else
+                    {
+                        retryNumber++;
+                        _logger.LogError($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                     }
                 }
-            };
-
-            var content = new StringContent(
-                System.Text.Json.JsonSerializer.Serialize(requestData),
-                System.Text.Encoding.UTF8,
-                "application/json");
-
-            try
-            {
-                string endpoint = $"{_configuration["Gemini:EndpointUrl"]}/{customEndpoint}";
-                var response = await _httpClient.PostAsync(endpoint, content);
-                //var requestTimeout = TimeSpan.FromSeconds(600); // 10 minute timeout
-                //using var cts = new CancellationTokenSource(requestTimeout);
-                //var response = await _httpClient.PostAsync(_configuration["Gemini:EndpointUrl"], content, cts.Token);
-                if (response.IsSuccessStatusCode)
+                catch (Exception exp)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    return responseContent;
-                    //return JsonConvert.DeserializeObject<GeminiResponse>(responseContent);
+                    retryNumber++;
+                    _logger.LogError(exp.Message, exp);
                 }
-                else
-                {
-                    throw new Exception($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                }
+                await Task.Delay(10 * 1000);
             }
-            catch(Exception exp)
-            {
-                throw new Exception($"Error: {exp.Message}");
-            }
-
-
+            throw new Exception("Max retry limit reached");
         }
     }
 

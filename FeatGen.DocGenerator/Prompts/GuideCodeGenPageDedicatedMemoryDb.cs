@@ -184,12 +184,12 @@ namespace FeatGen.ReportGenerator.Prompts
 
                 [
                 	{
-                		 "reason": "", // reason why this function or variable should be added to the database file "###{db_file_path_n_name}###" and used by API file "###{api_file_path_n_name}###"
+                		 "reason": "", // reason why this function or variable should be added to the database file "###{db_file_path_n_name}###" and used by API file "###{api_file_path_n_name}###"; in chinese
                 		 "name": "", // function or variable name defined in "###{db_file_path_n_name}###" and will be called in "###{api_file_path_n_name}###"
                 		 "interact_type": "", // function or variable to be called in the API file, should between "function" and "variable"
                 		 "interact_action": "", // a value between 'create', 'read', 'update' and 'delete', 
-                		 "request_params_description", "", // request params for the function or variable 
-                		 "response_data_description": "", // response data and data structure for the function or variable
+                		 "request_params_description", "", // request params for the function or variable ; description should be in chinese
+                		 "response_data_description": "", // response data and data structure for the function or variable;
                 		 "function_or_variable_description": "", // description of how the function is executed with input (request_params) and output (response_data)
                 	}
                 ]
