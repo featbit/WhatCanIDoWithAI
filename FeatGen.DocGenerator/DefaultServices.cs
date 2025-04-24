@@ -14,7 +14,6 @@ namespace FeatGen.ReportGenerator
             builder.Services.AddScoped<IReportCodeRepo, ReportCodeRepo>();
             builder.Services.AddScoped<IReportCodeGuideRepo, ReportCodeGuideRepo>();
             builder.Services.AddScoped<ICodeGuideFetchService, CodeGuideFetchService>();
-            builder.Services.AddScoped<ICodePromptGenService, CodePromptGenService>();
             builder.Services.AddScoped<ICodeUtilsService, CodeUtilsService>();
             builder.Services.AddScoped<ICodeFixService, CodeFixService>();
 

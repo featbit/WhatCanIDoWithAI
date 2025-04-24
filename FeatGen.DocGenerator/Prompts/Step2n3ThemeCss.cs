@@ -8,9 +8,9 @@ using FeatGen.OpenAI;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuideCodeGenThemeCssCode
+    public class Step2n3ThemeCss
     {
-        public static string V1(Specification spec)
+        public static string GlobalsCssPrompt(Specification spec)
         {
             string rawPrompt = """
 

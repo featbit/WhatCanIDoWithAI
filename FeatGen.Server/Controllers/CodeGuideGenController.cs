@@ -136,49 +136,6 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
 
-        
-
-        [HttpPost("api-code")]
-        [RequestTimeout(600)]
-        public async Task<IActionResult> ApiCode([FromBody] CodeGuideCodeRequest request)
-        {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
-
-            var result = await codeGuideGenService.GenerateApiCodeAsync(request.ReportId, request.PageId);
-            return Ok(result);
-        }
-
-        [HttpPost("page-component-files")]
-        [RequestTimeout(600)]
-        public async Task<IActionResult> PageComponentFiles([FromBody] CodeGuideComponentCodeRequest request)
-        {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
-
-            var result = await codeGuideGenService.GeneratePageComponentFilesAsync(
-                request.ReportId, request.PageId, request.ApiCode);
-            return Ok(result);
-        }
-
-        [HttpPost("component-code")]
-        [RequestTimeout(600)]
-        public async Task<IActionResult> ComponentCode([FromBody] CodeGuideComponentCodeRequest request)
-        {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
-
-            var result = await codeGuideGenService.GenerateComponentCodeAsync(
-                request.ReportId, request.PageId, request.PageComponentName, request.ApiCode, request.CssCode);
-            return Ok(result);
-        }
-
         [HttpPost("page-api-db-interfaces")]
         [RequestTimeout(600)]
         public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideInterfacesRequest request)
@@ -193,7 +150,7 @@ namespace FeatGen.Server.Controllers
         }
         [HttpPost("page-api-db-models")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideDbModelsRequest request)
+        public async Task<IActionResult> PageDbModels([FromBody] CodeGuideDbModelsRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
             {
@@ -233,7 +190,7 @@ namespace FeatGen.Server.Controllers
             {
                 return NotFound();
             }
-            var result = await codeGuideGenService.UpdateExistingPageCodeWithNewApiCode(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.CssCode, request.DbCode, request.DbModels, request.ThemeIconPrompt, request.ThemeChartPrompt);
+            var result = await codeGuideGenService.GeneratePageCodeAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.CssCode, request.DbCode, request.DbModels, request.ThemeIconPrompt, request.ThemeChartPrompt);
             return Ok(result);
         }
         

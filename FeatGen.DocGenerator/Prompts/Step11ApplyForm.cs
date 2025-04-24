@@ -8,9 +8,9 @@ using FeatGen.OpenAI;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
-    public class GuideApplyFormGen
+    public class Step11ApplyForm
     {
-        public static string V1(Specification spec, ReportCodeGuide rcg)
+        public static string Prompt(Specification spec, ReportCodeGuide rcg)
         {
             string rawPrompt = """
 
