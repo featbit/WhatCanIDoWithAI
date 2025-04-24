@@ -392,13 +392,13 @@ namespace FeatGen.ReportGenerator.Prompts
                   --sidebar-ring: #8e8e8e;
                 }
 
-
                 @layer base {
                   * {
-                    @apply border-border outline-ring/50;
+                    border-color: var(--border);
                   }
                   body {
-                    @apply bg-background text-foreground;
+                    background-color: var(--background);
+                    color: var(--foreground);
                   }
                 }
 
@@ -512,6 +512,8 @@ namespace FeatGen.ReportGenerator.Prompts
                 - Please keep the existing css file structure.
                 - Don't remove basic tailwind css classes, only update the value
                 - Replace the Theme specific classes for "###{service_name}###"
+                - Don't use @apply
+                - Update css for both light mode and dark mode
 
                 ## Output format
 

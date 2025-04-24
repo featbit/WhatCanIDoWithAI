@@ -58,7 +58,6 @@ namespace FeatGen.ReportGenerator
         {
             var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
             string prompt = GuideCodeGenThemeCssCode.V1(spec);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             string result = await geminiChatService.CompleteChatAsync(prompt);
             result = result.CleanCssCodeQuote();
             return result;

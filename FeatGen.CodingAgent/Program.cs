@@ -33,9 +33,9 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 
 var task1 = Task.Run(() => RunGen(
-    projectName: "无人机光电检测背景误报消除算法软件",
-    startStepAt: 10,
-    stopStepAt: 10,
+    projectName: "减论科技服务信息平台",
+    startStepAt: 11,
+    stopStepAt: 11,
     //failedMenuItems: new List<string> { "data-analysis" }
     failedMenuItems: null
 ));
@@ -82,7 +82,8 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
             Console.WriteLine($"Generated");
         }
 
-        string reportId = await ApiFetchCaller.GetReportIdByTitleAsync(projectName);
+        //string reportId = await ApiFetchCaller.GetReportIdByTitleAsync("科技服务信息平台");
+        string reportId = "77866d8a-6501-41bc-949b-a5a0a419f35d";
 
         if (startStepAt <= 1 && stopStepAt >= 1)
         {

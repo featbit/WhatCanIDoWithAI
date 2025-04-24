@@ -11,7 +11,7 @@ namespace FeatGen.CodingAgent
 {
     public class ApiGenCaller
     {
-        private static string _baseUrl = "https://localhost:7009";
+        private static string _baseUrl = "http://localhost:5177";
 
         public static async Task<Specification> Step0_SpecificationGen(string serviceName)
         {

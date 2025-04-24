@@ -9,7 +9,7 @@ namespace FeatGen.CodingAgent
 {
     public class ApiFetchCaller
     {
-        private static string _baseUrl = "https://localhost:7009";
+        private static string _baseUrl = "http://localhost:5177";
 
         public static async Task<Specification> GetSpecificationAsync(string reportId, string projectName)
         {
