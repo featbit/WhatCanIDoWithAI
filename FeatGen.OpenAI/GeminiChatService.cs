@@ -77,7 +77,8 @@ namespace FeatGen.OpenAI
                 }
                 await Task.Delay(10 * 1000);
             }
-            throw new Exception("Max retry limit reached");
+            _logger.LogError("Max retry limit reached");
+            return null;
         }
     }
 

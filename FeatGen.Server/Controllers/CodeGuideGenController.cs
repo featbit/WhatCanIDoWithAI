@@ -23,10 +23,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> Pages([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GeneratePagesAsync(request.ReportId);
             return Ok(result);
@@ -36,10 +36,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> GetGeneratedPages(string reportId)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideFetchService.GetGeneratedPagesAsync(reportId);
             return Ok(result);
@@ -49,10 +49,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> GenerateCssCode([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GenerateCssCodeAsync(request.ReportId);
             return Ok(result);
@@ -62,10 +62,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> MenuItems([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GenerateMenuItemsAsync(request.ReportId);
             return Ok(result);
@@ -75,10 +75,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> MenuItemsCode([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GenerateMenuItemsCodeAysnc(request.ReportId);
             return Ok(result);
@@ -88,10 +88,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> GetGeneratedMenuItems(string reportId)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideFetchService.GetGeneratedMenuItemsAsync(reportId);
             return Ok(result);
@@ -101,10 +101,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> ProjectModels([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GenerateDataModelsAsync(request.ReportId);
             return Ok(result);
@@ -114,10 +114,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> FakeDataBase([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.GenerateFakeDataBaseAsync(request.ReportId);
             return Ok(result);
@@ -127,10 +127,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> ExtractImportantMemoryDBCode([FromBody] CodeGuideRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
 
             var result = await codeGuideGenService.ExtractImportantMemoryDBCodeAsync(request.ReportId);
             return Ok(result);
@@ -140,11 +140,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideInterfacesRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
-            //var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.MemoryDbCode, request.PageCode);
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
             var result = await codeGuideGenService.GeneratePageApiDbInterfacesAsync(request.ReportId, request.PageId, request.MenuItem);
             return Ok(result);
         }
@@ -152,10 +151,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> PageDbModels([FromBody] CodeGuideDbModelsRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
             var result = await codeGuideGenService.DefineDedicatedMemoryDbModel(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.InterfaceDefinition);
             return Ok(result);
         }
@@ -163,10 +162,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> PageApiDbCode([FromBody] CodeGuideDbCodeRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
             var result = await codeGuideGenService.GenerateDedicatedMemoryDBCode(request.ReportId, request.PageId, request.MenuItem, request.InterfaceDefinition, request.DbModels);
             return Ok(result);
         }
@@ -174,10 +173,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> PageApiCodeUpdate([FromBody] CodeGuideApiCodeRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
             var result = await codeGuideGenService.GenerateApiCodeWithDedicatedDbCodeAsync(request.ReportId, request.PageId, request.MenuItem, request.InterfaceDefinition, request.DbCode);
             
             return Ok(result);
@@ -186,10 +185,10 @@ namespace FeatGen.Server.Controllers
         [RequestTimeout(600)]
         public async Task<IActionResult> UpdateExistingPageCodeWithNewApiCode([FromBody] CodeGuideNewPageCodeRequest request)
         {
-            if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
-            {
-                return NotFound();
-            }
+            //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
+            //{
+            //    return NotFound();
+            //}
             var result = await codeGuideGenService.GeneratePageCodeAsync(request.ReportId, request.PageId, request.MenuItem, request.ApiCode, request.CssCode, request.DbCode, request.DbModels, request.ThemeIconPrompt, request.ThemeChartPrompt);
             return Ok(result);
         }

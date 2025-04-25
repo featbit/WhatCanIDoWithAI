@@ -73,6 +73,8 @@ namespace FeatGen.ReportGenerator.Prompts
                 - ###{theme_chart_prompt}###
                 - We're using React19, NextJs 15.2.3, Tailwind4
                 - The primary language is Chinese
+                - All operations on the page should be performed without redirecting or navigating to another page or route. For example, when editing an item in a table, a modal should pop up instead of navigating to a different URL.
+                - The output code should be less than 1600 lines and must include the complete implementation.
 
                 Existing front-end page code:
 
@@ -89,6 +91,34 @@ namespace FeatGen.ReportGenerator.Prompts
                   );
                 }
                 ```
+
+
+
+                If you use toast in the page, please use existing toast components defined in the project, code like:
+
+                ```javascript
+                import { useToast } from "@/components/ui/use-toast"; // Import the internal toast hook
+                import { Toaster } from "@/components/ui/toaster"; // Import the internal Toaster component
+                
+                // some code...
+                
+                const { toast } = useToast(); 
+                
+                // some code...
+
+                {/* Use the internal Toaster component */}
+                <Toaster />
+
+                toast({ variant: "destructive", title: "错误", description: "未能加载用户数据。" });
+                toast({ title: "成功", description: "用户资料更新成功！" });
+
+                ```
+         
+
+
+                If you use `<SelectItem />` component imported from "@/components/ui/select", you must give a value. <SelectItem /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder. For example, you should wirte the code like `<SelectItem value="*" disabled>选择一个选项</SelectItem>`, the code shouldn't be `<SelectItem value="" disabled>选择一个选项</SelectItem>`
+
+
 
                 ## Output Format
                 

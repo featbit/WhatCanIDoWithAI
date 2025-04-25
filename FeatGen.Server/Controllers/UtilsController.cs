@@ -21,5 +21,15 @@ namespace FeatGen.Server.Controllers
         {
             return await codeUtilService.GetReportIdByTitleAsync(title);
         }
+
+
+
+        [HttpGet("timeout-test")]
+        [RequestTimeout(600)]
+        public async Task<string> TimeoutTest(string title)
+        {
+            await Task.Delay(300 * 1000);
+            return "Timeout test completed";
+        }
     }
 }

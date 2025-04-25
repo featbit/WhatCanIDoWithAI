@@ -57,6 +57,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - Write Javascript code, not typescript code.
                 - Generate Chinese for data, not English.
                 - This is a NextJs project with React19. Use "import" for importing components from other files, don't use "require".
+                - All APIs code should be included in this file, and we won't create other files to implement the APIs.
                 
                 ## Output Format
                 
