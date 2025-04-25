@@ -276,7 +276,9 @@ namespace FeatGen.ReportGenerator.Prompts
                 - This "###{db_file_path_n_name}###" file should be a new file, and it should not be the same as the "###{db_shared_file_path_n_name}###" file.
                 - The "###{api_file_path_n_name}###" file will also update the code to call the exportable functions that will be generated in new "###{db_file_path_n_name}###" file. but not in this task.
                 - In the "###{db_file_path_n_name}###" file, we suggest to generate fake data or simulate data dynamically. It means using program to generate data and avoid hard code data.
+                - Consider introducing a TEST_USER_ID constant to represent the currently logged-in user in the system. This constant should be defined in the file and used throughout the code to simulate the logged-in user. If needed, simulation data should be related to the TEST_USER_ID.
                 - Generate Chinese for data, not English.
+                - The simulated data and informations should be in Chinese.
 
                 ## Output Format
                 

@@ -56,6 +56,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 - These API endpoints should be called directly in NextJs components. So it's an APIs endpoints but exist in a function format.
                 - Write Javascript code, not typescript code.
                 - Generate Chinese for data, not English.
+                - This is a NextJs project with React19. Use "import" for importing components from other files, don't use "require".
                 
                 ## Output Format
                 
@@ -64,7 +65,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 ## Output Example
                 
                 import { v4 as uuidv4 } from 'uuid';
-                import { memoryDB } from '@/app/db/db-###{menu_item}###';
+                import { memoryDB, TEST_USER_ID } from '@/app/db/db-###{menu_item}###';
                 
                 // QA Messages Operations
                 export const addMessageToSession = async (sessionId, userId, content, type = 'question') => {

@@ -21,7 +21,7 @@ namespace FeatGen.ReportGenerator.Services
         }
         public async Task<string> FixingSingleFileCodeError(string fileCode, string requirementPrompt)
         {
-            string prompt = CodeFixPrompt.FixingSingleFileCodeWithoutNewImportPrompt(fileCode, requirementPrompt);
+            string prompt = PostSteps.SingleFileErrorFixingPrompt(fileCode, requirementPrompt);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();

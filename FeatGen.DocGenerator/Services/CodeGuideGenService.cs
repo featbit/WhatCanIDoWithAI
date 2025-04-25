@@ -191,7 +191,9 @@ namespace FeatGen.ReportGenerator
             var rcg = await rcgRepo.GetRCGAsync(reportId);
             string prompt = Step9Page.Prompt(spec, rcg, pageId, menuItem, apiCode, cssCode, dbCode, dbModels, themeIconPrompt, themeChartPrompt);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
-            //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            string toastCorrectPrompt = Step9Page.ToastCorrectPrompt(result); 
+            result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
         }

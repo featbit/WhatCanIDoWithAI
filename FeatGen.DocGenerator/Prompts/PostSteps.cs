@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FeatGen.ReportGenerator.Prompts
 {
-    public class CodeFixPrompt
+    public class PostSteps
     {
-        public static string FixingSingleFileCodeWithoutNewImportPrompt(string fileCode, string requirementPrompt)
+        public static string SingleFileErrorFixingPrompt(string fileCode, string requirementPrompt)
         {
             string prompt = """
                 ## Task
