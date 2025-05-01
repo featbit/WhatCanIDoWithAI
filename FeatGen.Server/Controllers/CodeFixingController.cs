@@ -14,6 +14,22 @@ namespace FeatGen.Server.Controllers
     public class CodeFixingController(ICodeFixService codeFixingService) : ControllerBase
     {
 
+        [HttpPost("db-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> DbCodeFixing([FromBody] CodeFixingSignleFileRequest request)
+        {
+            var result = await codeFixingService.DbCodeFixing(request.FileCode, request.RequirementPrompt);
+            return Ok(result);
+        }
+
+        [HttpPost("api-code")]
+        [RequestTimeout(600)]
+        public async Task<IActionResult> ApiCodeFixing([FromBody] CodeFixingSignleFileRequest request)
+        {
+            var result = await codeFixingService.ApiCodeFixing(request.FileCode, request.RequirementPrompt);
+            return Ok(result);
+        }
+
         [HttpPost("page-code")]
         [RequestTimeout(600)]
         public async Task<IActionResult> PageCodeFixing([FromBody] CodeFixingSignleFileRequest request)

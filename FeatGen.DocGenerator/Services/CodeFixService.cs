@@ -11,6 +11,8 @@ namespace FeatGen.ReportGenerator.Services
 {
     public interface ICodeFixService
     {
+        Task<string> DbCodeFixing(string fileCode, string requirementPrompt);
+        Task<string> ApiCodeFixing(string fileCode, string requirementPrompt);
         Task<string> PageCodeFixing(string fileCode, string requirementPrompt);
     }
     public class CodeFixService(IGeminiChatService geminiChatService, IAntropicChatService antropicChatService) : ICodeFixService
@@ -19,10 +21,31 @@ namespace FeatGen.ReportGenerator.Services
         {
             return "";
         }
+        public async Task<string> DbCodeFixing(string fileCode, string requirementPrompt)
+        {
+            string prompt = PostSteps1CodeFixing.DbCodeFixingPrompt(fileCode, requirementPrompt);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            return result;
+        }
+        public async Task<string> ApiCodeFixing(string fileCode, string requirementPrompt)
+        {
+            string prompt = PostSteps1CodeFixing.ApiCodeFixingPrompt(fileCode, requirementPrompt);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            return result;
+        }
         public async Task<string> PageCodeFixing(string fileCode, string requirementPrompt)
         {
             string prompt = PostSteps1CodeFixing.PageCodeFixingPrompt(fileCode, requirementPrompt);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            result = result.CleanJsCodeQuote();
+            return result;
+        }
+        public async Task<string> ChooseFiles(string menuItem, string moduleSpec, string dbCode, string apiCode, string pageCode, string errorInfo)
+        {
+            string prompt = PostSteps1CodeFixing.DecideWhichFileToModifiedPrompt("menuItem", "moduleSpec", "dbCode", "apiCode", "pageCode", "errorInfo");
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();
             return result;
