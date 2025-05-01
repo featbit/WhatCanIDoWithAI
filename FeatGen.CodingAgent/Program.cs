@@ -33,8 +33,8 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 
 var task1 = Task.Run(() => RunGen(
-    projectName: "减论科技服务信息平台",
-    startStepAt: 11,
+    projectName: "掺氢燃气管输工艺计算软件",
+    startStepAt: 10,
     stopStepAt: 11,
     //failedMenuItems: new List<string> { "data-analysis" }
     failedMenuItems: null
@@ -82,8 +82,8 @@ async Task RunGen(string projectName, double startStepAt, double stopStepAt, Lis
             Console.WriteLine($"Generated");
         }
 
-        //string reportId = await ApiFetchCaller.GetReportIdByTitleAsync("科技服务信息平台");
-        string reportId = "77866d8a-6501-41bc-949b-a5a0a419f35d";
+        string reportId = await ApiFetchCaller.GetReportIdByTitleAsync(projectName);
+        //string reportId = "77866d8a-6501-41bc-949b-a5a0a419f35d";
 
         if (startStepAt <= 1 && stopStepAt >= 1)
         {

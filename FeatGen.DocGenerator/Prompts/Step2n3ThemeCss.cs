@@ -513,7 +513,6 @@ namespace FeatGen.ReportGenerator.Prompts
                 - Don't remove basic tailwind css classes, only update the value
                 - Replace the Theme specific classes for "###{service_name}###"
                 - Don't use @apply
-                - Update css for both light mode and dark mode
 
                 ## Output format
 

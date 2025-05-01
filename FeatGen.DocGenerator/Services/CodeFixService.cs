@@ -11,7 +11,7 @@ namespace FeatGen.ReportGenerator.Services
 {
     public interface ICodeFixService
     {
-        Task<string> FixingSingleFileCodeError(string fileCode, string requirementPrompt);
+        Task<string> PageCodeFixing(string fileCode, string requirementPrompt);
     }
     public class CodeFixService(IGeminiChatService geminiChatService, IAntropicChatService antropicChatService) : ICodeFixService
     {
@@ -19,9 +19,9 @@ namespace FeatGen.ReportGenerator.Services
         {
             return "";
         }
-        public async Task<string> FixingSingleFileCodeError(string fileCode, string requirementPrompt)
+        public async Task<string> PageCodeFixing(string fileCode, string requirementPrompt)
         {
-            string prompt = PostSteps.SingleFileErrorFixingPrompt(fileCode, requirementPrompt);
+            string prompt = PostSteps1CodeFixing.PageCodeFixingPrompt(fileCode, requirementPrompt);
             //string result = await antropicChatService.CompleteChatAsync(prompt, false);
             string result = await geminiChatService.CompleteChatAsync(prompt, false);
             result = result.CleanJsCodeQuote();

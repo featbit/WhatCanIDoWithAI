@@ -14,11 +14,11 @@ namespace FeatGen.Server.Controllers
     public class CodeFixingController(ICodeFixService codeFixingService) : ControllerBase
     {
 
-        [HttpPost("single-file")]
+        [HttpPost("page-code")]
         [RequestTimeout(600)]
-        public async Task<IActionResult> SingleFile([FromBody] CodeFixingSignleFileRequest request)
+        public async Task<IActionResult> PageCodeFixing([FromBody] CodeFixingSignleFileRequest request)
         {
-            var result = await codeFixingService.FixingSingleFileCodeError(request.FileCode, request.RequirementPrompt);
+            var result = await codeFixingService.PageCodeFixing(request.FileCode, request.RequirementPrompt);
             return Ok(result);
         }
     }
