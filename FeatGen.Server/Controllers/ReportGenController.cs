@@ -20,7 +20,7 @@ namespace FeatGen.Server.Controllers
         IAntropicChatService antropicChatService) : ControllerBase
     {
         [HttpPost("specification")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> SpecificationGenAsync([FromBody] SpecGenRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -34,6 +34,7 @@ namespace FeatGen.Server.Controllers
  
 
         [HttpGet("db/specification/{reportId}")]
+        [RequestTimeout(600000)]
         public async Task<Specification> GetSpecificationByReportIdAsync(string reportId)
         {
             return await reportRepo.GetSpecificationByReportIdAsync(reportId);
@@ -41,6 +42,7 @@ namespace FeatGen.Server.Controllers
 
 
         [HttpGet("db/reports/")]
+        [RequestTimeout(600000)]
         public async Task<List<Report>> GetReportsAsync()
         {
             return await reportCodeRepo.GetReportsAsync();

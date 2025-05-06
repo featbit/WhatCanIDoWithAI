@@ -102,18 +102,20 @@ namespace FeatGen.ReportGenerator.Prompts
                          .Replace("###{file_code}###", fileCode);
         }
 
-        public static string DecideWhichFileToModifiedPrompt(string menuItem, string moduleSpec, string dbCode, string apiCode, string pageCode, string errorInfo)
+        public static string DecideWhichFileToModifiedPrompt(string menuItem, string pageDesc, string dbCode, string apiCode, string pageCode, string humanInput)
         {
             string prompt = """
 
                 In our Next.js project, we have implemented a page with the following specifications:
 
+                ```
                 ###{module_spec}###
+                ```
 
                 We have implemented this specification with code in the following files:
-                - `/src/app/db/db-###{menu_item}###.js`: This file contains all database-related code, such as data initialization, simulation of data operations, and fake data generation.
-                - `/src/app/apis/###{menu_item}###.js`: This file contains all API code responsible for business logic control. It performs create, read, update, and delete operations by calling the functions and variables defined in `/src/app/db/db-###{menu_item}###.js`.
-                - `/src/app/pages/###{menu_item}###/page.js`: This file contains the front-end code for the page, including layout, data display, and user interaction handling.
+                - DB file `/src/app/db/db-###{menu_item}###.js`: This file contains all database-related code, such as data initialization, simulation of data operations, and fake data generation.
+                - APIs file `/src/app/apis/###{menu_item}###.js`: This file contains all APIs code responsible for business logic control. It performs create, read, update, and delete operations by calling the functions and variables defined in `/src/app/db/db-###{menu_item}###.js`.
+                - Page file `/src/app/pages/###{menu_item}###/page.js`: This file contains the front-end code for the page, including layout, data display, and user interaction handling.
 
                 Here is the code for each file:
 
@@ -123,7 +125,7 @@ namespace FeatGen.ReportGenerator.Prompts
                 ###{db_code}###
                 ```
 
-                - API File `/src/app/apis/###{menu_item}###.js` Code:
+                - APIs File `/src/app/apis/###{menu_item}###.js` Code:
 
                 ```javascript
                 ###{api_code}###
@@ -154,10 +156,10 @@ namespace FeatGen.ReportGenerator.Prompts
                     "files": [
                         {
                             "reason": "", // The reason why this file should be modified based on the error information
-                            "file_path_name": "" // The file path
+                            "file_path_name": "" // The file path between `/src/app/db/db-###{menu_item}###.js`, `/src/app/apis/###{menu_item}###.js` and `/src/app/pages/###{menu_item}###/page.js`
                         }
                     ],
-                    "howtomodify": "" // Explain how to modify between files to maintain consistency in function calls across all files
+                    "howtomodify": "" // Explain the potential issue that led to the problem and how to modify the files to maintain consistency in function calls across all of them.
                 }
                 
                 ```
@@ -165,12 +167,12 @@ namespace FeatGen.ReportGenerator.Prompts
                 """;
 
 
-            return prompt.Replace("###{module_spec}###", moduleSpec)
+            return prompt.Replace("###{module_spec}###", pageDesc)
                          .Replace("###{menu_item}###", menuItem)
                          .Replace("###{db_code}###", dbCode)
                          .Replace("###{api_code}###", apiCode)
                          .Replace("###{page_code}###", pageCode)
-                         .Replace("###{error_info}###", errorInfo);
+                         .Replace("###{error_info}###", humanInput);
         }
     }
 }

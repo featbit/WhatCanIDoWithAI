@@ -15,7 +15,7 @@ namespace FeatGen.Server.Controllers
     {
 
         [HttpPost("db-code")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> DbCodeFixing([FromBody] CodeFixingSignleFileRequest request)
         {
             var result = await codeFixingService.DbCodeFixing(request.FileCode, request.RequirementPrompt);
@@ -23,7 +23,7 @@ namespace FeatGen.Server.Controllers
         }
 
         [HttpPost("api-code")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> ApiCodeFixing([FromBody] CodeFixingSignleFileRequest request)
         {
             var result = await codeFixingService.ApiCodeFixing(request.FileCode, request.RequirementPrompt);
@@ -31,17 +31,43 @@ namespace FeatGen.Server.Controllers
         }
 
         [HttpPost("page-code")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> PageCodeFixing([FromBody] CodeFixingSignleFileRequest request)
         {
             var result = await codeFixingService.PageCodeFixing(request.FileCode, request.RequirementPrompt);
             return Ok(result);
         }
+
+        [HttpPost("choose-files")]
+        [RequestTimeout(600000)]
+        public async Task<IActionResult> ChooseFiles([FromBody] CodeFixingFilePickerRequest request)
+        {
+            var result = await codeFixingService.ChooseFiles(
+                request.ReportId,
+                request.MenuItem,
+                request.DbFileCode,
+                request.ApisFileCode,
+                request.PageFileCode,
+                request.HumanInput);
+            return Ok(result);
+        }
+
     }
 
     public class CodeFixingSignleFileRequest
     {
         public string RequirementPrompt { get; set; }
         public string FileCode { get; set; }
+    }
+
+    public class CodeFixingFilePickerRequest
+    {
+        public string ReportId { get; set; }
+        public string PageId { get; set; }
+        public string MenuItem { get; set; }
+        public string DbFileCode { get; set; }
+        public string ApisFileCode { get; set; }
+        public string PageFileCode { get; set; }
+        public string HumanInput { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using FeatGen.OpenAI;
+using FeatGen.ReportGenerator.Models.GuidePrompts;
 using FeatGen.ReportGenerator.Prompts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FeatGen.ReportGenerator.Services
@@ -14,8 +16,13 @@ namespace FeatGen.ReportGenerator.Services
         Task<string> DbCodeFixing(string fileCode, string requirementPrompt);
         Task<string> ApiCodeFixing(string fileCode, string requirementPrompt);
         Task<string> PageCodeFixing(string fileCode, string requirementPrompt);
+        Task<string> ChooseFiles(string reportId, string menuItem, string dbCode, string apiCode, string pageCode, string humanInput);
     }
-    public class CodeFixService(IGeminiChatService geminiChatService, IAntropicChatService antropicChatService) : ICodeFixService
+    public class CodeFixService(
+        IGeminiChatService geminiChatService, 
+        IAntropicChatService antropicChatService,
+        IReportRepo reportRepo,
+        IReportCodeGuideRepo rcgRepo) : ICodeFixService
     {
         public async Task<string> FixingForCodeError(FixingCodeRequest request)
         {
@@ -43,10 +50,28 @@ namespace FeatGen.ReportGenerator.Services
             result = result.CleanJsCodeQuote();
             return result;
         }
-        public async Task<string> ChooseFiles(string menuItem, string moduleSpec, string dbCode, string apiCode, string pageCode, string errorInfo)
+        public async Task<string> ChooseFiles(string reportId, string menuItem, string dbCode, string apiCode, string pageCode, string humanInput)
         {
-            string prompt = PostSteps1CodeFixing.DecideWhichFileToModifiedPrompt("menuItem", "moduleSpec", "dbCode", "apiCode", "pageCode", "errorInfo");
-            string result = await geminiChatService.CompleteChatAsync(prompt, false);
+            var spec = await reportRepo.GetSpecificationByReportIdAsync(reportId);
+            var rcg = await rcgRepo.GetRCGAsync(reportId);
+
+            var menuItems = JsonSerializer.Deserialize<List<GuideMenuItem>>(rcg.MenuItems, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var menuItemObj = menuItems?.FirstOrDefault(p => p.menu_item == menuItem);
+            var pageId = menuItemObj?.page_id;
+
+            var pagesString = rcg.Pages;
+            var allPages = JsonSerializer.Deserialize<List<GuidePageItem>>(pagesString, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+            var mainPage = allPages.FirstOrDefault(p => p.page_id == pageId);
+            var subPages = allPages.Where(p =>
+                    mainPage.related_pages.Any(p => p.page_id == pageId && p.direction == "forward") &&
+                    menuItems.All(m => m.page_id != p.page_id)).ToList();
+            var pages = new List<GuidePageItem>() { mainPage };
+            pages.AddRange(subPages);
+            string pageDesc = JsonSerializer.Serialize<List<GuidePageItem>>(
+                            pages, new JsonSerializerOptions() { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All) });
+
+            string prompt = PostSteps1CodeFixing.DecideWhichFileToModifiedPrompt(menuItem, pageDesc, dbCode, apiCode, pageCode, humanInput);
+            string result = await geminiChatService.CompleteChatAsync(prompt, false, "decide-which-file-to-modify");
             result = result.CleanJsCodeQuote();
             return result;
         }

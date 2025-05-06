@@ -16,7 +16,7 @@ namespace FeatGen.Server.Controllers
         ICodeUtilsService codeUtilService) : ControllerBase
     {
         [HttpGet("reportid-by-title/{title}")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<string> GetReportIdByTitle(string title)
         {
             return await codeUtilService.GetReportIdByTitleAsync(title);
@@ -25,7 +25,7 @@ namespace FeatGen.Server.Controllers
 
 
         [HttpGet("timeout-test")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<string> TimeoutTest(string title)
         {
             await Task.Delay(300 * 1000);

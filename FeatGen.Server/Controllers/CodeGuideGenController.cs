@@ -137,7 +137,7 @@ namespace FeatGen.Server.Controllers
         }
 
         [HttpPost("page-api-db-interfaces")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> PageApiDbInterfaces([FromBody] CodeGuideInterfacesRequest request)
         {
             //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -148,7 +148,7 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
         [HttpPost("page-api-db-models")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> PageDbModels([FromBody] CodeGuideDbModelsRequest request)
         {
             //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -159,7 +159,7 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
         [HttpPost("page-api-db-code")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> PageApiDbCode([FromBody] CodeGuideDbCodeRequest request)
         {
             //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -170,7 +170,7 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
         [HttpPost("page-api-code-update")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> PageApiCodeUpdate([FromBody] CodeGuideApiCodeRequest request)
         {
             //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -182,7 +182,7 @@ namespace FeatGen.Server.Controllers
             return Ok(result);
         }
         [HttpPost("page-code-update")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> UpdateExistingPageCodeWithNewApiCode([FromBody] CodeGuideNewPageCodeRequest request)
         {
             //if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -196,7 +196,7 @@ namespace FeatGen.Server.Controllers
 
 
         [HttpPost("component-code-gemini")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> ComponentCodeGemini()
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -209,7 +209,7 @@ namespace FeatGen.Server.Controllers
         }
 
         [HttpPost("user-manual-page")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> UserManualByPage([FromBody] CodeGuideUserManualRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
@@ -235,7 +235,7 @@ namespace FeatGen.Server.Controllers
         }
 
         [HttpPost("application-form")]
-        [RequestTimeout(600)]
+        [RequestTimeout(600000)]
         public async Task<IActionResult> ApplicationForm([FromBody] CodeGuideRequest request)
         {
             if (!flagService.IsEnabled(FeatureFlagKeys.SpecGen))
