@@ -9,6 +9,8 @@ namespace FeatGen.OpenAI
         {
             builder.Services.AddTransient<IOpenAiChatService, OpenAiChatService>();
             builder.Services.AddScoped<IAntropicChatService, AntropicChatService>();
+
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IGeminiChatService, GeminiChatService>();
             return builder;
         }

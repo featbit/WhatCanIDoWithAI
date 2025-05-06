@@ -19,20 +19,22 @@ namespace FeatGen.OpenAI
 
     public class GeminiChatService : IGeminiChatService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
         private readonly ILogger<GeminiChatService> _logger;
 
-        public GeminiChatService(IConfiguration configuration, HttpClient httpClient, ILogger<GeminiChatService> logger)
+        public GeminiChatService(IConfiguration configuration, IHttpClientFactory httpClientFactory, ILogger<GeminiChatService> logger)
         {
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
             _logger = logger;
-            _httpClient = httpClient;
-            _httpClient.Timeout = TimeSpan.FromSeconds(600 * 1000);
         }
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false, string customEndpoint = "gemini-25-pro-exp-03-25")
         {
+            using var httpClient = _httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromMinutes(10); // 10 minute timeout
+
             int retryNumber = 0;
 
             while(retryNumber < 3)
@@ -55,10 +57,7 @@ namespace FeatGen.OpenAI
                 try
                 {
                     string endpoint = $"{_configuration["Gemini:EndpointUrl"]}/{customEndpoint}";
-                    var response = await _httpClient.PostAsync(endpoint, content);
-                    //var requestTimeout = TimeSpan.FromSeconds(600); // 10 minute timeout
-                    //using var cts = new CancellationTokenSource(requestTimeout);
-                    //var response = await _httpClient.PostAsync(_configuration["Gemini:EndpointUrl"], content, cts.Token);
+                    var response = await httpClient.PostAsync(endpoint, content);
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
