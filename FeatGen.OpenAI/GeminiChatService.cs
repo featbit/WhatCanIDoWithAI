@@ -32,7 +32,7 @@ namespace FeatGen.OpenAI
 
         public async Task<string> CompleteChatAsync(string message, bool enforceJson = false, string customEndpoint = "gemini-25-pro-exp-03-25")
         {
-            using var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = _httpClientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMinutes(10); // 10 minute timeout
 
             int retryNumber = 0;
